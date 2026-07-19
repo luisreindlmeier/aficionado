@@ -221,3 +221,22 @@ export interface TraceStep {
   readonly connector?: ConnectorId;
   readonly kind: 'plan' | 'fetch' | 'extract' | 'reduce' | 'gate' | 'calibrate' | 'done';
 }
+
+/** The streaming contract for LOOP B (on-demand evaluation). Server-sent from
+ *  /api/evaluate and rendered as the streamed dossier + brain-at-work trace.
+ *  Shared by the backend and the Evaluation page so both stay in lockstep. */
+export type EvalEvent =
+  | { type: 'trace'; step: TraceStep }
+  | { type: 'phase'; metric: Metric; connectors: ConnectorId[] }
+  | {
+      type: 'connector';
+      metric: Metric;
+      connector: ConnectorId;
+      status: 'running' | 'done' | 'error';
+      note?: string;
+    }
+  | { type: 'signal'; signal: Receipt }
+  | { type: 'metric'; score: MetricScore }
+  | { type: 'final'; score: FounderScore }
+  | { type: 'done' }
+  | { type: 'error'; message: string };
