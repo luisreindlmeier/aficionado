@@ -14,7 +14,7 @@ import {
   simpleCrunchbase,
 } from '@ng-icons/simple-icons';
 import { heroBuildingLibrary, heroCheck } from '@ng-icons/heroicons/outline';
-import { Metric, METRIC_COLORS } from '../../core/metrics';
+import { Metric } from '../../core/metrics';
 
 // Brand marks not carried by the icon sets, taken from each company's own assets.
 // LinkedIn and Google carry their own fills (multi-colour); Evertrace is a
@@ -324,8 +324,7 @@ const GROUP_ORDER: readonly Group[] = ['Connected', 'Available', 'Manual input',
                     <div class="flex flex-wrap items-center gap-1.5">
                       @for (metric of source.metrics; track metric) {
                         <span
-                          class="rounded-sm px-1.5 py-0.5 text-[11px] font-medium text-white"
-                          [style.backgroundColor]="metricColors[metric]"
+                          class="rounded-full border-[0.5px] border-border px-2 py-0.5 text-[11px] font-medium text-foreground"
                         >
                           {{ metric }}
                         </span>
@@ -351,7 +350,6 @@ const GROUP_ORDER: readonly Group[] = ['Connected', 'Available', 'Manual input',
 })
 export class DataSourcesPage {
   protected readonly groupOrder = GROUP_ORDER;
-  protected readonly metricColors = METRIC_COLORS;
 
   protected sourcesIn(group: Group): readonly DataSource[] {
     return SOURCES.filter((source) => source.group === group);

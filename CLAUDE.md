@@ -22,6 +22,9 @@ palette). Product features are not built yet.
   `<app-section-heading title="…">` (`src/app/core/ui/section-heading.ts`), an editorial
   serif title with a clean divider beneath. Never use the small uppercase eyebrow style
   (`.af-eyebrow`) for page section headings; that style is for sidebar/nav labels only.
+- **Labels**: badges, pills, and tags are neutral, white background, foreground (black) text,
+  thin border (`rounded-full border-[0.5px] border-border text-foreground`). Never fill a
+  label with colour. Colour is reserved for data viz (e.g. donut rings) and tiny indicator dots.
 - **Punctuation**: never use em dashes (`—`) or the middle-dot separator (`·`) anywhere,
   in UI copy, comments, docs, or commit messages. Use commas, colons, periods, or a plain
   slash (` / `) instead. This applies to all content generated in this repo.

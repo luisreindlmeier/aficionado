@@ -196,7 +196,7 @@ const DOSSIER: FounderDossier = {
             </div>
             <div class="flex shrink-0 flex-col items-end gap-2">
               <span
-                class="inline-flex items-center gap-1.5 rounded-full border-[0.5px] border-[#16a34a]/25 bg-[#16a34a]/10 px-2.5 py-1 text-[12px] font-medium text-[#15803d]"
+                class="inline-flex items-center gap-1.5 rounded-full border-[0.5px] border-border px-2.5 py-1 text-[12px] font-medium text-foreground"
               >
                 <span class="size-1.5 rounded-full bg-[#16a34a]"></span>
                 {{ dossier.verdict.status }}
@@ -240,7 +240,7 @@ const DOSSIER: FounderDossier = {
                 </text>
               </svg>
 
-              <h3 class="mt-4 text-center text-[17px] font-semibold" [style.color]="metric.dot">
+              <h3 class="mt-4 text-center text-[17px] font-semibold text-foreground">
                 {{ metric.name }}
               </h3>
               <p class="mt-1 text-center text-[12px] text-muted-foreground">
