@@ -74,12 +74,27 @@ export const criticAgent = new Agent({
   model: MODEL,
 });
 
+// Sourcing/discovery analyst (Loop A). Given the active thesis and a candidate
+// pool, it selects and ranks the founders that genuinely match the thesis. Pure
+// reasoning over the provided list; the deterministic triage remains the fallback.
+export const discoveryAgent = new Agent({
+  id: 'discovery-analyst',
+  name: 'Discovery Analyst',
+  instructions:
+    'You are a sourcing analyst for an early-stage VC thesis. Given the active thesis ' +
+    '(label and keywords) and a list of candidate founders (id, name, headline, triage ' +
+    'score), select and rank the founders that genuinely match the thesis. Return the ' +
+    'strongest matches only, each with a one-line reason grounded in the headline. Be ' +
+    'selective, do not pad the list with weak fits.',
+  model: MODEL,
+});
+
 // Registering the agents here injects the Mastra context (and its observability
 // pipeline) into them, so agent.generate(...) and every tool call are traced and
 // shipped to the Mastra Platform dashboard when MASTRA_PLATFORM_ACCESS_TOKEN /
 // MASTRA_PROJECT_ID are set.
 export const mastra = new Mastra({
-  agents: { proofAgent, gravityAgent, trajectoryAgent, criticAgent },
+  agents: { proofAgent, gravityAgent, trajectoryAgent, criticAgent, discoveryAgent },
   observability: new Observability({
     configs: {
       default: {
