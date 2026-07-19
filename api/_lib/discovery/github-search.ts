@@ -72,7 +72,10 @@ const cleanDomain = (blog?: string): string | undefined => {
 };
 
 /** Search repositories for one query and return the top owners' logins (users only). */
-async function ownersForQuery(q: string, perQuery: number): Promise<Map<string, { name: string; stars: number; url: string }>> {
+async function ownersForQuery(
+  q: string,
+  perQuery: number,
+): Promise<Map<string, { name: string; stars: number; url: string }>> {
   const owners = new Map<string, { name: string; stars: number; url: string }>();
   const path = `/search/repositories?q=${encodeURIComponent(q)}&sort=stars&order=desc&per_page=${perQuery}`;
   const data = await ghJson<{ items?: GhSearchRepo[] }>(path);
@@ -89,6 +92,89 @@ async function ownersForQuery(q: string, perQuery: number): Promise<Map<string, 
     }
   }
   return owners;
+}
+
+/** German-founder locations GitHub profiles commonly use. */
+export const GERMAN_LOCATIONS = [
+  'Germany',
+  'Deutschland',
+  'Berlin',
+  'München',
+  'Munich',
+  'Hamburg',
+  'Köln',
+  'Frankfurt',
+] as const;
+
+async function enrich(
+  login: string,
+  repo?: { name: string; stars: number; url: string },
+): Promise<DiscoveredFounder | null> {
+  const user = await ghJson<GhUser>(`/users/${encodeURIComponent(login)}`);
+  if (!user || user.type !== 'User') return null;
+  let top = repo;
+  if (!top) {
+    const repos = await ghJson<{ name: string; stargazers_count: number; html_url: string }[]>(
+      `/users/${encodeURIComponent(login)}/repos?sort=stars&direction=desc&per_page=1&type=owner`,
+    );
+    const r = repos?.[0];
+    if (r) top = { name: r.name, stars: r.stargazers_count, url: r.html_url };
+  }
+  const domain = cleanDomain(user.blog);
+  return {
+    login,
+    name: user.name ?? login,
+    headline: user.bio ?? user.company ?? (top ? `Builder of ${top.name}` : 'GitHub builder'),
+    company: user.company,
+    followers: user.followers ?? 0,
+    publicRepos: user.public_repos ?? 0,
+    domain,
+    location: user.location,
+    topRepo: top,
+    query: { name: user.name ?? login, github: login, domain },
+  };
+}
+
+/**
+ * Discover GERMAN founders: search users directly by location (Germany + major
+ * cities) crossed with thesis keywords, then enrich each. This targets founders
+ * based in Germany rather than any owner of a matching repo.
+ */
+export async function searchGermanFounders(
+  keywords: readonly string[],
+  opts: {
+    perQuery?: number;
+    maxCandidates?: number;
+    minFollowers?: number;
+    locations?: readonly string[];
+  } = {},
+): Promise<DiscoveredFounder[]> {
+  const perQuery = opts.perQuery ?? 15;
+  const maxCandidates = opts.maxCandidates ?? 120;
+  const minFollowers = opts.minFollowers ?? 10;
+  const locations = opts.locations ?? GERMAN_LOCATIONS;
+
+  const logins = new Set<string>();
+  for (const kw of keywords) {
+    for (const loc of locations) {
+      if (logins.size >= maxCandidates * 2) break;
+      const q = `${kw} location:${loc} followers:>=${minFollowers}`;
+      const data = await ghJson<{ items?: { login: string; type: string }[] }>(
+        `/search/users?q=${encodeURIComponent(q)}&sort=followers&order=desc&per_page=${perQuery}`,
+      );
+      for (const u of data?.items ?? []) {
+        if (u.type === 'User') logins.add(u.login);
+      }
+    }
+  }
+
+  const founders: DiscoveredFounder[] = [];
+  for (const login of [...logins].slice(0, maxCandidates)) {
+    const f = await enrich(login);
+    if (f && f.followers >= minFollowers) founders.push(f);
+  }
+  // strongest first by follower reach
+  return founders.sort((a, b) => b.followers - a.followers);
 }
 
 /**
@@ -115,7 +201,9 @@ export async function searchFounders(
   }
 
   // 2) enrich the strongest candidates (by best-repo stars) up to maxCandidates
-  const ranked = [...topRepo.entries()].sort((a, b) => b[1].stars - a[1].stars).slice(0, maxCandidates);
+  const ranked = [...topRepo.entries()]
+    .sort((a, b) => b[1].stars - a[1].stars)
+    .slice(0, maxCandidates);
   const founders: DiscoveredFounder[] = [];
   for (const [login, repo] of ranked) {
     const user = await ghJson<GhUser>(`/users/${encodeURIComponent(login)}`);
