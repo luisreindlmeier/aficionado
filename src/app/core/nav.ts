@@ -15,10 +15,17 @@ export interface NavGroup {
 /** Single source of truth for the sidebar navigation + the page routes. */
 export const NAV_GROUPS: readonly NavGroup[] = [
   {
-    // The funnel: Radar (inbound) → Pipeline → Evaluation → Decision → Diligence.
+    // Discovery + tracking: find founders, then keep the watched ones in view.
     items: [
       { label: 'Radar', route: 'radar', icon: 'heroSignal' },
       { label: 'Pipeline', route: 'pipeline', icon: 'heroRectangleStack' },
+      { label: 'Watchlist', route: 'watchlist', icon: 'heroEye' },
+    ],
+  },
+  {
+    // Assessment: score → verdict → deep dive.
+    label: 'Assessment',
+    items: [
       { label: 'Evaluation', route: 'evaluation', icon: 'heroClipboardDocumentCheck' },
       { label: 'Decision', route: 'decision', icon: 'heroScale' },
       { label: 'Diligence', route: 'diligence', icon: 'heroDocumentMagnifyingGlass', dimmed: true },

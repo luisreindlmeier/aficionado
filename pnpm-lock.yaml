@@ -35,6 +35,9 @@ importers:
       '@ng-icons/heroicons':
         specifier: ^33.3.0
         version: 33.3.0
+      '@ng-icons/simple-icons':
+        specifier: ^33.4.0
+        version: 33.4.0
       rxjs:
         specifier: ~7.8.0
         version: 7.8.2
@@ -1250,6 +1253,9 @@ packages:
 
   '@ng-icons/heroicons@33.3.0':
     resolution: {integrity: sha512-JjlzuBBnDp5KtPkhfIsjz19wS+b4dOsky3nmtemjMH+PIB6JVYJ4S4WLv6E+W9lZnbfr5h2OlGQlewrsd+VohQ==}
+
+  '@ng-icons/simple-icons@33.4.0':
+    resolution: {integrity: sha512-vqtsjDxADRtljCwCnKz2fWv93O/RlU1kk9LwoJ2R/BrCJCVoTKQcE80lUQkZMlaT0tzdees6S7BvYzZ+5rhKng==}
 
   '@npmcli/agent@4.0.2':
     resolution: {integrity: sha512-EUEuWAxnL07Sp5/iC/1X6Xj+XThUvnbei9zfRWZdEXa7lss9RTHMhAHBeg+MZ5To9s/gGaSI+UwZTPdYMvKSeg==}
@@ -4427,6 +4433,10 @@ snapshots:
       tslib: 2.8.1
 
   '@ng-icons/heroicons@33.3.0':
+    dependencies:
+      tslib: 2.8.1
+
+  '@ng-icons/simple-icons@33.4.0':
     dependencies:
       tslib: 2.8.1
 

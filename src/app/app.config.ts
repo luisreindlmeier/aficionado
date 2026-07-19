@@ -12,6 +12,7 @@ import {
   // sidebar nav
   heroSignal,
   heroRectangleStack,
+  heroEye,
   heroClipboardDocumentCheck,
   heroScale,
   heroDocumentMagnifyingGlass,
@@ -43,6 +44,7 @@ export const appConfig: ApplicationConfig = {
       heroAcademicCap,
       heroSignal,
       heroRectangleStack,
+      heroEye,
       heroClipboardDocumentCheck,
       heroScale,
       heroDocumentMagnifyingGlass,
