@@ -257,10 +257,8 @@ const GROUP_ORDER: readonly Group[] = ['Connected', 'Available', 'Manual input',
                     <div class="flex flex-wrap items-center gap-1.5">
                       @for (metric of source.metrics; track metric) {
                         <span
-                          class="rounded-full border-[0.5px] px-2 py-0.5 text-[11px] font-medium"
-                          [style.color]="metricColors[metric]"
-                          [style.borderColor]="metricColors[metric] + '40'"
-                          [style.backgroundColor]="metricColors[metric] + '14'"
+                          class="rounded-sm px-1.5 py-0.5 text-[11px] font-medium text-white"
+                          [style.backgroundColor]="metricColors[metric]"
                         >
                           {{ metric }}
                         </span>
