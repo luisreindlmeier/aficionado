@@ -74,8 +74,8 @@ const GROUP_ORDER: readonly Group[] = ['Connected', 'Available', 'Manual input',
           </p>
         </header>
 
-        @for (group of groupOrder; track group) {
-          <section class="mt-8">
+        @for (group of groupOrder; track group; let first = $first) {
+          <section class="mt-8" [attr.data-tour]="first ? 'tour-data-sources' : null">
             <h2 class="text-[12px] font-medium uppercase tracking-wide text-muted-foreground">
               {{ group }}
             </h2>

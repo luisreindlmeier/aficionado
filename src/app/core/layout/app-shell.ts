@@ -1,9 +1,11 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Sidebar } from './sidebar';
 import { Header } from './header';
 import { Footer } from './footer';
 import { CommandPalette } from './command-palette';
+import { TourOverlay } from '../tour/tour-overlay';
+import { TourService } from '../tour/tour.service';
 
 /**
  * App layout: sidebar + header + content (header and content share one surface,
@@ -11,7 +13,7 @@ import { CommandPalette } from './command-palette';
  */
 @Component({
   selector: 'app-shell',
-  imports: [RouterOutlet, Sidebar, Header, Footer, CommandPalette],
+  imports: [RouterOutlet, Sidebar, Header, Footer, CommandPalette, TourOverlay],
   template: `
     <div class="flex h-dvh flex-col bg-background text-foreground">
       <div class="flex min-h-0 flex-1">
@@ -44,10 +46,19 @@ import { CommandPalette } from './command-palette';
     </div>
 
     <app-command-palette />
+    <app-tour-overlay />
   `,
 })
 export class AppShell {
+  private readonly tour = inject(TourService);
   protected readonly sidebarOpen = signal(false);
+
+  constructor() {
+    // Run the onboarding tour once, on a visitor's first load.
+    if (!this.tour.hasSeen()) {
+      setTimeout(() => this.tour.start(), 700);
+    }
+  }
 
   protected toggleSidebar(): void {
     this.sidebarOpen.update((v) => !v);

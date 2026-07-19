@@ -23,9 +23,7 @@ import { ThesisComposer, type ThesisDraft } from './thesis-composer';
 @Component({
   selector: 'app-radar-page',
   imports: [RouterLink, NgIcon, ThesisComposer, AgentActivity, SectionHeading],
-  viewProviders: [
-    provideIcons({ heroArrowPath, heroArrowRight, heroBolt, heroPlus, heroSignal }),
-  ],
+  viewProviders: [provideIcons({ heroArrowPath, heroArrowRight, heroBolt, heroPlus, heroSignal })],
   styles: `
     :host {
       display: flex;
@@ -50,7 +48,7 @@ import { ThesisComposer, type ThesisDraft } from './thesis-composer';
     <div class="flex min-w-0 flex-1 flex-col overflow-y-auto">
       <div class="mx-auto w-full max-w-7xl px-6 py-8 md:px-8 md:py-10">
         <!-- Header: live sourcing status -->
-        <header class="flex flex-wrap items-end justify-between gap-4">
+        <header data-tour="tour-radar" class="flex flex-wrap items-end justify-between gap-4">
           <div>
             <!-- Provenance, not decoration: says whether these founders are live
                  agent output or the committed seed. -->
@@ -76,14 +74,14 @@ import { ThesisComposer, type ThesisDraft } from './thesis-composer';
               Radar
             </h1>
             <p class="mt-2 max-w-xl text-[14px] leading-relaxed text-muted-foreground">
-              Freshly discovered founders, newest first. Each is triaged and scored the moment
-              it lands, so the pipeline is never empty.
+              Freshly discovered founders, newest first. Each is triaged and scored the moment it
+              lands, so the pipeline is never empty.
             </p>
           </div>
           <div class="flex flex-col items-end gap-1 text-[12px] text-muted-foreground">
-            <span class="font-title text-[22px] leading-none text-foreground"
-              >{{ radar().length }}</span
-            >
+            <span class="font-title text-[22px] leading-none text-foreground">{{
+              radar().length
+            }}</span>
             <span>founders in view</span>
             @if (queue().length) {
               <span>{{ queue().length }} in the sourcing queue</span>
@@ -180,7 +178,9 @@ import { ThesisComposer, type ThesisDraft } from './thesis-composer';
             <p class="mt-3 border-t-[0.5px] border-border pt-3 text-[12px] text-muted-foreground">
               Scanned {{ s.scanned }} founders, surfaced {{ s.surfaced }}, ranked by
               {{ s.rankedBy === 'agent' ? 'the discovery agent' : 'deterministic triage' }}.
-              {{ s.persisted ? 'Written to the candidate queue.' : 'Read-only, nothing persisted.' }}
+              {{
+                s.persisted ? 'Written to the candidate queue.' : 'Read-only, nothing persisted.'
+              }}
             </p>
           }
         </section>
@@ -212,7 +212,9 @@ import { ThesisComposer, type ThesisDraft } from './thesis-composer';
                   }
                 </div>
                 <p class="mt-0.5 truncate text-[12px] text-muted-foreground">{{ f.headline }}</p>
-                <div class="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-muted-foreground">
+                <div
+                  class="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-muted-foreground"
+                >
                   <span>discovered {{ data.timeAgo(f.discoveredAt) }}</span>
                   @if (thesisLabel(f); as tl) {
                     <span class="text-border">/</span>
@@ -230,11 +232,21 @@ import { ThesisComposer, type ThesisDraft } from './thesis-composer';
                 <div class="hidden w-40 shrink-0 flex-col gap-1.5 sm:flex">
                   @for (m of metrics(f); track m.label) {
                     <div class="flex items-center gap-2">
-                      <span class="size-1.5 shrink-0 rounded-full" [style.background]="m.color"></span>
+                      <span
+                        class="size-1.5 shrink-0 rounded-full"
+                        [style.background]="m.color"
+                      ></span>
                       <div class="h-1 flex-1 overflow-hidden rounded-full bg-[#e5e5e5]">
-                        <div class="h-full rounded-full" [style.width.%]="m.score" [style.background]="m.color"></div>
+                        <div
+                          class="h-full rounded-full"
+                          [style.width.%]="m.score"
+                          [style.background]="m.color"
+                        ></div>
                       </div>
-                      <span class="w-5 shrink-0 text-right text-[10px] tabular-nums text-muted-foreground">{{ m.score }}</span>
+                      <span
+                        class="w-5 shrink-0 text-right text-[10px] tabular-nums text-muted-foreground"
+                        >{{ m.score }}</span
+                      >
                     </div>
                   }
                 </div>
@@ -243,11 +255,16 @@ import { ThesisComposer, type ThesisDraft } from './thesis-composer';
               <!-- verdict -->
               <div class="flex w-24 shrink-0 flex-col items-end gap-1">
                 @if (f.score; as s) {
-                  <span class="font-title text-[26px] leading-none text-foreground">{{ s.composite }}</span>
+                  <span class="font-title text-[26px] leading-none text-foreground">{{
+                    s.composite
+                  }}</span>
                   <span
                     class="inline-flex items-center gap-1.5 rounded-full border-[0.5px] border-border px-2 py-0.5 text-[11px] text-foreground"
                   >
-                    <span class="size-1.5 rounded-full" [style.background]="data.bandColor(s.band)"></span>
+                    <span
+                      class="size-1.5 rounded-full"
+                      [style.background]="data.bandColor(s.band)"
+                    ></span>
                     {{ s.band }}
                   </span>
                   <!-- A score the agent never produced must not read like one. -->
@@ -271,7 +288,9 @@ import { ThesisComposer, type ThesisDraft } from './thesis-composer';
               />
             </a>
           } @empty {
-            <div class="rounded-xl border-[0.5px] border-border bg-card p-8 text-center text-[13px] text-muted-foreground">
+            <div
+              class="rounded-xl border-[0.5px] border-border bg-card p-8 text-center text-[13px] text-muted-foreground"
+            >
               No founders under this thesis yet. Run a sourcing pass to fill the queue.
             </div>
           }
@@ -309,7 +328,9 @@ import { ThesisComposer, type ThesisDraft } from './thesis-composer';
                     >
                   </div>
                   @if (c.headline) {
-                    <p class="mt-0.5 truncate text-[12px] text-muted-foreground">{{ c.headline }}</p>
+                    <p class="mt-0.5 truncate text-[12px] text-muted-foreground">
+                      {{ c.headline }}
+                    </p>
                   }
                   @if (c.reason) {
                     <p class="mt-1 text-[11px] italic leading-relaxed text-muted-foreground">

@@ -1,6 +1,7 @@
 import { Component, inject, output } from '@angular/core';
 import { NgIcon } from '@ng-icons/core';
 import { CommandPaletteService } from '../command-palette.service';
+import { TourService } from '../tour/tour.service';
 
 @Component({
   selector: 'app-header',
@@ -45,6 +46,7 @@ import { CommandPaletteService } from '../command-palette.service';
         }
         <button
           type="button"
+          (click)="tour.start()"
           class="ml-2 flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-[13px] font-medium text-foreground transition-colors hover:bg-accent"
         >
           <ng-icon name="heroAcademicCap" />
@@ -56,6 +58,7 @@ import { CommandPaletteService } from '../command-palette.service';
 })
 export class Header {
   protected readonly palette = inject(CommandPaletteService);
+  protected readonly tour = inject(TourService);
   readonly menu = output<void>();
   protected readonly actions = [
     { icon: 'heroQuestionMarkCircle', label: 'Help' },

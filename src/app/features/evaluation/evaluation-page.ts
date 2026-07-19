@@ -250,7 +250,10 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
             <!-- 3. Assessment: overall score + the three metrics -->
             @if (f.score; as s) {
               <app-section-heading title="Assessment" />
-              <section class="rounded-xl border-[0.5px] border-border bg-card p-5">
+              <section
+                data-tour="tour-evaluation"
+                class="rounded-xl border-[0.5px] border-border bg-card p-5"
+              >
                 <div class="flex flex-wrap items-start justify-between gap-4">
                   <div class="min-w-0">
                     <p class="mb-2 text-[12px] font-medium text-muted-foreground">
@@ -566,7 +569,9 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
               @if (team(); as t) {
                 <app-section-heading title="Team complementarity" />
                 <section class="rounded-xl border-[0.5px] border-border bg-card p-5">
-                  <div class="flex flex-wrap items-start justify-between gap-4 border-b-[0.5px] border-border pb-4">
+                  <div
+                    class="flex flex-wrap items-start justify-between gap-4 border-b-[0.5px] border-border pb-4"
+                  >
                     <div>
                       <p class="text-[12px] font-medium text-muted-foreground">
                         Harmonized team score
