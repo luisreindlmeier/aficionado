@@ -271,25 +271,26 @@ const GROUP_ORDER: readonly Group[] = ['Connected', 'Available', 'Manual input',
 
             <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               @for (source of sourcesIn(group); track source.name) {
-                <div class="flex flex-col gap-3 rounded-xl border-[0.5px] border-border bg-card p-4">
+                <div
+                  class="flex flex-col gap-3 rounded-xl border-[0.5px] border-border bg-card p-4"
+                >
                   <!-- header: logo + name/domain, status top-right -->
                   <div class="flex items-start justify-between gap-3">
                     <div class="flex min-w-0 items-center gap-3">
-                      <span
-                        class="grid size-9 shrink-0 place-items-center rounded-lg border-[0.5px] border-border bg-surface"
-                      >
-                        <ng-icon
-                          [name]="source.icon"
-                          size="1.1rem"
-                          [class.text-muted-foreground]="!source.color"
-                          [style.color]="source.color"
-                        />
-                      </span>
+                      <ng-icon
+                        [name]="source.icon"
+                        size="1.5rem"
+                        class="shrink-0"
+                        [class.text-muted-foreground]="!source.color"
+                        [style.color]="source.color"
+                      />
                       <div class="min-w-0">
                         <p class="truncate text-[14px] font-medium text-foreground">
                           {{ source.name }}
                         </p>
-                        <p class="truncate text-[12px] text-muted-foreground">{{ source.domain }}</p>
+                        <p class="truncate text-[12px] text-muted-foreground">
+                          {{ source.domain }}
+                        </p>
                       </div>
                     </div>
 
