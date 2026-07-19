@@ -280,3 +280,54 @@ Two distinct mechanisms in `core/scoring.ts`.
 - The composite arithmetic is more involved than a plain weighted average, but every branch is
   pure, tested by construction against the anchor set, and identical across all three call
   sites.
+
+## ADR-007 Move the whole orchestration onto Mastra durable workflows
+
+### Context
+
+ADR-003 kept model access on the Vercel AI Gateway to avoid re-platforming under a 24h clock.
+With the demo working, the goal changed: make the orchestration a real, durable, observable
+agent system on Mastra (the framework the brief sketched), without changing what the numbers say.
+
+### Decision
+
+Migrate both loops onto Mastra, incrementally, with the deterministic calibration eval as the
+guard rail after every step:
+
+- Connectors become Mastra tools (`api/_lib/tools.ts`) driven by the SAME descriptor registry as
+  the Data-sources UI. One registry, two surfaces.
+- Three metric agents (`proofAgent`, `gravityAgent`, `trajectoryAgent`), each carrying ONLY its
+  metric's tools, replace the single scorer. A conservative red-flag `criticAgent` and a
+  `discoveryAgent` round out the set. Every agent runs OpenAI `gpt-5.5` via one `MODEL` constant.
+- Evaluation is a durable `createWorkflow`: ingest, then the three agents in parallel (fan-out),
+  then a deterministic reducer, a critic gate and calibration. Each agent gathers its own signals
+  agentically by calling its tools; the tool activity streams into the brain-at-work UI and every
+  agent + tool span exports to the Mastra Platform dashboard.
+- Sourcing (Loop A) is a scheduled `createWorkflow` (discover, discovery-agent rank, persist),
+  on a daily Vercel cron.
+- The calibration set is also exposed as a Mastra scorer (`createScorer`, `pnpm eval`).
+
+Two invariants were fixed up front: the deterministic scoring math (`confidentComposite`,
+`redFlagGate`, `bandOf`, `percentileOf`) stays byte-identical, and the calibration eval stays
+green (Luis / gedonus = 62). The Vercel AI Gateway path is removed.
+
+### Alternatives considered
+
+- Let each agent emit its metric subscore directly (as the brief's schema suggested). Rejected:
+  it would bypass the deterministic `blend` + calibration, changing the numbers. The agents
+  extract features; the shared math turns features into scores.
+- Change the weights to 40/40/20 (as one plan draft said). Rejected: it moves every calibrated
+  composite. Kept the shipped Maschmeyer 35/45/20.
+- Keep signals code-fetched (fidelity-first) instead of agentic. Rejected in favour of real
+  tool-calling so the traces and the "each tool call" streaming are genuine; the deterministic
+  eval, not the live LLM pass, is the stability contract.
+
+### Consequences
+
+- The orchestration is now a durable, traced Mastra workflow system with real agentic tool use.
+- Live per-metric numbers vary run-to-run (LLM-gathered evidence); this is expected and bounded
+  by the deterministic eval, which never moved.
+- The critic can cap a live score; it is prompted to stay conservative and returns no flags for
+  normal early-stage founders, so the demo is not falsely capped.
+- Open items (see HANDOFF): a real discovery source for net-new founders, Supabase creds for the
+  sourcing write path, and registering the workflows for workflow-level span export.

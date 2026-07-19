@@ -65,6 +65,39 @@ table in `README.md` for the summary.
         Supabase Postgres + pgvector  <---  Vercel Cron (Loop A)
 ```
 
+## The Mastra workflow system
+
+Both loops run as durable Mastra workflows (`@mastra/core`). The design is one
+registry, tools, scoped agents, a durable workflow and a deterministic reducer:
+
+- **Connectors as tools** (`api/_lib/tools.ts`): every live connector runtime is wrapped
+  as a Mastra `createTool` with a typed founder-identity input and signal output. The
+  same `CONNECTORS` descriptor registry that renders the Data-sources UI names the tools,
+  and `METRIC_TOOLS` groups them per metric. One source of truth, two surfaces.
+- **Agents** (`api/_lib/mastra.ts`): three metric agents (`proofAgent`, `gravityAgent`,
+  `trajectoryAgent`), each carrying ONLY its metric's tools; a conservative red-flag
+  `criticAgent`; and a `discoveryAgent` for sourcing. Every agent uses OpenAI `gpt-5.5`
+  through one `MODEL` constant. All are registered on the Mastra instance, whose
+  Observability config ships agent + tool spans to the Mastra Platform dashboard.
+- **Evaluation workflow** (`api/_lib/workflow.ts`): `createWorkflow` chains
+  ingest → `.parallel([proof, gravity, trajectory])` → reduce → `.commit()`. Each metric
+  step runs its agent agentically: the agent calls its own connector tools to gather
+  evidence, the tool activity streams into the brain-at-work UI (via an
+  `AsyncLocalStorage` emitter), then `reduceMetric` extracts features and the shared
+  deterministic math produces the metric score. The reduce step runs the SAME
+  `confidentComposite` / `redFlagGate` / `bandOf` / `percentileOf`, plus the critic's red
+  flags feeding the (unchanged) gate. `/api/evaluate` just runs this workflow.
+- **Sourcing workflow** (`api/_lib/sourcing-workflow.ts`): `discover` (deterministic
+  keyword triage) → `rank` (discovery agent selects genuine thesis matches) → `persist`
+  (Supabase upsert when creds are set). `/api/sourcing` runs it on a daily cron.
+- **Evals** (`eval/scorers.ts`): the calibration set is exposed as a Mastra `createScorer`
+  and run over every known founder in CI via `pnpm eval`.
+
+The stability contract is the deterministic calibration eval, not the live LLM pass: the
+scoring math is byte-identical to before the migration and Luis / gedonus still lands the
+calibrated Watch 62. Live per-metric numbers vary run-to-run because evidence is now
+agent-gathered.
+
 ## Loop A: sourcing (background)
 
 Loop A keeps the top of the funnel full without a human in the seat. It is designed as a

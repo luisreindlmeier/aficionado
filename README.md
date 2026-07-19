@@ -194,8 +194,11 @@ verdict via the Vercel AI Gateway.
 - **Angular 22**, standalone components, signals, zoneless change detection. Static SPA.
 - **Tailwind CSS v4** with semantic tokens.
 - **Vercel Functions** in `/api` (Node) for the backend.
-- **Vercel AI Gateway** for provider-agnostic model access (`anthropic/claude-sonnet-5`),
-  with a deterministic heuristic fallback when no key is present.
+- **Mastra** (`@mastra/core`) for the orchestration: connectors as tools, three scoped
+  metric agents plus a critic and a discovery agent, and both loops as durable workflows
+  (evaluation fan-out + reducer, scheduled sourcing). Every agent runs OpenAI `gpt-5.5`;
+  agent and tool spans are traced to the Mastra Platform. Deterministic heuristic fallback
+  when no model key is present. See ARCHITECTURE.md, "The Mastra workflow system".
 - **Committed real-data snapshot** (`src/app/core/data/seed.ts`) as the zero-dependency data
   source, generated from live public APIs.
 - **Supabase + pgvector** designed as an optional activation layer (see `DECISIONS.md` and
