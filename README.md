@@ -114,15 +114,15 @@ flowchart LR
 - **Loop B, evaluation.** `/api/evaluate` runs a durable Mastra workflow: three metric agents gather evidence in parallel, a deterministic reducer plus a red-flag critic turn it into a score, calibration runs last, and every step streams to the UI as Server-Sent Events.
 - **One connector registry, two surfaces.** Every source is described once in `src/app/core/connectors/descriptors.ts`, which drives both the Data sources UI and the agent toolset. The type contract is isomorphic (no Node or browser deps), so client, backend, and a future MCP surface share it. Live connectors: **GitHub, npm, PyPI, arXiv, Semantic Scholar, OpenAlex, Google Patents, Stack Exchange, Wayback**, keyless where possible.
 
-## Honest self-demo
-
-The system evaluates its own author end to end. Luis Reindlmeier, co-founder of GEDONUS (an AI slide add-in for finance), is genuinely discovered under the DACH AI/fintech thesis and scored from real GitHub evidence: **Proof 62** (a transformer limit-order-book thesis repo sits almost on top of the problem GEDONUS solves), **Trajectory 63**, and **Gravity 11 at low confidence, excluded** from the composite instead of dragging it down. Result: **composite 62, Watch, 37th percentile**, routed to a human pending a social profile. That honest read, strong but incomplete, is the point.
-
 ## Screenshots
 
 | Radar, always-on sourcing | Evaluation dossier with receipts |
 | --- | --- |
 | ![Radar](docs/screenshots/radar.png) | ![Evaluation](docs/screenshots/evaluation.png) |
+
+Live agent runs, token cost and per-agent usage traced on the Mastra Platform:
+
+![Mastra Platform metrics for the aficionado agents](docs/screenshots/mastra-metrics.png)
 
 ## Stack
 
