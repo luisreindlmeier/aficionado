@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { THESES } from '../src/app/core/data/seed';
-import { searchFounders } from './_lib/discovery/github-search';
+import { searchGermanFounders } from './_lib/discovery/github-search';
 import { evaluationWorkflow } from './_lib/workflow';
 import {
   supabaseAdmin,
@@ -29,14 +29,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
   }
 
   const active = THESES.find((t) => t.active) ?? THESES[0];
-  const queries = (active?.keywords?.length ? active.keywords : ['ai', 'developer tools']).slice(0, 6);
+  // Focus on GERMAN founders: keywords crossed with German locations in the search.
+  const keywords = ['ai', 'machine learning', 'llm', 'fintech', 'developer tools', 'saas'];
 
   try {
-    // 1) discover + upsert candidates
-    const found = await searchFounders(queries, {
-      perQuery: process.env.GITHUB_TOKEN ? 15 : 6,
-      maxCandidates: 30,
-      minFollowers: 80,
+    // 1) discover German founders + upsert candidates
+    const found = await searchGermanFounders(keywords, {
+      perQuery: process.env.GITHUB_TOKEN ? 10 : 5,
+      maxCandidates: 40,
+      minFollowers: 15,
     });
     const rows: CandidateRow[] = found.map((f) => ({
       id: f.login,
@@ -82,7 +83,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
       }
     }
 
-    res.status(200).json({ ok: true, discovered, evaluated, thesis: active?.label, at: new Date().toISOString() });
+    res.status(200).json({
+      ok: true,
+      discovered,
+      evaluated,
+      thesis: active?.label,
+      at: new Date().toISOString(),
+    });
   } catch (err) {
     res.status(500).json({ ok: false, error: err instanceof Error ? err.message : String(err) });
   }
