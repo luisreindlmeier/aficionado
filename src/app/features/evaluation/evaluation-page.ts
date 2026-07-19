@@ -96,7 +96,7 @@ const DOSSIER: FounderDossier = {
   `,
   template: `
     <div class="flex min-w-0 flex-1 flex-col overflow-y-auto">
-      <div class="mx-auto w-full max-w-2xl px-6 py-8 md:px-8 md:py-10">
+      <div class="mx-auto w-full max-w-5xl px-6 py-8 md:px-8 md:py-10">
         <!-- 1 · Founder header — person is primary, company is context -->
         <header class="flex items-start gap-4">
           <div
@@ -133,7 +133,9 @@ const DOSSIER: FounderDossier = {
           <div class="flex items-start justify-between gap-4">
             <div>
               <div class="flex items-baseline gap-1.5">
-                <span class="font-serif text-[44px] leading-none tracking-[-0.02em] text-foreground">
+                <span
+                  class="font-serif text-[44px] leading-none tracking-[-0.02em] text-foreground"
+                >
                   {{ dossier.verdict.percentile }}
                 </span>
                 <span class="text-[14px] text-muted-foreground">th percentile</span>

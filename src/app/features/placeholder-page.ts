@@ -12,13 +12,15 @@ import { Component, input } from '@angular/core';
     }
   `,
   template: `
-    <div class="flex min-w-0 flex-1 flex-col overflow-y-auto px-6 py-2 md:px-8 md:py-3">
-      <h1
-        class="font-serif text-[26px] leading-[1.1] tracking-[-0.01em] text-foreground md:text-[28px]"
-      >
-        {{ title() }}
-      </h1>
-      <p class="mt-2 text-[14px] leading-relaxed text-muted-foreground">No content yet.</p>
+    <div class="flex min-w-0 flex-1 flex-col overflow-y-auto">
+      <div class="mx-auto w-full max-w-5xl px-6 py-8 md:px-8 md:py-10">
+        <h1
+          class="font-serif text-[26px] leading-[1.1] tracking-[-0.01em] text-foreground md:text-[28px]"
+        >
+          {{ title() }}
+        </h1>
+        <p class="mt-2 text-[14px] leading-relaxed text-muted-foreground">No content yet.</p>
+      </div>
     </div>
   `,
 })

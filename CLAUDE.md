@@ -14,6 +14,10 @@ palette). Product features are not built yet.
 - Sidebar navigation + page routes come from a single source of truth: `src/app/core/nav.ts`.
 - Every page is currently a `PlaceholderPage`; add real feature components under
   `src/app/features/` and wire them in `src/app/app.routes.ts` when building them out.
+- **Page width**: every page wraps its content in the standard container
+  `mx-auto w-full max-w-5xl px-6 py-8 md:px-8 md:py-10` (inside a
+  `flex min-w-0 flex-1 flex-col overflow-y-auto` scroll region). Use the available
+  width — don't squeeze content into a narrow column.
 - No unnecessary comments. Keep the shell minimal.
 
 ## Brand

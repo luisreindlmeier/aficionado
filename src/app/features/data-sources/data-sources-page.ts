@@ -197,7 +197,7 @@ const GROUP_ORDER: readonly Group[] = ['Connected', 'Available', 'Manual input',
   `,
   template: `
     <div class="flex min-w-0 flex-1 flex-col overflow-y-auto">
-      <div class="mx-auto w-full max-w-2xl px-6 py-8 md:px-8 md:py-10">
+      <div class="mx-auto w-full max-w-5xl px-6 py-8 md:px-8 md:py-10">
         <header>
           <h1
             class="font-serif text-[26px] leading-[1.1] tracking-[-0.01em] text-foreground md:text-[28px]"
