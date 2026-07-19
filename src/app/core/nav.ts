@@ -33,7 +33,9 @@ export const NAV_GROUPS: readonly NavGroup[] = [
   {
     label: 'Workspace',
     items: [
-      { label: 'Agent Runs', route: 'agent-runs', icon: 'heroCpuChip' },
+      // Agent Runs is disabled: the page and its backing endpoint remain in the
+      // repo, but it is off the nav (and therefore off the router) until the
+      // recorded history is populated enough to be worth showing.
       { label: 'Data Sources', route: 'data-sources', icon: 'heroCircleStack' },
       { label: 'Settings', route: 'settings', icon: 'heroCog6Tooth' },
     ],
