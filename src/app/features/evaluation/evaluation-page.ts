@@ -121,7 +121,7 @@ const DOSSIER: FounderDossier = {
             {{ dossier.initials }}
           </div>
           <div class="min-w-0 flex-1">
-            <h1 class="font-serif text-[26px] leading-[1.1] tracking-[-0.01em] text-foreground">
+            <h1 class="font-title text-[26px] leading-[1.1] tracking-[-0.01em] text-foreground">
               {{ dossier.name }}
             </h1>
             <p class="mt-1 text-[13px] leading-relaxed text-muted-foreground">
@@ -186,7 +186,7 @@ const DOSSIER: FounderDossier = {
               <p class="mb-2 text-[12px] font-medium text-muted-foreground">aficionado score</p>
               <div class="flex items-baseline gap-1.5">
                 <span
-                  class="font-serif text-[44px] leading-none tracking-[-0.02em] text-foreground"
+                  class="font-title text-[44px] leading-none tracking-[-0.02em] text-foreground"
                 >
                   {{ dossier.verdict.percentile }}
                 </span>

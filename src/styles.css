@@ -109,6 +109,12 @@ body {
   font-weight: 500;
 }
 
+/* Titles and headings use the brand display font (Space Grotesk, from the logo kit). */
+.font-title {
+  font-family: var(--font-brand);
+  font-weight: 500;
+}
+
 /* Brand wordmark: Space Grotesk, lowercase, tight tracking (matches the logo kit) */
 .brand-wordmark {
   font-family: var(--font-brand);

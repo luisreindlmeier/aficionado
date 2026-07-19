@@ -10,7 +10,7 @@ import { Component, input } from '@angular/core';
   host: { class: 'mt-8 mb-4 block' },
   template: `
     <h2
-      class="border-b-[0.5px] border-border pb-2.5 font-serif text-[18px] leading-tight tracking-[-0.01em] text-foreground"
+      class="border-b-[0.5px] border-border pb-2.5 font-title text-[18px] leading-tight tracking-[-0.01em] text-foreground"
     >
       {{ title() }}
     </h2>

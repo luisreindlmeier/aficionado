@@ -18,10 +18,12 @@ palette). Product features are not built yet.
   `mx-auto w-full max-w-5xl px-6 py-8 md:px-8 md:py-10` (inside a
   `flex min-w-0 flex-1 flex-col overflow-y-auto` scroll region). Use the available
   width, don't squeeze content into a narrow column.
-- **Section headings**: divide page content into sections with
-  `<app-section-heading title="…">` (`src/app/core/ui/section-heading.ts`), an editorial
-  serif title with a clean divider beneath. Never use the small uppercase eyebrow style
-  (`.af-eyebrow`) for page section headings; that style is for sidebar/nav labels only.
+- **Titles/headings**: use the brand display font via the `.font-title` utility
+  (Space Grotesk, `--font-brand`, from the logo kit) for every page title, section heading,
+  and hero number. Divide page content into sections with `<app-section-heading title="…">`
+  (`src/app/core/ui/section-heading.ts`), a `.font-title` title with a clean divider beneath.
+  Never use the small uppercase eyebrow style (`.af-eyebrow`) for page section headings;
+  that style is for sidebar/nav labels only.
 - **Labels**: badges, pills, and tags are neutral, white background, foreground (black) text,
   thin border (`rounded-full border-[0.5px] border-border text-foreground`). Never fill a
   label with colour. Colour is reserved for data viz (e.g. donut rings) and tiny indicator dots.
