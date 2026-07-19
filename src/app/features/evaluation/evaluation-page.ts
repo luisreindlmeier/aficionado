@@ -1,16 +1,19 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   heroArrowTopRightOnSquare,
+  heroDocumentMagnifyingGlass,
   heroExclamationTriangle,
   heroBolt,
   heroArrowPath,
   heroCheckCircle,
   heroLink,
+  heroArrowRight,
 } from '@ng-icons/heroicons/outline';
 import { DataService } from '../../core/data/data.service';
 import { EvaluationService } from './evaluation.service';
+import { SectionHeading } from '../../core/ui/section-heading';
 import { METRIC_COLORS } from '../../core/metrics';
 import type { Metric } from '../../core/metrics';
 import type {
@@ -22,6 +25,13 @@ import type {
   SkillVector,
 } from '../../core/model';
 import type { FounderQuery } from '../../core/connectors/types';
+
+type SortMode = 'newest' | 'score' | 'decided';
+const SORT_OPTIONS: readonly { id: SortMode; label: string }[] = [
+  { id: 'newest', label: 'Newest' },
+  { id: 'score', label: 'Highest score' },
+  { id: 'decided', label: 'Recently decided' },
+];
 
 interface MetricView {
   readonly key: Metric;
@@ -49,15 +59,17 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
 // replay, and a live streaming "brain at work" panel driven by /api/evaluate.
 @Component({
   selector: 'app-evaluation-page',
-  imports: [NgIcon],
+  imports: [NgIcon, RouterLink, SectionHeading],
   viewProviders: [
     provideIcons({
       heroArrowTopRightOnSquare,
+      heroDocumentMagnifyingGlass,
       heroExclamationTriangle,
       heroBolt,
       heroArrowPath,
       heroCheckCircle,
       heroLink,
+      heroArrowRight,
     }),
   ],
   styles: `
@@ -90,7 +102,23 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
           <p class="font-title text-[14px] text-foreground">Founders</p>
           <p class="mt-0.5 text-[11px] text-muted-foreground">{{ founders().length }} evaluated</p>
         </div>
-        @for (f of founders(); track f.id) {
+        <div class="flex flex-wrap gap-1.5 border-b-[0.5px] border-border px-4 py-2.5">
+          @for (opt of sortOptions; track opt.id) {
+            <button
+              type="button"
+              (click)="sortBy.set(opt.id)"
+              class="rounded-full border-[0.5px] px-2 py-0.5 text-[11px] transition-colors"
+              [class]="
+                sortBy() === opt.id
+                  ? 'border-foreground bg-foreground text-background'
+                  : 'border-border text-muted-foreground hover:bg-accent'
+              "
+            >
+              {{ opt.label }}
+            </button>
+          }
+        </div>
+        @for (f of sortedFounders(); track f.id) {
           <button
             type="button"
             (click)="select(f.id)"
@@ -156,19 +184,25 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
                       />
                     </a>
                   }
+                  <a
+                    [routerLink]="['/diligence']"
+                    [queryParams]="{ founder: f.id }"
+                    class="inline-flex items-center gap-1.5 rounded-full border-[0.5px] border-border px-3 py-1 text-[12px] text-foreground transition-colors hover:bg-accent"
+                  >
+                    <ng-icon
+                      name="heroDocumentMagnifyingGlass"
+                      size="0.75rem"
+                      class="text-muted-foreground"
+                    />
+                    Diligence report
+                  </a>
                 </div>
               </div>
             </header>
 
             <!-- 2. Venture (context) -->
             @if (venture(); as v) {
-              <div class="mt-8 mb-4 block">
-                <h2
-                  class="border-b-[0.5px] border-border pb-2.5 font-title text-[18px] leading-tight tracking-[-0.01em] text-foreground"
-                >
-                  Company
-                </h2>
-              </div>
+              <app-section-heading title="Company" />
               <section class="rounded-xl border-[0.5px] border-border bg-card p-5">
                 <div class="flex items-start gap-4">
                   <div
@@ -191,6 +225,16 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
                     <p class="mt-2 text-[12px] text-muted-foreground">
                       {{ ventureMeta(v) }}
                     </p>
+                    <a
+                      [routerLink]="['/company', v.id]"
+                      class="mt-3 inline-flex items-center gap-1.5 rounded-full border-[0.5px] border-border px-3 py-1 text-[12px] text-foreground transition-colors hover:bg-accent"
+                    >
+                      View company
+                      @if (foundersForVenture(v).length > 1) {
+                        and team score
+                      }
+                      <ng-icon name="heroArrowRight" size="0.75rem" class="text-muted-foreground" />
+                    </a>
                   </div>
                   @if (v.website) {
                     <a
@@ -209,13 +253,7 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
 
             <!-- 3. Assessment: overall score + the three metrics -->
             @if (f.score; as s) {
-              <div class="mt-8 mb-4 block">
-                <h2
-                  class="border-b-[0.5px] border-border pb-2.5 font-title text-[18px] leading-tight tracking-[-0.01em] text-foreground"
-                >
-                  Assessment
-                </h2>
-              </div>
+              <app-section-heading title="Assessment" />
               <section class="rounded-xl border-[0.5px] border-border bg-card p-5">
                 <div class="flex flex-wrap items-start justify-between gap-4">
                   <div class="min-w-0">
@@ -427,13 +465,7 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
               }
 
               <!-- Brain at work (live streaming) -->
-              <div class="mt-8 mb-4 block">
-                <h2
-                  class="border-b-[0.5px] border-border pb-2.5 font-title text-[18px] leading-tight tracking-[-0.01em] text-foreground"
-                >
-                  Brain at work
-                </h2>
-              </div>
+              <app-section-heading title="Brain at work" />
               <section class="rounded-xl border-[0.5px] border-border bg-card p-5">
                 <div class="flex flex-wrap items-center justify-between gap-3">
                   <div>
@@ -529,13 +561,7 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
 
               <!-- 6. Founder-market-fit -->
               @if (f.fmf; as fmf) {
-                <div class="mt-8 mb-4 block">
-                  <h2
-                    class="border-b-[0.5px] border-border pb-2.5 font-title text-[18px] leading-tight tracking-[-0.01em] text-foreground"
-                  >
-                    Founder-market-fit
-                  </h2>
-                </div>
+                <app-section-heading title="Founder-market-fit" />
                 <section class="rounded-xl border-[0.5px] border-border bg-card p-5">
                   <div class="flex items-start gap-5">
                     <div class="shrink-0 text-center">
@@ -575,15 +601,26 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
 
               <!-- 7. Team complementarity -->
               @if (team(); as t) {
-                <div class="mt-8 mb-4 block">
-                  <h2
-                    class="border-b-[0.5px] border-border pb-2.5 font-title text-[18px] leading-tight tracking-[-0.01em] text-foreground"
-                  >
-                    Team complementarity
-                  </h2>
-                </div>
+                <app-section-heading title="Team complementarity" />
                 <section class="rounded-xl border-[0.5px] border-border bg-card p-5">
-                  <div class="grid gap-4 sm:grid-cols-2">
+                  <div class="flex flex-wrap items-start justify-between gap-4 border-b-[0.5px] border-border pb-4">
+                    <div>
+                      <p class="text-[12px] font-medium text-muted-foreground">
+                        Harmonized team score
+                      </p>
+                      <p class="mt-1 text-[11px] text-muted-foreground">
+                        Not an average of the individual scores, built from how well the team's
+                        skills complement each other.
+                      </p>
+                    </div>
+                    <div class="flex items-baseline gap-1.5">
+                      <span class="font-title text-[32px] leading-none text-foreground">{{
+                        t.score
+                      }}</span>
+                      <span class="text-[12px] text-muted-foreground">/ 100</span>
+                    </div>
+                  </div>
+                  <div class="mt-4 grid gap-4 sm:grid-cols-2">
                     <div>
                       <p class="mb-3 text-[12px] text-muted-foreground">Skill coverage</p>
                       @for (axis of skillAxes; track axis.key) {
@@ -633,25 +670,19 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
                       }
                     </div>
                   </div>
-                  @if (t.bonus > 0) {
-                    <p
-                      class="mt-4 border-t-[0.5px] border-border pt-3 text-[12px] text-muted-foreground"
-                    >
-                      Team bonus, +{{ t.bonus }} for complementary coverage.
-                    </p>
-                  }
+                  <a
+                    [routerLink]="['/company', venture()?.id]"
+                    class="mt-4 flex items-center gap-1.5 border-t-[0.5px] border-border pt-3 text-[12px] text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    See every founder's score and the full team breakdown
+                    <ng-icon name="heroArrowRight" size="0.7rem" />
+                  </a>
                 </section>
               }
 
               <!-- 8. Trajectory replay -->
               @if (f.trajectory.length) {
-                <div class="mt-8 mb-4 block">
-                  <h2
-                    class="border-b-[0.5px] border-border pb-2.5 font-title text-[18px] leading-tight tracking-[-0.01em] text-foreground"
-                  >
-                    Trajectory replay
-                  </h2>
-                </div>
+                <app-section-heading title="Trajectory replay" />
                 <section class="rounded-xl border-[0.5px] border-border bg-card p-5">
                   <div class="flex items-stretch gap-0 overflow-x-auto pb-1">
                     @for (p of f.trajectory; track $index; let last = $last) {
@@ -675,13 +706,7 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
               }
 
               <!-- 9. Red flags -->
-              <div class="mt-8 mb-4 block">
-                <h2
-                  class="border-b-[0.5px] border-border pb-2.5 font-title text-[18px] leading-tight tracking-[-0.01em] text-foreground"
-                >
-                  Coherence and red flags
-                </h2>
-              </div>
+              <app-section-heading title="Coherence and red flags" />
               <section class="rounded-xl border-[0.5px] border-border bg-card px-5">
                 @if (f.redFlags.length) {
                   <div class="divide-y-[0.5px] divide-border">
@@ -737,6 +762,26 @@ export class EvaluationPage {
   protected readonly skillAxes = SKILL_LABELS;
 
   protected readonly founders = this.data.founders;
+  protected readonly sortOptions = SORT_OPTIONS;
+  protected readonly sortBy = signal<SortMode>('newest');
+  protected readonly sortedFounders = computed(() => {
+    const list = [...this.founders()];
+    switch (this.sortBy()) {
+      case 'score':
+        return list.sort((a, b) => (b.score?.composite ?? -1) - (a.score?.composite ?? -1));
+      case 'decided':
+        return list.sort((a, b) => {
+          const da = this.data.decidedAtFor(a);
+          const db = this.data.decidedAtFor(b);
+          if (!da && !db) return 0;
+          if (!da) return 1;
+          if (!db) return -1;
+          return db.localeCompare(da);
+        });
+      default:
+        return list.sort((a, b) => b.discoveredAt.localeCompare(a.discoveredAt));
+    }
+  });
   protected readonly selectedId = signal<string>('luis-reindlmeier');
   protected readonly founder = computed<Founder | undefined>(
     () => this.data.founder(this.selectedId()) ?? this.data.hero(),
@@ -814,6 +859,10 @@ export class EvaluationPage {
 
   protected ventureName(f: Founder): string {
     return this.data.venture(f.ventureId)?.name ?? '';
+  }
+
+  protected foundersForVenture(v: { id: string }): Founder[] {
+    return this.data.foundersForVenture(v.id);
   }
 
   protected ventureMeta(v: { industry: string; location?: string; foundedYear?: number }): string {

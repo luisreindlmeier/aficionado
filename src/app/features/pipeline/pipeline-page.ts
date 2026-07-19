@@ -34,7 +34,7 @@ import type { Founder } from '../../core/model';
           </p>
         </header>
 
-        <div class="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div class="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-8">
           <!-- Discovered -->
           <section class="flex flex-col gap-3">
             <div>
@@ -92,7 +92,6 @@ import type { Founder } from '../../core/model';
               <p class="mt-0.5 text-[11px] text-muted-foreground">The agent's call, from the live scoring pipeline.</p>
             </div>
 
-            <p class="text-[11px] font-medium text-foreground">Invest</p>
             @for (f of pipeline().Invest; track f.id) {
               <ng-container [ngTemplateOutlet]="card" [ngTemplateOutletContext]="{ f }" />
             }

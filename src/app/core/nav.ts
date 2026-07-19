@@ -25,8 +25,8 @@ export const NAV_GROUPS: readonly NavGroup[] = [
     // Assessment: score → verdict → deep dive.
     label: 'Assessment',
     items: [
-      { label: 'Evaluation', route: 'evaluation', icon: 'heroClipboardDocumentCheck' },
       { label: 'Decision', route: 'decision', icon: 'heroScale' },
+      { label: 'Evaluation', route: 'evaluation', icon: 'heroClipboardDocumentCheck' },
       { label: 'Diligence', route: 'diligence', icon: 'heroDocumentMagnifyingGlass', dimmed: true },
     ],
   },

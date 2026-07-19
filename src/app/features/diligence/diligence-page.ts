@@ -1,4 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { heroClipboardDocumentCheck } from '@ng-icons/heroicons/outline';
 import { SectionHeading } from '../../core/ui/section-heading';
 import { DataService } from '../../core/data/data.service';
 import type { Founder, RedFlag } from '../../core/model';
@@ -14,7 +17,8 @@ function capitalize(text: string): string {
 
 @Component({
   selector: 'app-diligence-page',
-  imports: [SectionHeading],
+  imports: [RouterLink, NgIcon, SectionHeading],
+  viewProviders: [provideIcons({ heroClipboardDocumentCheck })],
   styles: `
     :host {
       display: flex;
@@ -38,17 +42,29 @@ function capitalize(text: string): string {
           </p>
         </header>
 
-        @if (hero(); as f) {
+        @if (founder(); as f) {
           <section class="mt-6 flex items-center gap-3">
             <div
               class="grid size-11 shrink-0 place-items-center rounded-full border-[0.5px] border-border bg-surface text-[13px] font-medium text-muted-foreground"
             >
               {{ f.initials }}
             </div>
-            <div class="min-w-0">
+            <div class="min-w-0 flex-1">
               <h2 class="text-[15px] font-medium text-foreground">{{ f.name }}</h2>
               <p class="truncate text-[12px] text-muted-foreground">{{ f.headline }}</p>
             </div>
+            <a
+              [routerLink]="['/evaluation']"
+              [queryParams]="{ founder: f.id }"
+              class="inline-flex shrink-0 items-center gap-1.5 rounded-full border-[0.5px] border-border px-3 py-1 text-[12px] text-foreground transition-colors hover:bg-accent"
+            >
+              <ng-icon
+                name="heroClipboardDocumentCheck"
+                size="0.75rem"
+                class="text-muted-foreground"
+              />
+              Full evaluation
+            </a>
           </section>
 
           <app-section-heading title="Background checklist" />
@@ -118,8 +134,20 @@ function capitalize(text: string): string {
 })
 export class DiligencePage {
   protected readonly data = inject(DataService);
-  protected readonly hero = this.data.hero;
+  private readonly route = inject(ActivatedRoute);
   protected readonly green = '#16a34a';
+
+  private readonly selectedId = signal<string | undefined>(undefined);
+  protected readonly founder = computed<Founder | undefined>(
+    () => this.data.founder(this.selectedId() ?? '') ?? this.data.hero(),
+  );
+
+  constructor() {
+    this.route.queryParamMap.subscribe((params) => {
+      const id = params.get('founder');
+      this.selectedId.set(id && this.data.founder(id) ? id : undefined);
+    });
+  }
 
   protected greenChecks(f: Founder): string[] {
     const checks: string[] = [];

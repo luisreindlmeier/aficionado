@@ -12,7 +12,14 @@ import type {
   Venture,
   WeightPreset,
 } from '../model';
-import { DEFAULT_PRESET, WEIGHT_PRESETS, clamp, log10p, recomputeComposite } from '../scoring';
+import {
+  DEFAULT_PRESET,
+  WEIGHT_PRESETS,
+  clamp,
+  harmonizedTeamScore,
+  log10p,
+  recomputeComposite,
+} from '../scoring';
 import { ANCHORS } from './anchors';
 import { SEED_FOUNDERS, SEED_VENTURES, THESES } from './seed';
 
@@ -35,7 +42,35 @@ export class DataService {
   private readonly base = Date.now();
 
   readonly theses = signal<readonly Thesis[]>(THESES);
-  readonly ventures = signal<readonly Venture[]>(SEED_VENTURES);
+
+  /** Ventures with their decision's `decidedAt` filled from the seed's offset,
+   *  the same "always reads as freshly timestamped" trick used for founders.
+   *  A venture routed to a human never gets a `decidedAt`, regardless of the
+   *  seed offset: routeToHuman is what "still pending" actually means. `team`
+   *  is computed live from the current founder pool rather than trusted from
+   *  the seed, so it always reflects who is actually evaluated on the venture
+   *  today (undefined below two founders, there is no team to harmonize). */
+  readonly ventures = computed<readonly Venture[]>(() => {
+    const founders = this.founders();
+    return SEED_VENTURES.map((v) => {
+      const withDecision: Venture =
+        v.decision && !v.decision.routeToHuman && v.decidedOffsetMins != null
+          ? {
+              ...v,
+              decision: {
+                ...v.decision,
+                decidedAt: new Date(this.base - v.decidedOffsetMins * 60_000).toISOString(),
+              },
+            }
+          : (v as Venture);
+      const team = harmonizedTeamScore(
+        founders
+          .filter((f) => f.ventureId === v.id && f.score)
+          .map((f) => ({ skills: f.score!.skills, composite: f.score!.composite })),
+      );
+      return team ? { ...withDecision, team: { ...team, sharedHistory: [] } } : withDecision;
+    });
+  });
 
   /** Active sourcing thesis for the Radar filter ('all' shows every thesis). */
   readonly activeThesisId = signal<string>('all');
@@ -270,6 +305,12 @@ export class DataService {
 
   /** Convenience: the self-demo hero. */
   readonly hero = computed(() => this.founder('luis-reindlmeier'));
+
+  /** When a founder's venture decision was logged, if it has been (undecided /
+   *  routed-to-human ventures have no decidedAt yet). */
+  decidedAtFor(f: Founder): string | undefined {
+    return this.venture(f.ventureId)?.decision?.decidedAt;
+  }
 
   founder(id: string): Founder | undefined {
     return this.founders().find((f) => f.id === id);

@@ -260,27 +260,42 @@ export function combineSkills(vectors: readonly SkillVector[]): SkillVector {
   };
 }
 
-/** Team bonus rewards complementarity (broad coverage) over redundancy.
- *  Solo founders get 0 (never a penalty). Returns points on a 0..12 scale. */
-export function teamBonus(vectors: readonly SkillVector[]): {
-  bonus: number;
-  gaps: string[];
-  redundancies: string[];
-} {
-  if (vectors.length < 2) return { bonus: 0, gaps: [], redundancies: [] };
-  const combined = combineSkills(vectors);
-  const covered = SKILL_AXES.filter((a) => combined[a] >= 0.5);
-  const gaps = SKILL_AXES.filter((a) => combined[a] < 0.5);
-  // Redundancy: two founders both strong on the same axis.
+/** Harmonized team score: NOT an average of the founders' individual composites.
+ *  Built from how well the team's skills cover technical / commercial / domain /
+ *  product together (max per axis, so one strong founder covers it for the whole
+ *  team), discounted when two founders are strong on the same axis instead of
+ *  covering different ground, and floored by the founders' actual composite
+ *  quality so broad-but-weak coverage can never outscore a genuinely strong team.
+ *  Deterministic for now; a future pass hands this to an agent for a narrative
+ *  read grounded in shared history and working style. Solo founders have no team
+ *  to harmonize, so this returns undefined below two founders. */
+export function harmonizedTeamScore(
+  founders: readonly { skills: SkillVector; composite: number }[],
+):
+  | { score: number; coverage: SkillVector; gaps: string[]; redundancies: string[] }
+  | undefined {
+  if (founders.length < 2) return undefined;
+  const vectors = founders.map((f) => f.skills);
+  const coverage = combineSkills(vectors);
+  const coverageScore = mean(SKILL_AXES.map((a) => coverage[a])) * 100;
+  const gaps = SKILL_AXES.filter((a) => coverage[a] < 0.5);
+  // Redundancy: two founders both strong on the same axis, covering the same ground.
   const redundancies = SKILL_AXES.filter((a) => vectors.filter((v) => v[a] >= 0.6).length >= 2);
-  const coverageBonus = covered.length * 2.5; // up to 10 for all four axes
-  const redundancyPenalty = Math.max(0, redundancies.length - 1) * 1;
-  const bonus = clamp(Math.round((coverageBonus - redundancyPenalty) * 10) / 10, 0, 12);
+  const redundancyPenalty = redundancies.length * 5;
+  const qualityFloor = mean(founders.map((f) => f.composite));
+  const raw = coverageScore * 0.65 + qualityFloor * 0.35 - redundancyPenalty;
   return {
-    bonus,
-    gaps: gaps.map((g) => `${g[0].toUpperCase()}${g.slice(1)} coverage is thin`),
-    redundancies: redundancies.map((r) => `Overlap on ${r}`),
+    score: clamp(Math.round(raw), 1, 99),
+    coverage,
+    gaps: gaps.map((a) => `${axisLabel(a)} coverage is thin across the team`),
+    redundancies: redundancies.map(
+      (a) => `Overlap on ${axisLabel(a)}, more than one founder covers it`,
+    ),
   };
+}
+
+function axisLabel(axis: keyof SkillVector): string {
+  return `${axis[0].toUpperCase()}${axis.slice(1)}`;
 }
 
 // Weight presets ───────────────────────────────────────────────

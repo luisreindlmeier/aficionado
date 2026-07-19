@@ -67,7 +67,7 @@ const GROUP_ORDER: readonly Group[] = ['Connected', 'Available', 'Manual input',
           <h1
             class="font-title text-[26px] leading-[1.1] tracking-[-0.01em] text-foreground md:text-[28px]"
           >
-            Data sources
+            Data Sources
           </h1>
           <p class="mt-2 text-[14px] leading-relaxed text-muted-foreground">
             What's connected and pulled to score founders.

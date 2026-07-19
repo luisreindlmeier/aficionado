@@ -45,7 +45,7 @@ export const THESES: readonly Thesis[] = [
   }
 ];
 
-export const SEED_VENTURES: readonly Venture[] = [
+export const SEED_VENTURES: readonly (Venture & { decidedOffsetMins?: number })[] = [
   {
     "id": "gedonus",
     "name": "gedonus",
@@ -66,34 +66,6 @@ export const SEED_VENTURES: readonly Venture[] = [
       "confidence": "medium",
       "rationale": "Promising on verified evidence, but Gravity is unverified; revisit as more signal lands.",
       "routeToHuman": true
-    },
-    "team": {
-      "coverage": {
-        "technical": 0.9,
-        "commercial": 0.35,
-        "domain": 0.85,
-        "product": 0.6
-      },
-      "bonus": 0,
-      "gaps": [
-        "Commercial / go-to-market coverage is thin on the evaluated founder"
-      ],
-      "redundancies": [],
-      "sharedHistory": [
-        "gedonus co-founders (second founder pending evaluation)"
-      ],
-      "perFounder": [
-        {
-          "founderId": "luis-reindlmeier",
-          "name": "Luis Reindlmeier",
-          "skills": {
-            "technical": 0.9,
-            "commercial": 0.35,
-            "domain": 0.85,
-            "product": 0.6
-          }
-        }
-      ]
     }
   },
   {
@@ -116,7 +88,8 @@ export const SEED_VENTURES: readonly Venture[] = [
       "confidence": "high",
       "rationale": "Strong across the metrics we can verify; Sid Sijbrandij-tier on our anchor set.",
       "routeToHuman": false
-    }
+    },
+    "decidedOffsetMins": 1440
   },
   {
     "id": "vercel",
@@ -138,7 +111,8 @@ export const SEED_VENTURES: readonly Venture[] = [
       "confidence": "high",
       "rationale": "Strong across the metrics we can verify; David Cramer-tier on our anchor set.",
       "routeToHuman": false
-    }
+    },
+    "decidedOffsetMins": 4320
   },
   {
     "id": "voidzero",
@@ -160,7 +134,8 @@ export const SEED_VENTURES: readonly Venture[] = [
       "confidence": "medium",
       "rationale": "Strong across the metrics we can verify; Zeno Rocha-tier on our anchor set.",
       "routeToHuman": false
-    }
+    },
+    "decidedOffsetMins": 8640
   },
   {
     "id": "sindre-oss",
@@ -182,7 +157,8 @@ export const SEED_VENTURES: readonly Venture[] = [
       "confidence": "medium",
       "rationale": "Strong across the metrics we can verify; Sid Sijbrandij-tier on our anchor set.",
       "routeToHuman": false
-    }
+    },
+    "decidedOffsetMins": 25
   },
   {
     "id": "antfu-oss",
@@ -204,7 +180,8 @@ export const SEED_VENTURES: readonly Venture[] = [
       "confidence": "high",
       "rationale": "Strong across the metrics we can verify; Dylan Field-tier on our anchor set.",
       "routeToHuman": false
-    }
+    },
+    "decidedOffsetMins": 190
   },
   {
     "id": "shadcn-ui",
@@ -226,7 +203,8 @@ export const SEED_VENTURES: readonly Venture[] = [
       "confidence": "high",
       "rationale": "Strong across the metrics we can verify; Robert Nishihara-tier on our anchor set.",
       "routeToHuman": false
-    }
+    },
+    "decidedOffsetMins": 360
   },
   {
     "id": "takeoff",
@@ -248,7 +226,8 @@ export const SEED_VENTURES: readonly Venture[] = [
       "confidence": "medium",
       "rationale": "Strong across the metrics we can verify; Daniel Dines-tier on our anchor set.",
       "routeToHuman": false
-    }
+    },
+    "decidedOffsetMins": 11520
   },
   {
     "id": "agentic",
@@ -270,7 +249,8 @@ export const SEED_VENTURES: readonly Venture[] = [
       "confidence": "medium",
       "rationale": "Promising on verified evidence; revisit as more signal lands.",
       "routeToHuman": false
-    }
+    },
+    "decidedOffsetMins": 6000
   },
   {
     "id": "leerob-next",
@@ -292,7 +272,8 @@ export const SEED_VENTURES: readonly Venture[] = [
       "confidence": "medium",
       "rationale": "Strong across the metrics we can verify; Mckay Wrigley-tier on our anchor set.",
       "routeToHuman": false
-    }
+    },
+    "decidedOffsetMins": 2880
   },
   {
     "id": "jared-next",
@@ -314,7 +295,8 @@ export const SEED_VENTURES: readonly Venture[] = [
       "confidence": "medium",
       "rationale": "Strong across the metrics we can verify; Lee Robinson-tier on our anchor set.",
       "routeToHuman": false
-    }
+    },
+    "decidedOffsetMins": 5760
   }
 ];
 

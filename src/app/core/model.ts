@@ -186,18 +186,19 @@ export interface VentureDecision {
   readonly decidedAt?: string;
 }
 
-/** Team bonus: skill-vector coverage, never a penalty for a solo founder. */
+/** The harmonized team read: not an average of the founders' individual
+ *  composites, a complementarity-first score built from how well their skills
+ *  cover technical / commercial / domain / product together. Present only
+ *  once a venture has two or more evaluated founders; a solo founder has no
+ *  team to harmonize yet. */
 export interface TeamAnalysis {
-  readonly coverage: SkillVector; // combined across founders
-  readonly bonus: number; // points added to the venture composite, 0..N
+  readonly score: number; // 0..100, the harmonized team score
+  readonly coverage: SkillVector; // combined across founders, max per axis
   readonly gaps: readonly string[];
   readonly redundancies: readonly string[];
+  /** Qualitative narrative (e.g. "worked together at X before"), left empty
+   *  by the deterministic pass; a future AI pass fills this in. */
   readonly sharedHistory: readonly string[];
-  readonly perFounder: readonly {
-    readonly founderId: string;
-    readonly name: string;
-    readonly skills: SkillVector;
-  }[];
 }
 
 export interface Thesis {

@@ -9,6 +9,7 @@ import { PipelinePage } from './features/pipeline/pipeline-page';
 import { DecisionPage } from './features/decision/decision-page';
 import { SettingsPage } from './features/settings/settings-page';
 import { DiligencePage } from './features/diligence/diligence-page';
+import { CompanyPage } from './features/company/company-page';
 
 // Real feature pages by route. Anything not listed falls back to PlaceholderPage.
 const FEATURE_PAGES: Readonly<Record<string, Type<unknown>>> = {
@@ -32,5 +33,6 @@ const pageRoutes: Routes = NAV_GROUPS.flatMap((group) =>
 export const routes: Routes = [
   { path: '', redirectTo: 'radar', pathMatch: 'full' },
   ...pageRoutes,
+  { path: 'company/:id', component: CompanyPage, data: { title: 'Company' } },
   { path: '**', redirectTo: 'radar' },
 ];
