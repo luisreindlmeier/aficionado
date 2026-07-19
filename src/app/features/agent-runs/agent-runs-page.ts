@@ -65,15 +65,18 @@ const WORKFLOW_AGENTS: Record<AgentRun['workflow'], readonly { id: string; role:
               Agent runs
             </h1>
             <p class="mt-2 max-w-2xl text-[14px] leading-relaxed text-muted-foreground">
-              Every workflow this session has streamed, with the trace and the connector tools the
-              agents actually called.
+              Every workflow execution, with the trace and the connector tools the agents actually
+              called. Includes the passes that ran unattended.
             </p>
           </div>
           <div class="flex flex-col items-end gap-1 text-[12px] text-muted-foreground">
             <span class="font-title text-[22px] leading-none text-foreground">{{
               runs().length
             }}</span>
-            <span>runs this session</span>
+            <span>recorded runs</span>
+            @if (unattended(); as n) {
+              <span>{{ n }} ran unattended</span>
+            }
           </div>
         </header>
 
@@ -156,6 +159,11 @@ const WORKFLOW_AGENTS: Record<AgentRun['workflow'], readonly { id: string; role:
                     <div class="flex flex-wrap items-center gap-2">
                       <p class="text-[13px] font-medium text-foreground">{{ label(r) }}</p>
                       <span class="truncate text-[12px] text-muted-foreground">{{ r.subject }}</span>
+                      <span
+                        class="shrink-0 rounded-full border-[0.5px] border-border px-1.5 py-0.5 text-[10px] text-foreground"
+                        [title]="triggerHint(r.trigger)"
+                        >{{ triggerLabel(r.trigger) }}</span
+                      >
                     </div>
                     <p class="mt-0.5 text-[11px] text-muted-foreground">
                       {{ clock(r.startedAt) }}
@@ -192,14 +200,20 @@ const WORKFLOW_AGENTS: Record<AgentRun['workflow'], readonly { id: string; role:
           </div>
         } @else {
           <section class="rounded-xl border-[0.5px] border-border bg-card p-8 text-center">
-            <p class="text-[13px] text-muted-foreground">
-              No runs in this session yet. Run a sourcing pass from Radar, or a live evaluation from
-              a dossier.
-            </p>
-            <p class="mx-auto mt-2 max-w-lg text-[12px] leading-relaxed text-muted-foreground">
-              This list is scoped to the current browser session, so scheduled passes that ran
-              unattended are not shown here. Their output is what fills the Radar queue.
-            </p>
+            @if (historySource() === 'loading') {
+              <p class="text-[13px] text-muted-foreground">Loading run history.</p>
+            } @else if (historySource() === 'none') {
+              <p class="text-[13px] text-foreground">Run history is not available.</p>
+              <p class="mx-auto mt-2 max-w-lg text-[12px] leading-relaxed text-muted-foreground">
+                Recorded runs are read from Supabase. Without those credentials only runs streamed
+                in this browser session appear, so the unattended passes stay invisible.
+              </p>
+            } @else {
+              <p class="text-[13px] text-muted-foreground">
+                No runs recorded yet. Run a sourcing pass from Radar, or a live evaluation from a
+                dossier.
+              </p>
+            }
           </section>
         }
       </div>
@@ -211,7 +225,17 @@ export class AgentRunsPage {
   protected readonly data = inject(DataService);
 
   protected readonly runs = this.store.runs;
+  protected readonly historySource = this.store.historySource;
   protected readonly expanded = signal<string | undefined>(undefined);
+
+  /** How many recorded runs nobody was watching. The point of the page. */
+  protected readonly unattended = computed(
+    () => this.runs().filter((r) => r.trigger !== 'ui').length,
+  );
+
+  constructor() {
+    void this.store.load();
+  }
 
   protected readonly workflows = [
     {
@@ -242,6 +266,18 @@ export class AgentRunsPage {
 
   protected label(r: AgentRun): string {
     return WORKFLOW_LABELS[r.workflow];
+  }
+
+  protected triggerLabel(t: AgentRun['trigger']): string {
+    return t === 'ui' ? 'you' : t === 'cron' ? 'scheduled' : 'hourly job';
+  }
+
+  protected triggerHint(t: AgentRun['trigger']): string {
+    return t === 'ui'
+      ? 'Triggered from the app'
+      : t === 'cron'
+        ? 'Triggered by the daily schedule'
+        : 'Triggered by the hourly refresh job';
   }
 
   protected toggle(id: string): void {

@@ -1,31 +1,99 @@
 import { Injectable, computed, signal } from '@angular/core';
-import type { AgentRun, TraceStep } from '../model';
+import type { AgentRun, RunTrigger, TraceStep } from '../model';
 import type { ConnectorId } from '../connectors/types';
 
 // ─────────────────────────────────────────────────────────────
-// The record of what the agents actually did. Every streamed workflow run
-// (evaluation and sourcing alike) opens a run here and appends its trace, so
-// the Agent runs page can answer "what has the machine been doing" without
-// sending the user to the external Mastra tracing dashboard.
+// The record of what the agents actually did.
 //
-// Session-scoped on purpose: these are the runs THIS browser watched. Runs the
-// cron performed overnight are not here, and the page says so rather than
-// implying an empty list means nothing ran.
+// Two sources, merged. Persisted runs come from /api/agent-runs and cover the
+// work nobody watched: the hourly refresh job, the daily sourcing cron. Session
+// runs are the ones streaming right now in this tab, which do not exist in the
+// table until they finish. A run in flight here is replaced by its persisted
+// row once it lands, matched on id.
 // ─────────────────────────────────────────────────────────────
+
+/** An agent_runs row as served by /api/agent-runs. */
+interface AgentRunRow {
+  id: string;
+  workflow: AgentRun['workflow'];
+  subject: string;
+  trigger: RunTrigger;
+  status: AgentRun['status'];
+  started_at: string;
+  finished_at: string | null;
+  duration_ms: number | null;
+  tools: string[] | null;
+  trace: TraceStep[] | null;
+  summary: string | null;
+  error: string | null;
+}
+
+function mapRow(r: AgentRunRow): AgentRun {
+  return {
+    id: r.id,
+    workflow: r.workflow,
+    subject: r.subject,
+    trigger: r.trigger ?? 'action',
+    status: r.status,
+    startedAt: r.started_at,
+    finishedAt: r.finished_at ?? undefined,
+    durationMs: r.duration_ms ?? undefined,
+    trace: r.trace ?? [],
+    tools: (r.tools ?? []) as ConnectorId[],
+    summary: r.summary ?? undefined,
+    error: r.error ?? undefined,
+  };
+}
 
 @Injectable({ providedIn: 'root' })
 export class AgentRunStore {
-  private readonly runs_ = signal<readonly AgentRun[]>([]);
+  private readonly session = signal<readonly AgentRun[]>([]);
+  private readonly persisted = signal<readonly AgentRun[]>([]);
 
-  readonly runs = this.runs_.asReadonly();
-  readonly active = computed(() => this.runs_().find((r) => r.status === 'running'));
-  readonly count = computed(() => this.runs_().length);
+  /** Whether the recorded history could be loaded, so the page can say why it
+   *  is empty rather than implying nothing has ever run. */
+  readonly historySource = signal<'live' | 'none' | 'loading'>('loading');
 
-  /** Open a run and return its id. */
+  /** Session runs first (they are the freshest), then recorded history, with
+   *  any run present in both taken from the session copy. */
+  readonly runs = computed<readonly AgentRun[]>(() => {
+    const live = this.session();
+    const seen = new Set(live.map((r) => r.id));
+    return [...live, ...this.persisted().filter((r) => !seen.has(r.id))];
+  });
+
+  readonly active = computed(() => this.runs().find((r) => r.status === 'running'));
+  readonly count = computed(() => this.runs().length);
+
+  async load(): Promise<void> {
+    try {
+      const res = await fetch('/api/agent-runs');
+      if (!res.ok) {
+        this.historySource.set('none');
+        return;
+      }
+      const json = (await res.json()) as { runs?: AgentRunRow[]; source?: string };
+      this.persisted.set((json.runs ?? []).map(mapRow));
+      this.historySource.set(json.source === 'supabase' ? 'live' : 'none');
+    } catch {
+      this.historySource.set('none');
+    }
+  }
+
+  /** Open a session run and return its id. */
   start(workflow: AgentRun['workflow'], subject: string): string {
-    const id = `${workflow}-${this.runs_().length + 1}-${Date.now()}`;
-    this.runs_.update((rs) => [
-      { id, workflow, subject, startedAt: new Date().toISOString(), status: 'running', trace: [], tools: [] },
+    const id = `${workflow}-${this.session().length + 1}-${Date.now()}`;
+    this.session.update((rs) => [
+      {
+        id,
+        workflow,
+        subject,
+        trigger: 'ui' as const,
+        startedAt: new Date().toISOString(),
+        status: 'running' as const,
+        trace: [],
+        tools: [],
+      },
       ...rs,
     ]);
     return id;
@@ -48,6 +116,7 @@ export class AgentRunStore {
       summary,
       finishedAt: new Date().toISOString(),
     }));
+    void this.load();
   }
 
   fail(id: string, error: string): void {
@@ -57,15 +126,17 @@ export class AgentRunStore {
       error,
       finishedAt: new Date().toISOString(),
     }));
+    void this.load();
   }
 
   /** Wall-clock duration of a run, or undefined while it is still going. */
   durationMs(run: AgentRun): number | undefined {
+    if (run.durationMs != null) return run.durationMs;
     if (!run.finishedAt) return undefined;
     return new Date(run.finishedAt).getTime() - new Date(run.startedAt).getTime();
   }
 
   private patch(id: string, fn: (r: AgentRun) => AgentRun): void {
-    this.runs_.update((rs) => rs.map((r) => (r.id === id ? fn(r) : r)));
+    this.session.update((rs) => rs.map((r) => (r.id === id ? fn(r) : r)));
   }
 }

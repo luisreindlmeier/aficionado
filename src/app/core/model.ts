@@ -336,6 +336,10 @@ export type SourcingEvent =
   | { type: 'done' }
   | { type: 'error'; message: string };
 
+/** What set a run going. Most work is unattended, so this is how the UI
+ *  distinguishes the hourly job from something the user clicked. */
+export type RunTrigger = 'ui' | 'cron' | 'action';
+
 /** A single workflow execution, recorded so the app can show what the agents
  *  did rather than pointing the user at an external tracing dashboard. */
 export interface AgentRun {
@@ -343,8 +347,11 @@ export interface AgentRun {
   readonly workflow: 'founder-evaluation' | 'thesis-sourcing';
   /** What the run was about, e.g. the founder or thesis name. */
   readonly subject: string;
+  readonly trigger: RunTrigger;
   readonly startedAt: string;
   readonly finishedAt?: string;
+  /** Server-recorded wall clock, authoritative over finishedAt - startedAt. */
+  readonly durationMs?: number;
   readonly status: 'running' | 'ok' | 'error';
   readonly trace: readonly TraceStep[];
   /** Connector tools the agents actually called during the run. */

@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import type { SourcingEvent } from '../src/app/core/model';
+import { RunRecorder, type RunTrigger } from './_lib/agent-runs';
 import { sourcingEmitter, sourcingWorkflow } from './_lib/sourcing-workflow';
 
 export const config = { maxDuration: 60 };
@@ -23,14 +24,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
   const wantsStream =
     req.query?.stream === '1' || String(req.headers.accept ?? '').includes('text/event-stream');
 
+  // Vercel sets this on cron invocations; anything else is a user in the app.
+  const trigger: RunTrigger = req.headers['x-vercel-cron'] ? 'cron' : 'ui';
+
   res.setHeader('Cache-Control', 'no-store');
   if (wantsStream) {
-    await streamPass(res, thesisId);
+    await streamPass(res, thesisId, trigger);
     return;
   }
 
+  const recorder = new RunRecorder('thesis-sourcing', thesisId ?? 'active thesis', trigger);
   try {
-    const out = await runPass(thesisId);
+    const out = await runPass(thesisId, recorder);
+    await recorder.finish(`${out.surfaced.length} of ${out.scanned} surfaced`);
     res.status(200).json({
       ok: true,
       thesis: out.thesisId ? { id: out.thesisId, label: out.thesisLabel } : null,
@@ -42,34 +48,59 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
       at: new Date().toISOString(),
     });
   } catch (err) {
+    await recorder.fail(message(err));
     res.status(500).json({ ok: false, error: message(err) });
   }
 }
 
-async function runPass(thesisId: string | undefined) {
-  const run = await sourcingWorkflow.createRun();
-  const result = await run.start({ inputData: { thesisId } });
-  if (result.status !== 'success') {
-    throw new Error(result.status === 'failed' ? message(result.error) : result.status);
-  }
-  return result.result;
+/** Run the workflow, mirroring its trace into the recorder when one is given.
+ *  The emitter is already bound by the caller in stream mode; here we tee. */
+async function runPass(thesisId: string | undefined, recorder?: RunRecorder) {
+  const capture = (e: SourcingEvent): void => {
+    if (e.type === 'trace') recorder?.addTrace(e.step);
+  };
+  const exec = async () => {
+    const run = await sourcingWorkflow.createRun();
+    const result = await run.start({ inputData: { thesisId } });
+    if (result.status !== 'success') {
+      throw new Error(result.status === 'failed' ? message(result.error) : result.status);
+    }
+    return result.result;
+  };
+  // In JSON mode nothing has bound the emitter, so bind it to the recorder tee.
+  return sourcingEmitter.getStore() ? exec() : sourcingEmitter.run(capture, exec);
 }
 
 /** Run the pass with an SSE emitter bound for the duration of the workflow. */
-async function streamPass(res: VercelResponse, thesisId: string | undefined): Promise<void> {
+async function streamPass(
+  res: VercelResponse,
+  thesisId: string | undefined,
+  trigger: RunTrigger,
+): Promise<void> {
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Connection', 'keep-alive');
   res.setHeader('X-Accel-Buffering', 'no');
   res.flushHeaders?.();
 
+  const recorder = new RunRecorder('thesis-sourcing', thesisId ?? 'active thesis', trigger);
+  let surfaced = 0;
+  let scanned = 0;
+
   const send = (e: SourcingEvent): void => {
+    if (e.type === 'trace') recorder.addTrace(e.step);
+    if (e.type === 'summary') {
+      surfaced = e.surfaced;
+      scanned = e.scanned;
+    }
     res.write(`data: ${JSON.stringify(e)}\n\n`);
   };
 
   try {
     await sourcingEmitter.run(send, () => runPass(thesisId));
+    await recorder.finish(`${surfaced} of ${scanned} surfaced`);
   } catch (err) {
     send({ type: 'error', message: message(err) });
+    await recorder.fail(message(err));
   } finally {
     send({ type: 'done' });
     res.end();

@@ -4,7 +4,8 @@
 // and caches their dossiers. Env: OPENAI_API_KEY, GITHUB_TOKEN, SUPABASE_URL,
 // SUPABASE_SERVICE_ROLE_KEY. BATCH controls how many to evaluate per run.
 import { searchGermanFounders } from '../api/_lib/discovery/github-search';
-import { evaluationWorkflow } from '../api/_lib/workflow';
+import { RunRecorder } from '../api/_lib/agent-runs';
+import { emitter, evaluationWorkflow } from '../api/_lib/workflow';
 import {
   supabaseAdmin,
   toDossierRow,
@@ -60,10 +61,21 @@ async function main(): Promise<void> {
 
   let evaluated = 0;
   for (const c of (pending as CandidateRow[] | null) ?? []) {
+    // Each founder is one recorded run, so the Agent Runs page shows the hourly
+    // work rather than only what a browser tab happened to watch.
+    const recorder = new RunRecorder('founder-evaluation', c.name, 'action');
+    let signals = 0;
+    const capture = (e: import('../src/app/core/model').EvalEvent): void => {
+      if (e.type === 'trace') recorder.addTrace(e.step);
+      if (e.type === 'connector') recorder.addTool(e.connector);
+      if (e.type === 'signal') signals++;
+    };
     try {
-      const run = await evaluationWorkflow.createRun();
-      const r = await run.start({
-        inputData: { name: c.name, github: c.github ?? undefined, domain: c.domain ?? undefined },
+      const r = await emitter.run(capture, async () => {
+        const run = await evaluationWorkflow.createRun();
+        return run.start({
+          inputData: { name: c.name, github: c.github ?? undefined, domain: c.domain ?? undefined },
+        });
       });
       if (r.status === 'success') {
         await upsertDossier(
@@ -76,10 +88,15 @@ async function main(): Promise<void> {
         );
         await db.from('sourcing_candidates').update({ evaluated: true }).eq('id', c.id);
         evaluated++;
+        await recorder.finish(`${r.result.composite} ${r.result.band}, ${signals} signals`);
         console.error(`  [${evaluated}] ${c.name}: ${r.result.composite} ${r.result.band}`);
+      } else {
+        await recorder.fail(`workflow ${r.status}`);
       }
     } catch (err) {
-      console.error(`  ERR ${c.name}: ${err instanceof Error ? err.message : String(err)}`);
+      const msg = err instanceof Error ? err.message : String(err);
+      await recorder.fail(msg);
+      console.error(`  ERR ${c.name}: ${msg}`);
     }
   }
   console.error(`DONE: discovered ${discovered}, evaluated ${evaluated}`);
