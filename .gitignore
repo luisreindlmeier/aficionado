@@ -44,3 +44,8 @@ __screenshots__/
 Thumbs.db
 node_modules/
 .vercel/
+
+# Env / secrets
+.env
+.env.*
+!.env.example

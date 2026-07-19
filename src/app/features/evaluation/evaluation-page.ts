@@ -125,7 +125,7 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
       <!-- Detail: dossier -->
       <div class="min-w-0 flex-1 overflow-y-auto">
         @if (founder(); as f) {
-          <div class="mx-auto w-full max-w-3xl px-6 py-8 md:px-8 md:py-10">
+          <div class="mx-auto w-full max-w-7xl px-6 py-8 md:px-8 md:py-10">
             <!-- 1. Person-first header -->
             <header class="flex items-start gap-4">
               <div
@@ -162,7 +162,14 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
 
             <!-- 2. Venture (context) -->
             @if (venture(); as v) {
-              <section class="mt-6 rounded-xl border-[0.5px] border-border bg-card p-5">
+              <div class="mt-8 mb-4 block">
+                <h2
+                  class="border-b-[0.5px] border-border pb-2.5 font-title text-[18px] leading-tight tracking-[-0.01em] text-foreground"
+                >
+                  Company
+                </h2>
+              </div>
+              <section class="rounded-xl border-[0.5px] border-border bg-card p-5">
                 <div class="flex items-start gap-4">
                   <div
                     class="grid size-11 shrink-0 place-items-center rounded-lg bg-foreground text-[15px] font-medium text-background"
@@ -200,9 +207,16 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
               </section>
             }
 
-            <!-- 3. Verdict -->
+            <!-- 3. Assessment: overall score + the three metrics -->
             @if (f.score; as s) {
-              <section class="mt-4 rounded-xl border-[0.5px] border-border bg-card p-5">
+              <div class="mt-8 mb-4 block">
+                <h2
+                  class="border-b-[0.5px] border-border pb-2.5 font-title text-[18px] leading-tight tracking-[-0.01em] text-foreground"
+                >
+                  Assessment
+                </h2>
+              </div>
+              <section class="rounded-xl border-[0.5px] border-border bg-card p-5">
                 <div class="flex flex-wrap items-start justify-between gap-4">
                   <div class="min-w-0">
                     <p class="mb-2 text-[12px] font-medium text-muted-foreground">
@@ -263,7 +277,128 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
                 }
               </section>
 
-              <!-- 3b. Complete Gravity from a pasted profile (the live re-score) -->
+              <!-- Metric cards, side by side under the overall score -->
+              <div class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
+                @for (m of metricViews(f); track m.key) {
+                  <article
+                    class="flex flex-col rounded-xl border-[0.5px] border-border bg-card p-5"
+                  >
+                    <div class="flex flex-col items-center gap-4">
+                      <!-- donut -->
+                      <div class="relative shrink-0">
+                        <svg viewBox="0 0 100 100" class="size-24">
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="42"
+                            fill="none"
+                            stroke="#e5e5e5"
+                            stroke-width="8"
+                          />
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="42"
+                            fill="none"
+                            stroke-width="8"
+                            stroke-linecap="round"
+                            transform="rotate(-90 50 50)"
+                            [attr.stroke]="m.color"
+                            [attr.stroke-dasharray]="circ"
+                            [attr.stroke-dashoffset]="circ * (1 - m.score.score / 100)"
+                          />
+                          <text
+                            x="50"
+                            y="50"
+                            text-anchor="middle"
+                            dominant-baseline="central"
+                            font-size="26"
+                            font-weight="600"
+                            fill="#111"
+                          >
+                            {{ m.score.score }}
+                          </text>
+                        </svg>
+                      </div>
+                      <!-- head + rationale -->
+                      <div class="min-w-0 w-full">
+                        <div class="flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
+                          <span class="size-2 rounded-full" [style.background]="m.color"></span>
+                          <h3 class="text-[16px] font-semibold text-foreground">{{ m.key }}</h3>
+                          <span
+                            class="rounded-full border-[0.5px] border-border px-2 py-0.5 text-[11px] text-muted-foreground"
+                            >weight {{ pct(m.score.weight) }}%</span
+                          >
+                          <span
+                            class="rounded-full border-[0.5px] border-border px-2 py-0.5 text-[11px] text-muted-foreground"
+                            >{{ ordinal(m.score.percentile) }} pct</span
+                          >
+                          <span
+                            class="inline-flex items-center gap-1 text-[11px] text-muted-foreground"
+                          >
+                            <span
+                              class="size-1.5 rounded-full"
+                              [style.background]="confColor(m.score.confidence)"
+                            ></span>
+                            {{ m.score.confidence }} confidence
+                          </span>
+                        </div>
+                        <p class="mt-1 text-center text-[12px] text-muted-foreground">
+                          {{ m.caption }}
+                        </p>
+                        <p class="mt-2 text-[13px] leading-relaxed text-foreground">
+                          {{ m.score.rationale }}
+                        </p>
+                        @if (m.score.confidence === 'low') {
+                          <div
+                            class="mt-2 inline-flex items-center gap-1.5 rounded-md border-[0.5px] border-border bg-surface px-2 py-1 text-[11px] text-muted-foreground"
+                          >
+                            <ng-icon name="heroExclamationTriangle" size="0.8rem" />
+                            Excluded from the composite until this is verified.
+                          </div>
+                        }
+                      </div>
+                    </div>
+
+                    <!-- receipts -->
+                    @if (m.score.receipts?.length) {
+                      <ul
+                        class="mt-4 flex flex-col divide-y-[0.5px] divide-border border-t-[0.5px] border-border"
+                      >
+                        @for (r of m.score.receipts; track $index) {
+                          <li class="flex items-start gap-3 py-3">
+                            <span
+                              class="mt-0.5 shrink-0 rounded-full border-[0.5px] border-border px-2 py-0.5 text-[10px] text-muted-foreground"
+                              >{{ r.connector }}</span
+                            >
+                            <div class="min-w-0 flex-1">
+                              <p class="text-[13px] text-foreground">{{ r.text }}</p>
+                              @if (r.quote) {
+                                <p class="mt-0.5 text-[12px] italic text-muted-foreground">
+                                  {{ r.quote }}
+                                </p>
+                              }
+                            </div>
+                            @if (r.url) {
+                              <a
+                                [href]="normalizeUrl(r.url)"
+                                target="_blank"
+                                rel="noopener"
+                                class="mt-0.5 shrink-0 text-muted-foreground transition-colors hover:text-foreground"
+                                [title]="r.url"
+                              >
+                                <ng-icon name="heroArrowTopRightOnSquare" size="0.85rem" />
+                              </a>
+                            }
+                          </li>
+                        }
+                      </ul>
+                    }
+                  </article>
+                }
+              </div>
+
+              <!-- Complete Gravity from a pasted profile (the live re-score) -->
               @if (canCompleteGravity(f)) {
                 <section
                   class="mt-4 rounded-xl border-[0.5px] border-dashed border-border bg-card p-5"
@@ -309,12 +444,18 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
                 </section>
               }
 
-              <!-- 4. Brain at work (live streaming) -->
-              <section class="mt-4 rounded-xl border-[0.5px] border-border bg-card p-5">
+              <!-- Brain at work (live streaming) -->
+              <div class="mt-8 mb-4 block">
+                <h2
+                  class="border-b-[0.5px] border-border pb-2.5 font-title text-[18px] leading-tight tracking-[-0.01em] text-foreground"
+                >
+                  Brain at work
+                </h2>
+              </div>
+              <section class="rounded-xl border-[0.5px] border-border bg-card p-5">
                 <div class="flex flex-wrap items-center justify-between gap-3">
                   <div>
-                    <p class="font-title text-[15px] text-foreground">Brain at work</p>
-                    <p class="mt-0.5 max-w-md text-[12px] text-muted-foreground">
+                    <p class="max-w-md text-[12px] text-muted-foreground">
                       Run the live pipeline against public sources and watch it think. This is the
                       raw public-signal pass; the dossier above is the calibrated score.
                     </p>
@@ -403,130 +544,6 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
                   </p>
                 }
               </section>
-
-              <!-- 5. Metric cards -->
-              <div class="mt-8 mb-4 block">
-                <h2
-                  class="border-b-[0.5px] border-border pb-2.5 font-title text-[18px] leading-tight tracking-[-0.01em] text-foreground"
-                >
-                  Three metrics, with receipts
-                </h2>
-              </div>
-              <div class="flex flex-col gap-4">
-                @for (m of metricViews(f); track m.key) {
-                  <article class="rounded-xl border-[0.5px] border-border bg-card p-5">
-                    <div class="flex items-start gap-5">
-                      <!-- donut -->
-                      <div class="relative shrink-0">
-                        <svg viewBox="0 0 100 100" class="size-24">
-                          <circle
-                            cx="50"
-                            cy="50"
-                            r="42"
-                            fill="none"
-                            stroke="#e5e5e5"
-                            stroke-width="8"
-                          />
-                          <circle
-                            cx="50"
-                            cy="50"
-                            r="42"
-                            fill="none"
-                            stroke-width="8"
-                            stroke-linecap="round"
-                            transform="rotate(-90 50 50)"
-                            [attr.stroke]="m.color"
-                            [attr.stroke-dasharray]="circ"
-                            [attr.stroke-dashoffset]="circ * (1 - m.score.score / 100)"
-                          />
-                          <text
-                            x="50"
-                            y="50"
-                            text-anchor="middle"
-                            dominant-baseline="central"
-                            font-size="26"
-                            font-weight="600"
-                            fill="#111"
-                          >
-                            {{ m.score.score }}
-                          </text>
-                        </svg>
-                      </div>
-                      <!-- head + rationale -->
-                      <div class="min-w-0 flex-1">
-                        <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
-                          <span class="size-2 rounded-full" [style.background]="m.color"></span>
-                          <h3 class="text-[16px] font-semibold text-foreground">{{ m.key }}</h3>
-                          <span
-                            class="rounded-full border-[0.5px] border-border px-2 py-0.5 text-[11px] text-muted-foreground"
-                            >weight {{ pct(m.score.weight) }}%</span
-                          >
-                          <span
-                            class="rounded-full border-[0.5px] border-border px-2 py-0.5 text-[11px] text-muted-foreground"
-                            >{{ ordinal(m.score.percentile) }} pct</span
-                          >
-                          <span
-                            class="inline-flex items-center gap-1 text-[11px] text-muted-foreground"
-                          >
-                            <span
-                              class="size-1.5 rounded-full"
-                              [style.background]="confColor(m.score.confidence)"
-                            ></span>
-                            {{ m.score.confidence }} confidence
-                          </span>
-                        </div>
-                        <p class="mt-1 text-[12px] text-muted-foreground">{{ m.caption }}</p>
-                        <p class="mt-2 text-[13px] leading-relaxed text-foreground">
-                          {{ m.score.rationale }}
-                        </p>
-                        @if (m.score.confidence === 'low') {
-                          <div
-                            class="mt-2 inline-flex items-center gap-1.5 rounded-md border-[0.5px] border-border bg-surface px-2 py-1 text-[11px] text-muted-foreground"
-                          >
-                            <ng-icon name="heroExclamationTriangle" size="0.8rem" />
-                            Excluded from the composite until this is verified.
-                          </div>
-                        }
-                      </div>
-                    </div>
-
-                    <!-- receipts -->
-                    @if (m.score.receipts?.length) {
-                      <ul
-                        class="mt-4 flex flex-col divide-y-[0.5px] divide-border border-t-[0.5px] border-border"
-                      >
-                        @for (r of m.score.receipts; track $index) {
-                          <li class="flex items-start gap-3 py-3">
-                            <span
-                              class="mt-0.5 shrink-0 rounded-full border-[0.5px] border-border px-2 py-0.5 text-[10px] text-muted-foreground"
-                              >{{ r.connector }}</span
-                            >
-                            <div class="min-w-0 flex-1">
-                              <p class="text-[13px] text-foreground">{{ r.text }}</p>
-                              @if (r.quote) {
-                                <p class="mt-0.5 text-[12px] italic text-muted-foreground">
-                                  {{ r.quote }}
-                                </p>
-                              }
-                            </div>
-                            @if (r.url) {
-                              <a
-                                [href]="normalizeUrl(r.url)"
-                                target="_blank"
-                                rel="noopener"
-                                class="mt-0.5 shrink-0 text-muted-foreground transition-colors hover:text-foreground"
-                                [title]="r.url"
-                              >
-                                <ng-icon name="heroArrowTopRightOnSquare" size="0.85rem" />
-                              </a>
-                            }
-                          </li>
-                        }
-                      </ul>
-                    }
-                  </article>
-                }
-              </div>
 
               <!-- 6. Founder-market-fit -->
               @if (f.fmf; as fmf) {

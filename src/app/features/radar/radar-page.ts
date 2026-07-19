@@ -36,7 +36,7 @@ import { ThesisComposer, type ThesisDraft } from './thesis-composer';
   `,
   template: `
     <div class="flex min-w-0 flex-1 flex-col overflow-y-auto">
-      <div class="mx-auto w-full max-w-5xl px-6 py-8 md:px-8 md:py-10">
+      <div class="mx-auto w-full max-w-7xl px-6 py-8 md:px-8 md:py-10">
         <!-- Header: live sourcing status -->
         <header class="flex flex-wrap items-end justify-between gap-4">
           <div>

@@ -15,7 +15,7 @@ palette). Product features are not built yet.
 - Every page is currently a `PlaceholderPage`; add real feature components under
   `src/app/features/` and wire them in `src/app/app.routes.ts` when building them out.
 - **Page width**: every page wraps its content in the standard container
-  `mx-auto w-full max-w-5xl px-6 py-8 md:px-8 md:py-10` (inside a
+  `mx-auto w-full max-w-7xl px-6 py-8 md:px-8 md:py-10` (inside a
   `flex min-w-0 flex-1 flex-col overflow-y-auto` scroll region). Use the available
   width, don't squeeze content into a narrow column.
 - **Titles/headings**: use the brand display font via the `.font-title` utility
@@ -40,10 +40,11 @@ palette). Product features are not built yet.
   UI, the backend, and a future MCP surface all share it. `live: true` means a real
   backend `run()` exists today.
 - Backend lives in `/api` (Vercel Functions, Node). `POST /api/evaluate` runs the live
-  Proof connectors, streams each `Signal` as SSE, then streams an AI verdict via the
-  Vercel AI Gateway (`AI_GATEWAY_API_KEY`), with a deterministic heuristic fallback when
-  no key is present. Connector runtimes are server-only under `api/_lib/connectors/`;
-  never import them from client code (secrets, CORS).
+  Proof connectors, streams each `Signal` as SSE, then produces an AI verdict via the
+  Mastra agents in `api/_lib/mastra.ts` (OpenAI, `OPENAI_API_KEY`), with a deterministic
+  heuristic fallback when no key is present. Agent runs are traced to the Mastra Platform
+  dashboard (`MASTRA_PLATFORM_ACCESS_TOKEN`, `MASTRA_PROJECT_ID`). Connector runtimes are
+  server-only under `api/_lib/connectors/`; never import them from client code (secrets, CORS).
 - Add a source: add its descriptor, then a `run()` in `api/_lib/connectors/` and register
   it in `api/_lib/connectors/index.ts`. It becomes both AI-callable and visible in the UI.
 - The Evaluation page triggers `EvaluationService.scoreProof()` and streams signals + the

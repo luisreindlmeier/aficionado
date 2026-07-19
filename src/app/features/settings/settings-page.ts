@@ -14,9 +14,17 @@ const METRICS: readonly Metric[] = ['Proof', 'Gravity', 'Trajectory'];
 
 const API_KEYS: readonly ApiKeyInfo[] = [
   {
-    name: 'AI_GATEWAY_API_KEY',
+    name: 'OPENAI_API_KEY',
     description:
-      'Vercel AI Gateway key that powers live founder scoring. Falls back to a deterministic heuristic when absent.',
+      'OpenAI key that powers the Mastra scoring agents. Falls back to a deterministic heuristic when absent.',
+  },
+  {
+    name: 'MASTRA_PLATFORM_ACCESS_TOKEN',
+    description: 'Ships agent traces and metrics to the Mastra Platform observability dashboard.',
+  },
+  {
+    name: 'MASTRA_PROJECT_ID',
+    description: 'Mastra project the observability traces are attributed to.',
   },
   {
     name: 'GITHUB_TOKEN',
@@ -58,7 +66,7 @@ const API_KEYS: readonly ApiKeyInfo[] = [
   `,
   template: `
     <div class="flex min-w-0 flex-1 flex-col overflow-y-auto">
-      <div class="mx-auto w-full max-w-5xl px-6 py-8 md:px-8 md:py-10">
+      <div class="mx-auto w-full max-w-7xl px-6 py-8 md:px-8 md:py-10">
         <header>
           <h1
             class="font-title text-[26px] leading-[1.1] tracking-[-0.01em] text-foreground md:text-[28px]"
@@ -105,7 +113,9 @@ const API_KEYS: readonly ApiKeyInfo[] = [
                     ></span>
                     {{ metric }}
                   </span>
-                  <span class="font-title text-[14px] text-foreground">{{ weightPct(metric) }}%</span>
+                  <span class="font-title text-[14px] text-foreground"
+                    >{{ weightPct(metric) }}%</span
+                  >
                 </div>
                 <input
                   type="range"
@@ -120,9 +130,12 @@ const API_KEYS: readonly ApiKeyInfo[] = [
             }
           </div>
 
-          <p class="mt-5 border-t-[0.5px] border-border pt-4 text-[12px] leading-relaxed text-muted-foreground">
+          <p
+            class="mt-5 border-t-[0.5px] border-border pt-4 text-[12px] leading-relaxed text-muted-foreground"
+          >
             Changing weights re-ranks the whole pipeline live. Current top founder:
-            <span class="text-foreground">{{ topFounderName() }}</span>.
+            <span class="text-foreground">{{ topFounderName() }}</span
+            >.
           </p>
         </section>
 
@@ -198,10 +211,12 @@ const API_KEYS: readonly ApiKeyInfo[] = [
         <!-- (c) API keys -->
         <app-section-heading title="API keys" />
         <p class="-mt-2 mb-4 text-[12px] leading-relaxed text-muted-foreground">
-          Configured server-side and read-only here. Secrets never touch the browser, this is only an
-          overview of what the backend expects.
+          Configured server-side and read-only here. Secrets never touch the browser, this is only
+          an overview of what the backend expects.
         </p>
-        <section class="divide-y-[0.5px] divide-border rounded-xl border-[0.5px] border-border bg-card px-5">
+        <section
+          class="divide-y-[0.5px] divide-border rounded-xl border-[0.5px] border-border bg-card px-5"
+        >
           @for (key of apiKeys; track key.name) {
             <div class="flex items-start justify-between gap-4 py-4">
               <div class="min-w-0 flex-1">

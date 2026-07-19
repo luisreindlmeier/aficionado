@@ -1,13 +1,9 @@
-import { generateObject } from 'ai';
 import { z } from 'zod';
+import { aiEnabled, metricScorer } from './mastra';
 import type { Metric } from '../../src/app/core/metrics';
 import type { Feature, MetricScore, Receipt } from '../../src/app/core/model';
 import type { Signal } from '../../src/app/core/connectors/types';
-import {
-  ANCHOR_GRAVITY,
-  ANCHOR_PROOF,
-  ANCHOR_TRAJECTORY,
-} from '../../src/app/core/data/anchors';
+import { ANCHOR_GRAVITY, ANCHOR_PROOF, ANCHOR_TRAJECTORY } from '../../src/app/core/data/anchors';
 import {
   clamp,
   confidenceOf,
@@ -21,7 +17,7 @@ import { scoreProofHeuristic } from './proof';
 // ─────────────────────────────────────────────────────────────
 // EXTRACTORS + REDUCER. For one metric and the signals collected for it:
 //   1) extract features + rationale + strongest evidence
-//        (a) generateObject via the AI Gateway when AI_GATEWAY_API_KEY is set
+//        (a) the Mastra metricScorer agent (OpenAI) when OPENAI_API_KEY is set
 //        (b) otherwise a deterministic heuristic (Proof keeps its old behaviour)
 //   2) turn features into a 0..100 magnitude with the log-scale + squash helpers
 //   3) calibrate z + percentile against the anchor column (scoring.ts math)
@@ -177,8 +173,24 @@ function gravityFeatures(sigs: Signal[], col: readonly number[]): Feature[] {
       col,
       reachSig ? [receiptOf(reachSig, 'True reach')] : [],
     ),
-    feat('authority', 'Network authority', Math.round(authority), 'derived from reach', authority, col, []),
-    feat('amplification', 'Amplification', Math.round(amplification), 'derived from reach', amplification, col, []),
+    feat(
+      'authority',
+      'Network authority',
+      Math.round(authority),
+      'derived from reach',
+      authority,
+      col,
+      [],
+    ),
+    feat(
+      'amplification',
+      'Amplification',
+      Math.round(amplification),
+      'derived from reach',
+      amplification,
+      col,
+      [],
+    ),
   ];
 }
 
@@ -246,7 +258,8 @@ function gravityRationale(sigs: Signal[]): string {
   const r = sigs
     .filter((s) => /followers/i.test(s.text))
     .sort((a, b) => (b.value || 0) - (a.value || 0))[0];
-  if (!r?.value) return 'No public social footprint connected yet, Gravity is provisional (heuristic).';
+  if (!r?.value)
+    return 'No public social footprint connected yet, Gravity is provisional (heuristic).';
   return `${r.value.toLocaleString('en-US')} followers, reach is the main pull signal (heuristic).`;
 }
 
@@ -258,7 +271,9 @@ function trajectoryRationale(sigs: Signal[]): string {
   if (c) parts.push(`${c.value ?? 0} recent pushes`);
   if (a) parts.push(`${a.value ?? 0} repos/yr`);
   if (w) parts.push(`${w.value ?? 0} yrs of web history`);
-  return parts.length ? `Momentum: ${parts.join(', ')} (heuristic).` : 'Thin momentum signal (heuristic).';
+  return parts.length
+    ? `Momentum: ${parts.join(', ')} (heuristic).`
+    : 'Thin momentum signal (heuristic).';
 }
 
 // AI extractor ──────────────────────────────────────────────────
@@ -279,10 +294,12 @@ const PROMPTS: Record<Metric, string> = {
 };
 
 async function extractWithAI(metric: Metric, signals: Signal[]): Promise<AiExtract | null> {
-  if (!process.env.AI_GATEWAY_API_KEY || !signals.length) return null;
+  if (!aiEnabled() || !signals.length) return null;
 
   const schema = z.object({
-    rationale: z.string().describe('One or two calibrated, skeptical sentences justifying the score'),
+    rationale: z
+      .string()
+      .describe('One or two calibrated, skeptical sentences justifying the score'),
     features: z
       .array(
         z.object({
@@ -294,21 +311,21 @@ async function extractWithAI(metric: Metric, signals: Signal[]): Promise<AiExtra
       )
       .min(1)
       .max(6),
-    evidenceIndexes: z.array(z.number()).describe('indexes of the strongest signals, most important first'),
+    evidenceIndexes: z
+      .array(z.number())
+      .describe('indexes of the strongest signals, most important first'),
   });
 
   const list = signals
     .map((s, i) => `${i}. [${s.connector}] ${s.text}${s.value != null ? ` (=${s.value})` : ''}`)
     .join('\n');
 
-  const { object } = await generateObject({
-    model: 'anthropic/claude-sonnet-5',
-    schema,
-    prompt:
-      `${PROMPTS[metric]} 0 = no evidence, 100 = exceptional, top-percentile. ` +
+  const { object } = await metricScorer.generate(
+    `${PROMPTS[metric]} 0 = no evidence, 100 = exceptional, top-percentile. ` +
       `Weigh reach and adoption over raw counts. Extract 3-6 calibrated features, a rationale, ` +
       `and the strongest evidence indexes.\n\nSignals:\n${list}`,
-  });
+    { structuredOutput: { schema } },
+  );
   return object as AiExtract;
 }
 
@@ -324,7 +341,9 @@ export async function reduceMetric(
   const connectors = new Set(signals.map((s) => s.connector));
   const completeness = signals.length
     ? clamp(
-        0.2 + 0.55 * Math.min(1, connectors.size / IDEAL[metric]) + 0.1 * Math.min(1, signals.length / 3),
+        0.2 +
+          0.55 * Math.min(1, connectors.size / IDEAL[metric]) +
+          0.1 * Math.min(1, signals.length / 3),
         0.15,
         0.95,
       )
@@ -343,7 +362,15 @@ export async function reduceMetric(
     by = 'ai';
     rationale = ai.rationale;
     features = ai.features.map((f, i) =>
-      feat(f.key || `f${i}`, f.label, Math.round(f.value), f.display, clamp(Math.round(f.value), 0, 100), col, []),
+      feat(
+        f.key || `f${i}`,
+        f.label,
+        Math.round(f.value),
+        f.display,
+        clamp(Math.round(f.value), 0, 100),
+        col,
+        [],
+      ),
     );
     score = blend(features.map((f) => f.contribution));
     const evidence = dedupeReceipts(
@@ -363,7 +390,8 @@ export async function reduceMetric(
     features = proofFeatures(signals, col);
   } else {
     by = 'heuristic';
-    features = metric === 'Gravity' ? gravityFeatures(signals, col) : trajectoryFeatures(signals, col);
+    features =
+      metric === 'Gravity' ? gravityFeatures(signals, col) : trajectoryFeatures(signals, col);
     score = blend(features.map((f) => f.contribution));
     rationale = metric === 'Gravity' ? gravityRationale(signals) : trajectoryRationale(signals);
   }

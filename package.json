@@ -20,6 +20,8 @@
     "@angular/router": "^22.0.0",
     "@fontsource-variable/geist": "^5.2.9",
     "@fontsource/space-grotesk": "^5.2.10",
+    "@mastra/core": "^1.51.0",
+    "@mastra/observability": "^1.16.1",
     "@ng-icons/core": "^33.3.0",
     "@ng-icons/heroicons": "^33.3.0",
     "@ng-icons/simple-icons": "^33.4.0",
