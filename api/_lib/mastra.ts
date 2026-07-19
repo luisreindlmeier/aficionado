@@ -1,10 +1,6 @@
 import { Mastra } from '@mastra/core';
 import { Agent } from '@mastra/core/agent';
-import {
-  Observability,
-  MastraPlatformExporter,
-  SensitiveDataFilter,
-} from '@mastra/observability';
+import { Observability, MastraPlatformExporter, SensitiveDataFilter } from '@mastra/observability';
 import type { Metric } from '../../src/app/core/metrics';
 import { METRIC_TOOLS } from './tools';
 
@@ -58,12 +54,32 @@ export const METRIC_AGENTS: Record<Metric, Agent> = {
   Trajectory: trajectoryAgent,
 };
 
+// Red-flag critic: a cross-source coherence + authenticity pass over the three
+// metric verdicts. It can only ADD red flags (which the deterministic redFlagGate
+// may use to cap the score); it never computes the score itself. Conservative by
+// design: an empty list is the correct answer when nothing is genuinely wrong.
+export const criticAgent = new Agent({
+  id: 'red-flag-critic',
+  name: 'Red-flag Critic',
+  instructions:
+    'You are a skeptical diligence critic doing a cross-source coherence and authenticity ' +
+    'pass on a founder, given each metric (Proof, Gravity, Trajectory) with its score, ' +
+    'rationale and evidence. Surface ONLY genuine red flags: contradictions between claimed ' +
+    'and independently measured capability, governance or self-dealing concerns, or ' +
+    'authenticity problems (metrics that cannot be reproduced from the evidence). Do NOT ' +
+    'flag normal early-stage traits: first-time founder, private pilot, small footprint, ' +
+    'thin social reach. Be conservative, an empty list is the correct and common answer. ' +
+    'Assign severity low, medium or high; reserve high for a critical coherence or ' +
+    'governance flag that should cap an otherwise strong score.',
+  model: MODEL,
+});
+
 // Registering the agents here injects the Mastra context (and its observability
 // pipeline) into them, so agent.generate(...) and every tool call are traced and
 // shipped to the Mastra Platform dashboard when MASTRA_PLATFORM_ACCESS_TOKEN /
 // MASTRA_PROJECT_ID are set.
 export const mastra = new Mastra({
-  agents: { proofAgent, gravityAgent, trajectoryAgent },
+  agents: { proofAgent, gravityAgent, trajectoryAgent, criticAgent },
   observability: new Observability({
     configs: {
       default: {
