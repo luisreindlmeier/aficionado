@@ -112,6 +112,12 @@ async function enrich(
 ): Promise<DiscoveredFounder | null> {
   const user = await ghJson<GhUser>(`/users/${encodeURIComponent(login)}`);
   if (!user || user.type !== 'User') return null;
+  const displayName = user.name ?? login;
+  // Reject junk/spam names: very long, or mostly non-latin script.
+  const latin = (displayName.match(/[a-zA-Z]/g) || []).length;
+  if (displayName.length > 60 || latin < Math.max(2, displayName.replace(/\s/g, '').length * 0.4)) {
+    return null;
+  }
   let top = repo;
   if (!top) {
     const repos = await ghJson<{ name: string; stargazers_count: number; html_url: string }[]>(
