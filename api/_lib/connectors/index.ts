@@ -12,6 +12,7 @@ import { runProductHunt } from './producthunt';
 import { runWayback } from './wayback';
 import { runSemanticScholar } from './semanticscholar';
 import { runOpenAlex } from './openalex';
+import { runGooglePatents } from './googlepatents';
 import { runStackExchange } from './stackexchange';
 
 export type RunFn = (query: FounderQuery) => Promise<ConnectorResult>;
@@ -27,6 +28,7 @@ export const RUNNERS: Partial<Record<ConnectorId, RunFn>> = {
   wayback: runWayback,
   semanticscholar: runSemanticScholar,
   openalex: runOpenAlex,
+  googlepatents: runGooglePatents,
   stackexchange: runStackExchange,
 };
 
@@ -34,7 +36,16 @@ export const RUNNERS: Partial<Record<ConnectorId, RunFn>> = {
 // its signals carry their own `metric`, so a phase only keeps the ones it asked
 // for. A connector may appear under more than one metric.
 export const METRIC_CONNECTORS: Record<Metric, ConnectorId[]> = {
-  Proof: ['github', 'npm', 'pypi', 'arxiv', 'semanticscholar', 'openalex', 'stackexchange'],
+  Proof: [
+    'github',
+    'npm',
+    'pypi',
+    'arxiv',
+    'semanticscholar',
+    'openalex',
+    'googlepatents',
+    'stackexchange',
+  ],
   Gravity: ['github', 'openalex'],
   Trajectory: ['github', 'wayback'],
 };
