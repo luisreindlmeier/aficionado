@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { aiEnabled, metricScorer } from './mastra';
+import { aiEnabled, METRIC_AGENTS } from './mastra';
 import type { Metric } from '../../src/app/core/metrics';
 import type { Feature, MetricScore, Receipt } from '../../src/app/core/model';
 import type { Signal } from '../../src/app/core/connectors/types';
@@ -17,7 +17,7 @@ import { scoreProofHeuristic } from './proof';
 // ─────────────────────────────────────────────────────────────
 // EXTRACTORS + REDUCER. For one metric and the signals collected for it:
 //   1) extract features + rationale + strongest evidence
-//        (a) the Mastra metricScorer agent (OpenAI) when OPENAI_API_KEY is set
+//        (a) the Mastra per-metric agent (OpenAI) when OPENAI_API_KEY is set
 //        (b) otherwise a deterministic heuristic (Proof keeps its old behaviour)
 //   2) turn features into a 0..100 magnitude with the log-scale + squash helpers
 //   3) calibrate z + percentile against the anchor column (scoring.ts math)
@@ -284,15 +284,6 @@ interface AiExtract {
   evidenceIndexes: number[];
 }
 
-const PROMPTS: Record<Metric, string> = {
-  Proof:
-    'Score a founder\'s "Proof": demonstrated ability to build and ship real things (shipping record, real-world adoption, research depth).',
-  Gravity:
-    'Score a founder\'s "Gravity": how much people, capital and attention move toward them (true reach, network authority, amplification).',
-  Trajectory:
-    'Score a founder\'s "Trajectory": momentum and acceleration (recent shipping cadence, repos per year, longevity of the build history).',
-};
-
 async function extractWithAI(metric: Metric, signals: Signal[]): Promise<AiExtract | null> {
   if (!aiEnabled() || !signals.length) return null;
 
@@ -320,10 +311,9 @@ async function extractWithAI(metric: Metric, signals: Signal[]): Promise<AiExtra
     .map((s, i) => `${i}. [${s.connector}] ${s.text}${s.value != null ? ` (=${s.value})` : ''}`)
     .join('\n');
 
-  const { object } = await metricScorer.generate(
-    `${PROMPTS[metric]} 0 = no evidence, 100 = exceptional, top-percentile. ` +
-      `Weigh reach and adoption over raw counts. Extract 3-6 calibrated features, a rationale, ` +
-      `and the strongest evidence indexes.\n\nSignals:\n${list}`,
+  const { object } = await METRIC_AGENTS[metric].generate(
+    `Score this founder's ${metric} from the signals below. Extract 3-6 calibrated ` +
+      `features, a rationale, and the strongest evidence indexes.\n\nSignals:\n${list}`,
     { structuredOutput: { schema } },
   );
   return object as AiExtract;
