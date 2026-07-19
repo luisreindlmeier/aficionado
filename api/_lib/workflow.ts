@@ -10,7 +10,7 @@ import type {
   SkillVector,
   TraceStep,
 } from '../../src/app/core/model';
-import type { FounderQuery, Signal } from '../../src/app/core/connectors/types';
+import type { ConnectorId, FounderQuery, Signal } from '../../src/app/core/connectors/types';
 import { METRIC_CONNECTORS, RUNNERS } from './connectors';
 import { reduceMetric } from './metrics';
 import { ANCHORS } from '../../src/app/core/data/anchors';
@@ -24,7 +24,7 @@ import {
   percentileOf,
   redFlagGate,
 } from '../../src/app/core/scoring';
-import { aiEnabled, criticAgent } from './mastra';
+import { METRIC_AGENTS, aiEnabled, criticAgent } from './mastra';
 
 // ─────────────────────────────────────────────────────────────
 // DURABLE EVALUATION WORKFLOW (Mastra). Replaces the inline /api/evaluate loop:
@@ -71,8 +71,83 @@ const ingestStep = createStep({
   },
 });
 
-// (b) one metric step: gather that metric's signals and run its agent via
-// reduceMetric. Identical computation to the old inline loop, now a durable step.
+/** Compact founder-identity line for the gather prompt. */
+function identityLine(q: FounderQuery): string {
+  const parts = [
+    q.github && `github=${q.github}`,
+    q.npm && `npm=${q.npm}`,
+    q.pypi && `pypi=${q.pypi}`,
+    q.x && `x=${q.x}`,
+    q.linkedin && `linkedin=${q.linkedin}`,
+    q.domain && `domain=${q.domain}`,
+  ].filter(Boolean);
+  return parts.length ? parts.join(', ') : 'no external handles provided';
+}
+
+/** The connector tool-results an agent produced, flattened. */
+function toolResultsOf(
+  res: unknown,
+): { toolName?: string; result?: { signals?: Signal[]; note?: string } }[] {
+  const r = res as { toolResults?: unknown[]; steps?: { toolResults?: unknown[] }[] };
+  const raw = r?.toolResults ?? r?.steps?.flatMap((s) => s?.toolResults ?? []) ?? [];
+  return raw.map((tr) => {
+    const p = (tr as { payload?: unknown }).payload ?? tr;
+    return p as { toolName?: string; result?: { signals?: Signal[]; note?: string } };
+  });
+}
+
+/** Pull the metric's signals out of the agent's tool results. */
+function collectSignals(res: unknown, metric: Metric): Signal[] {
+  const out: Signal[] = [];
+  for (const tr of toolResultsOf(res)) {
+    for (const s of tr.result?.signals ?? []) {
+      if (s?.metric === metric) out.push(s);
+    }
+  }
+  return out;
+}
+
+/** Stream the agent's tool activity as connector + signal frames for the UI. */
+function emitToolActivity(res: unknown, metric: Metric): void {
+  for (const tr of toolResultsOf(res)) {
+    const connector = (tr.result?.signals?.[0]?.connector ?? tr.toolName) as ConnectorId;
+    emit({ type: 'connector', metric, connector, status: 'running' });
+    for (const s of tr.result?.signals ?? []) {
+      if (s?.metric === metric) emit({ type: 'signal', signal: s });
+    }
+    emit({ type: 'connector', metric, connector, status: 'done', note: tr.result?.note });
+  }
+}
+
+/** Fallback when AI is off: fetch via connector runtimes so the heuristic still scores. */
+async function codeFetch(metric: Metric, query: FounderQuery): Promise<Signal[]> {
+  const connectors = (METRIC_CONNECTORS[metric] || []).filter((id) => RUNNERS[id]);
+  const collected: Signal[] = [];
+  await Promise.all(
+    connectors.map(async (id) => {
+      const run = RUNNERS[id];
+      if (!run) return;
+      emit({ type: 'connector', metric, connector: id, status: 'running' });
+      try {
+        const result = await run(query);
+        for (const signal of result.signals) {
+          if (signal.metric !== metric) continue;
+          collected.push(signal);
+          emit({ type: 'signal', signal });
+        }
+        emit({ type: 'connector', metric, connector: id, status: 'done', note: result.note });
+      } catch (err) {
+        emit({ type: 'connector', metric, connector: id, status: 'error', note: message(err) });
+      }
+    }),
+  );
+  return collected;
+}
+
+// (b) one metric step: its agent gathers signals by calling its OWN connector
+// tools (streamed + traced to the Mastra dashboard), then reduceMetric extracts
+// features and applies the SAME blend + calibration math. AI off -> code-fetch +
+// heuristic, unchanged.
 function metricStep(metric: Metric) {
   return createStep({
     id: `metric-${metric.toLowerCase()}`,
@@ -82,32 +157,25 @@ function metricStep(metric: Metric) {
       const query = inputData as FounderQuery;
       const connectors = (METRIC_CONNECTORS[metric] || []).filter((id) => RUNNERS[id]);
       emit({ type: 'phase', metric, connectors });
-      trace('fetch', `Fetching ${metric} signals from ${connectors.length} sources`, { metric });
 
-      const collected: Signal[] = [];
-      await Promise.all(
-        connectors.map(async (id) => {
-          const run = RUNNERS[id];
-          if (!run) return;
-          emit({ type: 'connector', metric, connector: id, status: 'running' });
-          try {
-            const result = await run(query);
-            for (const signal of result.signals) {
-              if (signal.metric !== metric) continue;
-              collected.push(signal);
-              emit({ type: 'signal', signal });
-            }
-            emit({ type: 'connector', metric, connector: id, status: 'done', note: result.note });
-          } catch (err) {
-            emit({ type: 'connector', metric, connector: id, status: 'error', note: message(err) });
-          }
-        }),
-      );
+      let gathered: Signal[];
+      if (aiEnabled()) {
+        trace('fetch', `${metric} agent gathering evidence via its tools`, { metric });
+        const res = await METRIC_AGENTS[metric].generate(
+          `Gather evidence about ${query.name || 'this founder'}'s ${metric} by calling your ` +
+            `connector tools. Founder identity: ${identityLine(query)}. Call every tool that ` +
+            `could hold relevant evidence, then briefly summarize what you found.`,
+          { maxSteps: 8 },
+        );
+        emitToolActivity(res, metric);
+        gathered = collectSignals(res, metric);
+      } else {
+        trace('fetch', `Fetching ${metric} signals from ${connectors.length} sources`, { metric });
+        gathered = await codeFetch(metric, query);
+      }
 
-      trace('extract', `Extracting ${metric} features from ${collected.length} signals`, {
-        metric,
-      });
-      const score = await reduceMetric(metric, collected, WEIGHTS[metric]);
+      trace('extract', `Extracting ${metric} features from ${gathered.length} signals`, { metric });
+      const score = await reduceMetric(metric, gathered, WEIGHTS[metric]);
       emit({ type: 'metric', score });
       return score;
     },
