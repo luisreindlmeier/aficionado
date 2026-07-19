@@ -10,6 +10,7 @@ import { DecisionPage } from './features/decision/decision-page';
 import { SettingsPage } from './features/settings/settings-page';
 import { DiligencePage } from './features/diligence/diligence-page';
 import { CompanyPage } from './features/company/company-page';
+import { AgentRunsPage } from './features/agent-runs/agent-runs-page';
 
 // Real feature pages by route. Anything not listed falls back to PlaceholderPage.
 const FEATURE_PAGES: Readonly<Record<string, Type<unknown>>> = {
@@ -18,6 +19,7 @@ const FEATURE_PAGES: Readonly<Record<string, Type<unknown>>> = {
   evaluation: EvaluationPage,
   decision: DecisionPage,
   diligence: DiligencePage,
+  'agent-runs': AgentRunsPage,
   'data-sources': DataSourcesPage,
   settings: SettingsPage,
 };

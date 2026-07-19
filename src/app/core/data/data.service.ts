@@ -10,6 +10,7 @@ import type {
   PipelineStage,
   Receipt,
   SkillVector,
+  SourcedCandidate,
   TeamAnalysis,
   Thesis,
   Venture,
@@ -72,6 +73,32 @@ interface LiveDossier {
   gravity: MetricScore;
   trajectory: MetricScore;
   team: readonly { name: string; skills: SkillVector }[] | null;
+}
+
+/** A sourcing_candidates row as served by /api/founders. */
+interface LiveCandidate {
+  id: string;
+  name: string;
+  github: string | null;
+  headline: string | null;
+  thesis_id: string | null;
+  triage: number;
+  reason: string | null;
+  evaluated: boolean | null;
+}
+
+function mapCandidate(r: LiveCandidate): SourcedCandidate {
+  return {
+    id: r.id,
+    name: r.name,
+    headline: r.headline ?? undefined,
+    github: r.github ?? undefined,
+    thesisId: r.thesis_id ?? undefined,
+    triage: r.triage ?? 0,
+    onThesis: !!r.thesis_id,
+    reason: r.reason ?? undefined,
+    evaluated: r.evaluated ?? false,
+  };
 }
 
 const pipelineFor = (band: string): PipelineStage =>
@@ -137,6 +164,19 @@ export class DataService {
    *  API is absent (plain `ng serve`) / offline, in which case the seed is used. */
   private readonly liveRows = signal<readonly (Founder & { discoveredOffsetMins: number })[]>([]);
 
+  /** The sourcing agent's candidate queue, as persisted by the LOOP A pass.
+   *  These are discovered but NOT yet evaluated: they have a triage number and
+   *  the agent's reason, no dossier. Served by /api/founders all along; the
+   *  dashboard simply never read them. */
+  readonly liveCandidates = signal<readonly SourcedCandidate[]>([]);
+
+  /** Where the founders on screen come from, so the UI can never silently
+   *  present the committed seed as live agent output. */
+  readonly dataSource = signal<'live' | 'seed' | 'loading'>('loading');
+
+  /** When the live dossiers were last written by an evaluation run. */
+  readonly liveAt = signal<string | undefined>(undefined);
+
   /** The founder source: live Supabase dossiers when present, else the seed. */
   private readonly source = computed(() =>
     this.liveRows().length ? this.liveRows() : SEED_FOUNDERS,
@@ -146,16 +186,47 @@ export class DataService {
     void this.loadLive();
   }
 
-  private async loadLive(): Promise<void> {
+  async loadLive(): Promise<void> {
     try {
       const res = await fetch('/api/founders');
-      if (!res.ok) return;
-      const json = (await res.json()) as { dossiers?: LiveDossier[] };
+      if (!res.ok) {
+        this.dataSource.set('seed');
+        return;
+      }
+      const json = (await res.json()) as {
+        dossiers?: LiveDossier[];
+        candidates?: LiveCandidate[];
+        at?: string;
+      };
       const rows = (json.dossiers ?? []).filter((d) => d?.proof).map(mapDossier);
-      if (rows.length) this.liveRows.set(rows);
+      if (rows.length) {
+        this.liveRows.set(rows);
+        this.liveAt.set(json.at);
+      }
+      this.liveCandidates.set((json.candidates ?? []).map(mapCandidate));
+      this.dataSource.set(rows.length ? 'live' : 'seed');
     } catch {
       /* no API or offline -> keep the committed seed */
+      this.dataSource.set('seed');
     }
+  }
+
+  /** Candidates that have not been evaluated yet, strongest triage first. This
+   *  is the sourcing agent's backlog: what it found that nothing has scored. */
+  readonly unevaluatedCandidates = computed(() => {
+    const known = new Set(this.founders().map((f) => f.id));
+    return this.liveCandidates()
+      .filter((c) => !c.evaluated && !known.has(c.id))
+      .slice()
+      .sort((a, b) => b.triage - a.triage);
+  });
+
+  /** True when any founder on screen was scored by the heuristic fallback
+   *  rather than by an agent, which the dossier must disclose. */
+  scoredByFallback(f: Founder): boolean {
+    const s = f.score;
+    if (!s) return false;
+    return [s.proof, s.gravity, s.trajectory].some((m) => m?.by === 'heuristic');
   }
 
   readonly theses = signal<readonly Thesis[]>(THESES);
@@ -338,9 +409,6 @@ export class DataService {
     });
   }
 
-  /** 'running' while a just-created thesis's sourcing pass is scanning the pool. */
-  readonly sourcingStatus = signal<'idle' | 'running'>('idle');
-
   /** Founder ids matched by a user-created thesis's sourcing pass, keyed by thesis id.
    *  Only custom theses get an entry here; the curated seed theses keep their
    *  original, hand-assigned founder.thesisId filtering untouched. */
@@ -379,36 +447,40 @@ export class DataService {
       active: true,
     };
     this.theses.update((list) => [...list, thesis]);
-    this.runSourcingPass(thesis);
+    this.activeThesisId.set(thesis.id);
     return thesis;
   }
 
-  /** Simulate a sourcing pass: scan every founder's public-facing text for the
-   *  thesis's keywords and surface the overlapping ones. Runs on a short delay so
-   *  it reads as a real pass rather than an instant filter. A match is enough
-   *  signal for the agent to automatically promote a fresh 'Discovered' founder
-   *  onto Watch. */
-  private runSourcingPass(thesis: Thesis): void {
-    this.sourcingStatus.set('running');
-    this.activeThesisId.set(thesis.id);
+  /** Record the founder ids a sourcing pass surfaced for a thesis, and promote
+   *  any still-Discovered match onto Watch. Called with the real workflow's
+   *  result by the Radar page, or by the local fallback below. */
+  applySourcingResult(thesisId: string, founderIds: readonly string[]): void {
+    this.thesisMatches.update((m) => ({ ...m, [thesisId]: founderIds }));
+    const known = new Set(founderIds);
+    const toPromote = this.founders()
+      .filter((f) => known.has(f.id) && f.pipeline === 'Discovered')
+      .map((f) => f.id);
+    if (toPromote.length) {
+      this.pipelineOverrides.update((o) => {
+        const next = { ...o };
+        for (const id of toPromote) next[id] = 'Watch';
+        return next;
+      });
+    }
+  }
+
+  /** Offline fallback for the sourcing pass: the same keyword-overlap triage the
+   *  workflow's discover step runs, applied locally. Only used when /api is not
+   *  reachable (plain `ng serve`), so the Radar still demonstrates the loop. */
+  localSourcingPass(thesis: Thesis): readonly string[] {
     const keywords = thesis.keywords.map((k) => k.toLowerCase()).filter(Boolean);
-    setTimeout(() => {
-      const matches = this.founders().filter((f) => {
-        if (!keywords.length) return false;
+    if (!keywords.length) return [];
+    return this.founders()
+      .filter((f) => {
         const haystack = `${f.name} ${f.headline} ${f.location ?? ''}`.toLowerCase();
         return keywords.some((k) => haystack.includes(k));
-      });
-      this.thesisMatches.update((m) => ({ ...m, [thesis.id]: matches.map((f) => f.id) }));
-      const toPromote = matches.filter((f) => f.pipeline === 'Discovered').map((f) => f.id);
-      if (toPromote.length) {
-        this.pipelineOverrides.update((o) => {
-          const next = { ...o };
-          for (const id of toPromote) next[id] = 'Watch';
-          return next;
-        });
-      }
-      this.sourcingStatus.set('idle');
-    }, 900);
+      })
+      .map((f) => f.id);
   }
 
   /** The Radar feed: filtered by the active thesis, freshest first. Custom,

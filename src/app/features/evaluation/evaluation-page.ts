@@ -11,9 +11,16 @@ import {
   heroLink,
   heroArrowRight,
 } from '@ng-icons/heroicons/outline';
+import { AgentRunStore } from '../../core/agents/agent-run.store';
 import { DataService } from '../../core/data/data.service';
 import { EvaluationService } from './evaluation.service';
 import { MetricDetail } from './metric-detail';
+import {
+  AgentActivity,
+  PROVENANCE,
+  type ActivityLine,
+  type ToolChip,
+} from '../../core/ui/agent-activity';
 import { SectionHeading } from '../../core/ui/section-heading';
 import { METRIC_COLORS } from '../../core/metrics';
 import type { Metric } from '../../core/metrics';
@@ -60,7 +67,7 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
 // replay, and a live streaming "brain at work" panel driven by /api/evaluate.
 @Component({
   selector: 'app-evaluation-page',
-  imports: [NgIcon, RouterLink, SectionHeading, MetricDetail],
+  imports: [NgIcon, RouterLink, SectionHeading, MetricDetail, AgentActivity],
   viewProviders: [
     provideIcons({
       heroArrowTopRightOnSquare,
@@ -79,18 +86,6 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
       flex-direction: column;
       flex: 1;
       min-height: 0;
-    }
-    @keyframes blink {
-      0%,
-      100% {
-        opacity: 1;
-      }
-      50% {
-        opacity: 0.3;
-      }
-    }
-    .blink {
-      animation: blink 1.2s ease-in-out infinite;
     }
   `,
   template: `
@@ -316,6 +311,28 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
                 }
               </section>
 
+              <!-- A dossier that never reached an agent says so up front, rather
+                   than presenting a heuristic number as an evaluation. -->
+              @if (fallbackMetrics(f); as fell) {
+                @if (fell.length) {
+                  <div
+                    class="mt-4 flex items-start gap-2 rounded-xl border-[0.5px] border-border bg-surface p-4"
+                  >
+                    <ng-icon
+                      name="heroExclamationTriangle"
+                      size="0.9rem"
+                      class="mt-0.5 shrink-0 text-[#d97706]"
+                    />
+                    <p class="text-[12px] leading-relaxed text-muted-foreground">
+                      {{ fell.join(', ') }}
+                      {{ fell.length === 1 ? 'was' : 'were' }} scored by the local heuristic, not by
+                      an agent. Re-run the live evaluation below to replace
+                      {{ fell.length === 1 ? 'it' : 'them' }} with agent-gathered evidence.
+                    </p>
+                  </div>
+                }
+              }
+
               <!-- Metric cards, side by side under the overall score -->
               <div class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
                 @for (m of metricViews(f); track m.key) {
@@ -365,6 +382,18 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
                       <div class="min-w-0 w-full">
                         <div class="flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
                           <h3 class="text-[16px] font-semibold text-foreground">{{ m.key }}</h3>
+                          <!-- Who produced this number: the metric agent, or the
+                               local heuristic when the agent could not run. -->
+                          <span
+                            class="inline-flex items-center gap-1 rounded-full border-[0.5px] border-border px-2 py-0.5 text-[10px] text-foreground"
+                            [title]="provenanceHint(m.score)"
+                          >
+                            <span
+                              class="size-1 rounded-full"
+                              [style.background]="provenanceColor(m.score)"
+                            ></span>
+                            {{ provenanceLabel(m.score) }}
+                          </span>
                         </div>
                         <p class="mt-1 text-center text-[12px] text-muted-foreground">
                           {{ m.caption }}
@@ -472,59 +501,14 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
                   <p class="mt-3 text-[12px] text-destructive">{{ err }}</p>
                 }
 
-                @if (trace().length || running()) {
-                  <div
-                    class="mt-4 flex flex-col gap-1.5 rounded-lg border-[0.5px] border-border bg-surface p-3 font-mono text-[11px] leading-relaxed"
-                  >
-                    @for (t of trace(); track $index) {
-                      <div class="flex items-start gap-2">
-                        <span class="shrink-0 text-placeholder">{{ t.at }}</span>
-                        <span class="shrink-0" [style.color]="traceColor(t)">{{
-                          traceGlyph(t)
-                        }}</span>
-                        <span class="text-foreground">{{ t.label }}</span>
-                        @if (t.detail) {
-                          <span class="text-muted-foreground">{{ t.detail }}</span>
-                        }
-                      </div>
-                    }
-                    @if (running()) {
-                      <div class="flex items-center gap-2">
-                        <span class="blink text-foreground">▍</span>
-                      </div>
-                    }
-                  </div>
-                }
-
-                @if (liveConnectors().length) {
-                  <div class="mt-3 flex flex-wrap gap-1.5">
-                    @for (c of liveConnectors(); track c.id) {
-                      <span
-                        class="inline-flex items-center gap-1.5 rounded-full border-[0.5px] border-border px-2 py-0.5 text-[11px] text-muted-foreground"
-                      >
-                        <span
-                          class="size-1.5 rounded-full"
-                          [style.background]="statusColor(c.status)"
-                        ></span>
-                        {{ c.id }}
-                      </span>
-                    }
-                  </div>
-                }
-
-                @if (liveSignals().length) {
-                  <ul class="mt-3 flex flex-col gap-1 text-[11px]">
-                    @for (s of liveSignals(); track $index) {
-                      <li class="flex items-start gap-2">
-                        <span
-                          class="mt-0.5 shrink-0 rounded-full border-[0.5px] border-border px-1.5 text-[10px] text-muted-foreground"
-                          >{{ s.connector }}</span
-                        >
-                        <span class="text-muted-foreground">{{ s.text }}</span>
-                      </li>
-                    }
-                  </ul>
-                }
+                <div class="mt-4">
+                  <app-agent-activity
+                    [trace]="trace()"
+                    [tools]="liveConnectors()"
+                    [lines]="signalLines()"
+                    [running]="running()"
+                  />
+                </div>
 
                 @if (liveDone()) {
                   <p
@@ -737,6 +721,7 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
 export class EvaluationPage {
   protected readonly data = inject(DataService);
   private readonly evaluation = inject(EvaluationService);
+  private readonly runs = inject(AgentRunStore);
   private readonly route = inject(ActivatedRoute);
 
   protected readonly circ = 2 * Math.PI * 42;
@@ -780,8 +765,14 @@ export class EvaluationPage {
   protected readonly signalCount = signal(0);
   protected readonly liveDone = signal(false);
   private readonly connectorStates = signal<Record<string, string>>({});
-  protected readonly liveConnectors = computed(() =>
-    Object.entries(this.connectorStates()).map(([id, status]) => ({ id, status })),
+  protected readonly liveConnectors = computed<ToolChip[]>(() =>
+    Object.entries(this.connectorStates()).map(([id, status]) => ({
+      id,
+      status: status as ToolChip['status'],
+    })),
+  );
+  protected readonly signalLines = computed<ActivityLine[]>(() =>
+    this.liveSignals().map((s) => ({ label: s.connector, text: s.text })),
   );
   protected readonly liveSources = computed(
     () => new Set(this.liveSignals().map((s) => s.connector)).size,
@@ -913,33 +904,23 @@ export class EvaluationPage {
   protected sevColor(s: string): string {
     return s === 'high' ? '#dc2626' : s === 'medium' ? '#d97706' : '#a3a3a3';
   }
-  protected statusColor(s: string): string {
-    return s === 'done' ? '#16a34a' : s === 'error' ? '#dc2626' : '#a3a3a3';
+
+  protected provenanceLabel(s: MetricScore): string {
+    return PROVENANCE[s.by ?? 'heuristic'].label;
   }
-  protected traceColor(t: TraceStep): string {
-    if (t.kind === 'done') return '#16a34a';
-    if (t.kind === 'gate') return '#d97706';
-    return '#737373';
+  protected provenanceColor(s: MetricScore): string {
+    return PROVENANCE[s.by ?? 'heuristic'].color;
   }
-  protected traceGlyph(t: TraceStep): string {
-    switch (t.kind) {
-      case 'plan':
-        return '◆';
-      case 'fetch':
-        return '↓';
-      case 'extract':
-        return '✳';
-      case 'reduce':
-        return 'Σ';
-      case 'gate':
-        return '⚑';
-      case 'calibrate':
-        return '⊹';
-      case 'done':
-        return '✓';
-      default:
-        return '·';
-    }
+  protected provenanceHint(s: MetricScore): string {
+    return s.by === 'ai'
+      ? 'Scored by the metric agent from connector evidence'
+      : 'Scored by the local heuristic: the agent did not run for this metric';
+  }
+  /** True when any metric fell back, i.e. the dossier is not agent output. */
+  protected fallbackMetrics(f: Founder): Metric[] {
+    const s = f.score;
+    if (!s) return [];
+    return [s.proof, s.gravity, s.trajectory].filter((m) => m?.by !== 'ai').map((m) => m.metric);
   }
 
   protected normalizeUrl(url: string | undefined): string {
@@ -972,24 +953,30 @@ export class EvaluationPage {
       domain: f.handles.website,
     };
 
+    const runId = this.runs.start('founder-evaluation', f.name);
     try {
       for await (const ev of this.evaluation.evaluate(query)) {
-        this.apply(ev);
+        this.apply(ev, runId);
       }
+      this.runs.finish(runId, `${this.signalCount()} signals across ${this.liveSources()} sources`);
     } catch (err) {
-      this.errorMsg.set(err instanceof Error ? err.message : String(err));
+      const msg = err instanceof Error ? err.message : String(err);
+      this.errorMsg.set(msg);
+      this.runs.fail(runId, msg);
     } finally {
       this.running.set(false);
     }
   }
 
-  private apply(ev: EvalEvent): void {
+  private apply(ev: EvalEvent, runId: string): void {
     switch (ev.type) {
       case 'trace':
         this.trace.update((t) => [...t, ev.step]);
+        this.runs.addTrace(runId, ev.step);
         break;
       case 'connector':
         this.connectorStates.update((m) => ({ ...m, [ev.connector]: ev.status }));
+        this.runs.addTool(runId, ev.connector);
         break;
       case 'phase':
         this.trace.update((t) => [
