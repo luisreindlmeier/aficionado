@@ -51,8 +51,9 @@ export class DataService {
    *  moment on the self-demo). */
   private readonly gravityOverrides = signal<Record<string, MetricScore>>({});
 
-  /** Manual (or runner-automated) pipeline-stage moves, keyed by founder id.
-   *  Overrides the seed's starting stage without mutating the snapshot. */
+  /** Pipeline-stage promotions made by the sourcing agent, keyed by founder id.
+   *  Overrides the seed's starting stage without mutating the snapshot; the
+   *  Pipeline page is a read-only view of what the agents have decided. */
   private readonly pipelineOverrides = signal<Record<string, PipelineStage>>({});
 
   /** Founders with discovery timestamps filled and scores recomputed live. */
@@ -99,11 +100,6 @@ export class DataService {
       return { ...f, discoveredAt, pipeline, score, note } as Founder;
     });
   });
-
-  /** Move a founder to a different pipeline stage, manually. */
-  setPipelineStage(founderId: string, stage: PipelineStage): void {
-    this.pipelineOverrides.update((o) => ({ ...o, [founderId]: stage }));
-  }
 
   /** True once a founder's Gravity has been completed from a pasted profile. */
   gravityCompleted(founderId: string): boolean {
@@ -205,8 +201,8 @@ export class DataService {
   /** Simulate a sourcing pass: scan every founder's public-facing text for the
    *  thesis's keywords and surface the overlapping ones. Runs on a short delay so
    *  it reads as a real pass rather than an instant filter. A match is enough
-   *  signal to automatically promote a fresh 'Discovered' founder onto Watch,
-   *  the same way a human would after noticing them. */
+   *  signal for the agent to automatically promote a fresh 'Discovered' founder
+   *  onto Watch. */
   private runSourcingPass(thesis: Thesis): void {
     this.sourcingStatus.set('running');
     this.activeThesisId.set(thesis.id);
