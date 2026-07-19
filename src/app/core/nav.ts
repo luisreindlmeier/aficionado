@@ -2,6 +2,8 @@ export interface NavItem {
   readonly label: string;
   readonly route: string;
   readonly icon: string;
+  /** Visually de-emphasized in the sidebar (a deliberate nice-to-have). */
+  readonly dimmed?: boolean;
 }
 
 export interface NavGroup {
@@ -13,25 +15,19 @@ export interface NavGroup {
 /** Single source of truth for the sidebar navigation + the page routes. */
 export const NAV_GROUPS: readonly NavGroup[] = [
   {
+    // The funnel: Radar (inbound) → Pipeline → Evaluation → Decision → Diligence.
     items: [
-      { label: 'Dashboard', route: 'dashboard', icon: 'heroSquares2x2' },
+      { label: 'Radar', route: 'radar', icon: 'heroSignal' },
       { label: 'Pipeline', route: 'pipeline', icon: 'heroRectangleStack' },
-    ],
-  },
-  {
-    label: 'Workflow',
-    items: [
-      { label: 'Sourcing', route: 'sourcing', icon: 'heroSignal' },
-      { label: 'Evaluation', route: 'evaluation', icon: 'heroUserGroup' },
-      { label: 'Recommendation', route: 'recommendation', icon: 'heroScale' },
-      { label: 'Diligence', route: 'diligence', icon: 'heroDocumentMagnifyingGlass' },
+      { label: 'Evaluation', route: 'evaluation', icon: 'heroClipboardDocumentCheck' },
+      { label: 'Decision', route: 'decision', icon: 'heroScale' },
+      { label: 'Diligence', route: 'diligence', icon: 'heroDocumentMagnifyingGlass', dimmed: true },
     ],
   },
   {
     label: 'Workspace',
     items: [
-      { label: 'Sources', route: 'sources', icon: 'heroCircleStack' },
-      { label: 'Integrations', route: 'integrations', icon: 'heroPuzzlePiece' },
+      { label: 'Data Sources', route: 'data-sources', icon: 'heroCircleStack' },
       { label: 'Settings', route: 'settings', icon: 'heroCog6Tooth' },
     ],
   },

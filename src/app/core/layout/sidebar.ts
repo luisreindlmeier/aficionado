@@ -29,7 +29,9 @@ import { ProjectSelector } from './project-selector';
                     routerLinkActive
                     ariaCurrentWhenActive="page"
                     (click)="navigate.emit()"
-                    class="flex items-center gap-3 rounded-sm px-3 py-1.5 text-[13px] text-foreground transition-colors hover:bg-accent aria-[current=page]:bg-accent aria-[current=page]:font-medium"
+                    [class.text-foreground]="!item.dimmed"
+                    [class.text-muted-foreground]="item.dimmed"
+                    class="flex items-center gap-3 rounded-sm px-3 py-1.5 text-[13px] transition-colors hover:bg-accent hover:text-foreground aria-[current=page]:bg-accent aria-[current=page]:font-medium"
                   >
                     <ng-icon [name]="item.icon" class="shrink-0" />
                     <span>{{ item.label }}</span>

@@ -12,7 +12,7 @@ const pageRoutes: Routes = NAV_GROUPS.flatMap((group) =>
 );
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  { path: '', redirectTo: 'radar', pathMatch: 'full' },
   ...pageRoutes,
-  { path: '**', redirectTo: 'dashboard' },
+  { path: '**', redirectTo: 'radar' },
 ];
