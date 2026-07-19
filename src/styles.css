@@ -1,39 +1,8 @@
 @import "tailwindcss";
 
-/* ── Typography: Geist (sans) + Tiempos Text (serif UI) ── */
-@font-face {
-  font-family: "Tiempos Text";
-  src: url("/fonts/TiemposText/TiemposText-Regular.otf") format("opentype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Tiempos Text";
-  src: url("/fonts/TiemposText/TiemposText-RegularItalic.otf") format("opentype");
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Tiempos Text";
-  src: url("/fonts/TiemposText/TiemposText-Medium.otf") format("opentype");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Tiempos Text";
-  src: url("/fonts/TiemposText/TiemposText-Semibold.otf") format("opentype");
-  font-weight: 600 700;
-  font-style: normal;
-  font-display: swap;
-}
-
 /* ── Design tokens (black / white minimal) ── */
 @theme {
   --font-sans: "Geist Variable", "Geist", system-ui, -apple-system, sans-serif;
-  --font-serif: "Tiempos Text", Georgia, "Times New Roman", serif;
   --font-brand: "Space Grotesk", var(--font-sans);
 
   --color-bg: #ffffff;
@@ -102,11 +71,6 @@ body {
   font-feature-settings: "liga" 1, "kern" 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-/* Tiempos Text Medium across all serif UI elements */
-.font-serif {
-  font-weight: 500;
 }
 
 /* Titles and headings use the brand display font (Space Grotesk, from the logo kit). */
