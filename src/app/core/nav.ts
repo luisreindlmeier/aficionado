@@ -19,7 +19,6 @@ export const NAV_GROUPS: readonly NavGroup[] = [
     items: [
       { label: 'Radar', route: 'radar', icon: 'heroSignal' },
       { label: 'Pipeline', route: 'pipeline', icon: 'heroRectangleStack' },
-      { label: 'Watchlist', route: 'watchlist', icon: 'heroEye' },
     ],
   },
   {

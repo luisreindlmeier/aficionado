@@ -5,12 +5,20 @@ import { PlaceholderPage } from './features/placeholder-page';
 import { RadarPage } from './features/radar/radar-page';
 import { EvaluationPage } from './features/evaluation/evaluation-page';
 import { DataSourcesPage } from './features/data-sources/data-sources-page';
+import { PipelinePage } from './features/pipeline/pipeline-page';
+import { DecisionPage } from './features/decision/decision-page';
+import { SettingsPage } from './features/settings/settings-page';
+import { DiligencePage } from './features/diligence/diligence-page';
 
 // Real feature pages by route. Anything not listed falls back to PlaceholderPage.
 const FEATURE_PAGES: Readonly<Record<string, Type<unknown>>> = {
   radar: RadarPage,
+  pipeline: PipelinePage,
   evaluation: EvaluationPage,
+  decision: DecisionPage,
+  diligence: DiligencePage,
   'data-sources': DataSourcesPage,
+  settings: SettingsPage,
 };
 
 const pageRoutes: Routes = NAV_GROUPS.flatMap((group) =>

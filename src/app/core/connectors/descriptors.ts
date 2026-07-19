@@ -72,7 +72,7 @@ export const CONNECTORS: readonly ConnectorDescriptor[] = [
     metrics: ['Trajectory'],
     note: 'Free, Internet Archive',
     action: 'connected',
-    live: false,
+    live: true,
   },
   {
     id: 'arxiv',
@@ -100,7 +100,7 @@ export const CONNECTORS: readonly ConnectorDescriptor[] = [
     metrics: ['Proof'],
     note: 'Free, no auth',
     action: 'connected',
-    live: false,
+    live: true,
   },
   {
     id: 'stackexchange',
@@ -114,7 +114,7 @@ export const CONNECTORS: readonly ConnectorDescriptor[] = [
     metrics: ['Proof'],
     note: 'Free, optional key',
     action: 'connected',
-    live: false,
+    live: true,
   },
   {
     id: 'x',

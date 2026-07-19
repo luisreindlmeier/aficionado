@@ -2278,7 +2278,7 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
     "name": "Anthony Fu",
     "initials": "AF",
     "headline": "Vite / Nuxt core team, tireless tooling maintainer",
-    "location": "undefined",
+    "location": "Remote",
     "handles": {
       "github": "antfu",
       "website": "antfu.me"

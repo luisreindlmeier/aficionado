@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>aficionado, the VC brain</title>
+<meta name="description" content="An AI operating system for venture capital that makes the founder judgment measurable, automated and explainable. Built for the Maschmeyer Group, The VC Brain challenge." />
+<!--
+  Self-contained pitch deck. No external requests, no CDN, no web fonts.
+  Fonts: the brand faces are Space Grotesk (titles) and Geist (body). Since no
+  external fonts are allowed, we name them first in each stack and fall back to a
+  clean system sans. On the presenter's own machine, where Space Grotesk and Geist
+  are installed (they are the repo's brand fonts), the deck renders fully in-brand.
+  Navigate: arrow keys, space, PageUp / PageDown, Home / End, or the edge chevrons.
+-->
+<style>
+  :root {
+    --bg: #ffffff;
+    --ink: #000000;
+    --muted: #737373;
+    --faint: #a3a3a3;
+    --border: #e5e5e5;
+    --surface: #fafafa;
+    --hair: 0.5px;
+
+    --proof: #0d9488;
+    --gravity: #7c3aed;
+    --trajectory: #2563eb;
+    --invest: #16a34a;
+    --watch: #d97706;
+
+    --font-body: "Geist", "Geist Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-title: "Space Grotesk", var(--font-body);
+    --font-mono: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
+  }
+
+  /* ── Slide scaffold ───────────────────────────────── */
+  .deck { position: fixed; inset: 0; }
+
+  .slide {
+    position: fixed;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(2rem, 6vw, 6rem) clamp(1.5rem, 7vw, 8rem);
+    overflow-y: auto;
+  }
+  .slide.active { display: flex; animation: fade 0.42s var(--ease, cubic-bezier(0.25,0.46,0.45,0.94)); }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  .wrap { width: 100%; max-width: 1080px; margin: 0 auto; }
+
+  /* ── Typography ───────────────────────────────────── */
+  .font-title { font-family: var(--font-title); font-weight: 500; letter-spacing: -0.02em; }
+
+  .eyebrow {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--muted);
+    font-weight: 400;
+    margin: 0 0 clamp(1rem, 2.4vw, 1.9rem);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .eyebrow .rule { flex: 1; height: var(--hair); background: var(--border); }
+
+  h1.title {
+    font-family: var(--font-title);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+    margin: 0;
+    font-size: clamp(2.1rem, 5.4vw, 4.2rem);
+  }
+  h2.title {
+    font-family: var(--font-title);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+    margin: 0;
+    font-size: clamp(1.7rem, 4vw, 3rem);
+  }
+  .lead {
+    font-size: clamp(1.05rem, 1.7vw, 1.4rem);
+    line-height: 1.42;
+    color: var(--ink);
+    max-width: 46ch;
+    margin: clamp(1.1rem, 2.2vw, 1.7rem) 0 0;
+  }
+  .lead.muted { color: var(--muted); }
+  .sub { color: var(--muted); font-size: clamp(0.95rem, 1.4vw, 1.1rem); line-height: 1.5; }
+
+  p { margin: 0.9rem 0 0; }
+
+  /* ── Cards + grids ────────────────────────────────── */
+  .grid { display: grid; gap: clamp(0.7rem, 1.4vw, 1rem); margin-top: clamp(1.4rem, 2.6vw, 2.2rem); }
+  .g-3 { grid-template-columns: repeat(3, 1fr); }
+  .g-2 { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 820px) { .g-3, .g-2 { grid-template-columns: 1fr; } }
+
+  .card {
+    border: var(--hair) solid var(--border);
+    border-radius: 14px;
+    background: var(--bg);
+    padding: clamp(1.1rem, 1.9vw, 1.5rem);
+  }
+  .card.soft { background: var(--surface); }
+
+  .k { font-family: var(--font-title); font-weight: 500; font-size: 1.06rem; letter-spacing: -0.01em; display: flex; align-items: center; gap: 0.55rem; }
+  .k .w { margin-left: auto; font-family: var(--font-mono); font-size: 0.82rem; color: var(--muted); font-weight: 400; letter-spacing: 0; }
+  .card p, .card .desc { color: var(--muted); font-size: 0.95rem; line-height: 1.46; margin-top: 0.6rem; }
+
+  .dot { width: 9px; height: 9px; border-radius: 999px; background: var(--c, #000); display: inline-block; flex: none; }
+
+  /* ── Numbers, badges, receipts ────────────────────── */
+  .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    border: var(--hair) solid var(--border); border-radius: 999px;
+    padding: 0.28rem 0.7rem; font-size: 0.82rem; color: var(--ink);
+    background: var(--bg); white-space: nowrap;
+  }
+
+  a.receipt {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--faint);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+  }
+  a.receipt:hover { border-bottom-style: solid; }
+  .receipt-line { display: flex; gap: 0.5rem; align-items: baseline; flex-wrap: wrap; margin-top: 0.5rem; color: var(--muted); font-size: 0.9rem; }
+  .src { font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--faint); border: var(--hair) solid var(--border); border-radius: 999px; padding: 0.06rem 0.42rem; }
+
+  ul.clean { list-style: none; padding: 0; margin: clamp(1.2rem,2.4vw,1.9rem) 0 0; }
+  ul.clean li { position: relative; padding: 0 0 0 1.5rem; margin: 0.85rem 0; font-size: clamp(1rem,1.5vw,1.16rem); line-height: 1.45; }
+  ul.clean li::before { content: ""; position: absolute; left: 0; top: 0.62em; width: 6px; height: 6px; border-radius: 999px; background: var(--ink); }
+  ul.clean li .n { color: var(--muted); display: block; font-size: 0.94rem; margin-top: 0.15rem; }
+
+  /* ── Quote slide ──────────────────────────────────── */
+  .quote { font-family: var(--font-title); font-weight: 500; letter-spacing: -0.02em; line-height: 1.12; font-size: clamp(1.9rem, 4.6vw, 3.5rem); margin: 0; }
+  .quote .en { display: block; color: var(--muted); font-size: 0.5em; margin-top: 1rem; letter-spacing: -0.01em; }
+  .cite { margin-top: clamp(1.3rem, 2.4vw, 2rem); color: var(--muted); font-size: 0.95rem; }
+  .hardcut { margin-top: clamp(1.6rem, 3vw, 2.6rem); font-family: var(--font-title); font-weight: 500; font-size: clamp(1.2rem, 2.3vw, 1.7rem); letter-spacing: -0.02em; }
+
+  /* ── Radar table ──────────────────────────────────── */
+  .rows { margin-top: clamp(1.3rem, 2.6vw, 2rem); border-top: var(--hair) solid var(--border); }
+  .row { display: grid; grid-template-columns: 1.4fr auto 6.2rem auto; align-items: center; gap: 1rem; padding: 0.85rem 0.2rem; border-bottom: var(--hair) solid var(--border); }
+  .row .who { font-family: var(--font-title); font-weight: 500; font-size: 1.05rem; }
+  .row .desc { color: var(--muted); font-size: 0.86rem; }
+  .row .score { font-family: var(--font-mono); font-size: 1.15rem; text-align: right; font-variant-numeric: tabular-nums; }
+  @media (max-width: 720px) { .row { grid-template-columns: 1fr auto auto; } .row .desc { display: none; } }
+
+  /* ── Score readout (self-demo) ────────────────────── */
+  .metricline { display: grid; grid-template-columns: auto 3.4rem 1fr; gap: 0.7rem 1rem; align-items: center; padding: 0.7rem 0; border-bottom: var(--hair) solid var(--border); }
+  .metricline .name { font-family: var(--font-title); font-weight: 500; display: flex; align-items: center; gap: 0.5rem; }
+  .metricline .val { font-family: var(--font-mono); font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+  .metricline .val.dim { color: var(--faint); }
+  .metricline .note { color: var(--muted); font-size: 0.9rem; line-height: 1.4; }
+  .metricline .note b { color: var(--ink); font-weight: 500; }
+
+  .verdict { margin-top: clamp(1.1rem, 2vw, 1.5rem); border: var(--hair) solid var(--border); border-radius: 14px; padding: clamp(1rem,1.8vw,1.4rem); background: var(--surface); }
+  .verdict .big { font-family: var(--font-title); font-weight: 500; font-size: clamp(1.15rem,2.1vw,1.55rem); letter-spacing: -0.015em; display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+
+  /* ── Architecture ─────────────────────────────────── */
+  .flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 0.5rem; margin-top: 0.9rem; }
+  .node { border: var(--hair) solid var(--border); border-radius: 10px; padding: 0.6rem 0.8rem; font-size: 0.9rem; background: var(--bg); display: flex; align-items: center; }
+  .node.strong { background: var(--ink); color: var(--bg); }
+  .arrow { align-self: center; color: var(--faint); font-family: var(--font-mono); }
+  .stack { margin-top: clamp(1.3rem,2.4vw,1.9rem); display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+  /* ── Title slide brand mark ───────────────────────── */
+  .mark { display: grid; grid-template-columns: repeat(5, 10px); gap: 6px; width: max-content; margin-bottom: clamp(1.6rem, 3vw, 2.6rem); }
+  .mark span { width: 10px; height: 10px; border-radius: 999px; background: var(--ink); }
+  .mark span.off { background: var(--border); opacity: 0.5; }
+  .wordmark { font-family: var(--font-title); font-weight: 500; letter-spacing: -0.03em; text-transform: lowercase; font-size: clamp(3rem, 9vw, 6.5rem); line-height: 0.95; margin: 0; }
+  .colophon { margin-top: clamp(2rem, 4vw, 3.4rem); display: flex; flex-wrap: wrap; gap: 0.5rem 0.6rem; }
+
+  /* ── Chrome: progress, brand, counter, nav ────────── */
+  .progress { position: fixed; top: 0; left: 0; height: 2px; background: var(--ink); width: 10%; transition: width 0.32s var(--ease, ease); z-index: 40; }
+  .brandtag { position: fixed; top: clamp(1rem,2.4vw,1.7rem); left: clamp(1.2rem,3vw,2.4rem); font-family: var(--font-title); font-weight: 500; letter-spacing: -0.03em; text-transform: lowercase; font-size: 0.95rem; color: var(--ink); z-index: 30; }
+  .counter { position: fixed; bottom: clamp(1rem,2.4vw,1.7rem); right: clamp(1.2rem,3vw,2.4rem); font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); z-index: 30; letter-spacing: 0.02em; }
+  .counter .cur { color: var(--ink); }
+
+  .nav { position: fixed; top: 0; bottom: 0; width: clamp(48px, 8vw, 92px); display: flex; align-items: center; justify-content: center; z-index: 35; background: transparent; border: 0; cursor: pointer; color: var(--faint); transition: color 0.2s ease; }
+  .nav:hover { color: var(--ink); }
+  .nav svg { width: 22px; height: 22px; }
+  .nav-prev { left: 0; } .nav-next { right: 0; }
+  .hint { position: fixed; bottom: clamp(1rem,2.4vw,1.7rem); left: clamp(1.2rem,3vw,2.4rem); font-size: 0.78rem; color: var(--faint); z-index: 30; }
+
+  /* ── Print / PDF export ───────────────────────────── */
+  @media print {
+    body { overflow: visible; }
+    .slide { position: relative; display: flex !important; height: 100vh; page-break-after: always; animation: none; }
+    .progress, .brandtag, .counter, .nav, .hint { display: none !important; }
+  }
+  @media (max-width: 620px) { body { font-size: 15px; } .nav { width: 40px; } }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<div class="brandtag">aficionado</div>
+
+<main class="deck" id="deck">
+
+  <!-- 1. Title -->
+  <section class="slide" id="slide-1">
+    <div class="wrap">
+      <div class="mark" aria-hidden="true">
+        <span class="off"></span><span class="off"></span><span></span><span class="off"></span><span class="off"></span>
+        <span class="off"></span><span></span><span class="off"></span><span></span><span class="off"></span>
+        <span></span><span class="off"></span><span class="off"></span><span class="off"></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span class="off"></span><span class="off"></span><span class="off"></span><span></span>
+      </div>
+      <p class="eyebrow" style="margin-bottom:1.4rem">The VC brain &nbsp;/&nbsp; HackNation and the Maschmeyer Group</p>
+      <h1 class="wordmark">aficionado</h1>
+      <p class="lead" style="max-width:40ch">An AI operating system for venture capital that makes the founder judgment measurable, automated and explainable.</p>
+      <p class="sub" style="margin-top:1rem">An automated founder score, 0 to 100, built from public evidence. Every number traces to its source.</p>
+      <div class="colophon">
+        <span class="badge">Built for the 100k euro pre-seed decision</span>
+        <span class="badge">Angular 22 / Vercel / Claude</span>
+        <span class="badge">Live self-demo inside</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Problem -->
+  <section class="slide" id="slide-2">
+    <div class="wrap">
+      <p class="eyebrow"><span>The problem</span><span class="rule"></span></p>
+      <h2 class="title">At a 100k euro pre-seed check, the founder is the signal. Yet the founder is exactly what VCs still judge by gut.</h2>
+      <div class="grid g-3">
+        <div class="card soft">
+          <div class="k">What gets measured today</div>
+          <p>Decks, TAM slides, revenue projections, logos. At pre-seed there is barely a company to measure, so these numbers are mostly fiction.</p>
+        </div>
+        <div class="card soft">
+          <div class="k">What actually predicts the outcome</div>
+          <p>The person. Whether they can build, whether the market moves toward them, whether they are accelerating. The one part left un-instrumented.</p>
+        </div>
+        <div class="card soft">
+          <div class="k">So the decision stays a gut call</div>
+          <p>Gut calls do not scale across a fund, do not explain themselves in an IC meeting, and quietly encode bias. The signal is human, the method is a shrug.</p>
+        </div>
+      </div>
+      <p class="sub" style="margin-top:1.6rem">You cannot run a fund on instinct alone. You need the instinct, instrumented.</p>
+    </div>
+  </section>
+
+  <!-- 3. Maschmeyer credo -->
+  <section class="slide" id="slide-3">
+    <div class="wrap">
+      <p class="eyebrow"><span>The thesis</span><span class="rule"></span></p>
+      <blockquote class="quote">
+        &ldquo;Fuer mich sind immer die Personen wichtiger als das Produkt.&rdquo;
+        <span class="en">&ldquo;For me, the people are always more important than the product.&rdquo;</span>
+      </blockquote>
+      <p class="cite">Carsten Maschmeyer, brutkasten interview, 22.10.2024. His stated number one investment criterion is the founder team, not the business plan.</p>
+      <p class="hardcut">So we built the machine that judges exactly that.</p>
+    </div>
+  </section>
+
+  <!-- 4. The founder score -->
+  <section class="slide" id="slide-4">
+    <div class="wrap">
+      <p class="eyebrow"><span>The score</span><span class="rule"></span></p>
+      <h2 class="title">One number, 0 to 100. Founder and team only. Public sources only. No questionnaire.</h2>
+      <div class="grid g-3">
+        <div class="card">
+          <div class="k"><span class="dot" style="--c:var(--proof)"></span> Proof <span class="w">35%</span></div>
+          <p class="desc">Has this person demonstrably built, and do they fit this exact market? GitHub finish-rate, shipped products, package downloads, prior ventures, plus founder-market-fit measured by embedding similarity.</p>
+        </div>
+        <div class="card">
+          <div class="k"><span class="dot" style="--c:var(--gravity)"></span> Gravity <span class="w">45%</span></div>
+          <p class="desc">Do strong people, capital and attention move toward them? True reach minus bots, amplification, network authority, co-founders and hires, accelerators, press. The attract-and-sell lens.</p>
+        </div>
+        <div class="card">
+          <div class="k"><span class="dot" style="--c:var(--trajectory)"></span> Trajectory <span class="w">20%</span></div>
+          <p class="desc">Which way, how fast, accelerating? Recency-weighted shipping cadence and learning velocity, where a clean pivot counts as positive, normalized for career age.</p>
+        </div>
+      </div>
+      <p class="sub" style="margin-top:1.5rem">Weights are tunable. The default is the <b style="color:var(--ink);font-weight:500">Maschmeyer preset</b>, which leans hardest on Gravity because your thesis puts the most weight on whether the market moves toward the founder. Two or more founders earn a team-complementarity bonus, never a solo penalty.</p>
+    </div>
+  </section>
+
+  <!-- 5. The USP -->
+  <section class="slide" id="slide-5">
+    <div class="wrap">
+      <p class="eyebrow"><span>Why it is different</span><span class="rule"></span></p>
+      <h2 class="title">Every number is clickable to its source. That is the whole point.</h2>
+      <div class="grid g-3">
+        <div class="card">
+          <div class="k">Evidence receipts</div>
+          <p class="desc">Every score decomposes into features, every feature into receipts, every receipt links to the live source. No black box, no vibes.</p>
+          <div class="receipt-line"><span class="src">github</span><a class="receipt" href="https://github.com/luisreindlmeier/transformer-lob" target="_blank" rel="noopener">transformer-lob, 9 stars</a></div>
+        </div>
+        <div class="card">
+          <div class="k">Calibrated percentiles</div>
+          <p class="desc">Every score is z-normalized against a 56-founder anchor set, from Patrick Collison to founders who did not make it. So 62 means &ldquo;37th percentile, sits next to an early finance-ML founder&rdquo;, not an arbitrary point.</p>
+        </div>
+        <div class="card">
+          <div class="k">Confidence gating</div>
+          <p class="desc">The system will not emit a number it does not trust. Low confidence means the metric is excluded and routed to a human. A red-flag gate can cap the score outright.</p>
+        </div>
+      </div>
+      <p class="hardcut" style="font-size:clamp(1.1rem,2vw,1.5rem);margin-top:1.7rem">It shows its work, and it tells you what it does not know.</p>
+    </div>
+  </section>
+
+  <!-- 6. The Radar -->
+  <section class="slide" id="slide-6">
+    <div class="wrap">
+      <p class="eyebrow"><span>Loop A, always on</span><span class="rule"></span></p>
+      <h2 class="title">It sources founders while you sleep.</h2>
+      <p class="lead muted">A background thesis, &ldquo;technical AI and fintech founders, DACH&rdquo;, runs on a cron and fills the Radar with real, discovered founders. Each one is triaged, then queued for a full evaluation. These are live scores from public data.</p>
+      <div class="rows">
+        <div class="row">
+          <div><div class="who">Anthony Fu</div><div class="desc">Nuxt and Vite ecosystem, core tooling and DX</div></div>
+          <span class="num score">83</span>
+          <span class="badge"><span class="dot" style="--c:var(--invest)"></span> Invest</span>
+          <span class="src">high confidence</span>
+        </div>
+        <div class="row">
+          <div><div class="who">Peter Steinberger</div><div class="desc">PSPDFKit founder, now AI agent tooling, sits next to Sid Sijbrandij</div></div>
+          <span class="num score">82</span>
+          <span class="badge"><span class="dot" style="--c:var(--invest)"></span> Invest</span>
+          <span class="src">high confidence</span>
+        </div>
+        <div class="row">
+          <div><div class="who">Guillermo Rauch</div><div class="desc">Vercel, prolific open source, sits next to David Cramer</div></div>
+          <span class="num score">76</span>
+          <span class="badge"><span class="dot" style="--c:var(--invest)"></span> Invest</span>
+          <span class="src">high confidence</span>
+        </div>
+        <div class="row">
+          <div><div class="who">Evan You</div><div class="desc">Vue and Vite creator, now building VoidZero</div></div>
+          <span class="num score">75</span>
+          <span class="badge"><span class="dot" style="--c:var(--invest)"></span> Invest</span>
+          <span class="src">medium confidence</span>
+        </div>
+        <div class="row">
+          <div><div class="who">Luis Reindlmeier</div><div class="desc">gedonus, an AI copilot for finance decks, discovered on the DACH thesis</div></div>
+          <span class="num score">62</span>
+          <span class="badge"><span class="dot" style="--c:var(--watch)"></span> Watch</span>
+          <span class="src">provisional</span>
+        </div>
+      </div>
+      <p class="sub" style="margin-top:1.4rem">No hardcoding. Luis surfaced on the same thesis as everyone else. Next slide, watch it evaluate him.</p>
+    </div>
+  </section>
+
+  <!-- 7. Live self-demo -->
+  <section class="slide" id="slide-7">
+    <div class="wrap">
+      <p class="eyebrow"><span>Loop B, live</span><span class="rule"></span></p>
+      <h2 class="title">Watch it evaluate its own maker.</h2>
+      <p class="sub" style="margin-top:0.9rem;max-width:60ch">Luis Reindlmeier, co-founder of gedonus, &ldquo;AI drafts your slides. You stay in control.&rdquo; Discovered on the DACH thesis, then scored on real public evidence only.</p>
+
+      <div style="margin-top:1.3rem">
+        <div class="metricline">
+          <span class="name"><span class="dot" style="--c:var(--proof)"></span> Proof</span>
+          <span class="val">62</span>
+          <span class="note">36th percentile, high confidence. Receipt: <a class="receipt" href="https://github.com/luisreindlmeier/transformer-lob" target="_blank" rel="noopener">transformer-lob</a>, a transformer-based limit order book for market making, his bachelor thesis. <b>Founder-market-fit 93 percent</b>, it sits almost exactly on the problem gedonus solves.</span>
+        </div>
+        <div class="metricline">
+          <span class="name"><span class="dot" style="--c:var(--trajectory)"></span> Trajectory</span>
+          <span class="val">63</span>
+          <span class="note">30th percentile, high confidence. Ships continuously, 9 recent public pushes, normalized for a young career.</span>
+        </div>
+        <div class="metricline">
+          <span class="name"><span class="dot" style="--c:var(--gravity)"></span> Gravity</span>
+          <span class="val dim">11</span>
+          <span class="note"><b>Low confidence, excluded.</b> No public X or LinkedIn connected yet, so reach is provisional. The system leaves it out of the composite and flags it rather than guessing.</span>
+        </div>
+      </div>
+
+      <div class="verdict">
+        <div class="big">
+          <span class="num">62 / 100</span>
+          <span class="badge"><span class="dot" style="--c:var(--watch)"></span> Watch, provisional</span>
+          <span class="num" style="color:var(--muted);font-size:0.75em">37th percentile</span>
+        </div>
+        <p class="sub" style="margin-top:0.7rem">Sits next to an early finance-ML founder. Add LinkedIn to complete Gravity and the score re-computes.</p>
+      </div>
+
+      <p class="sub" style="margin-top:1.2rem"><b style="color:var(--ink);font-weight:500">The honesty is the pitch.</b> It judged the founder and the fit, not vanity metrics, and told you exactly what it could not see yet. People over product, made mechanical.</p>
+    </div>
+  </section>
+
+  <!-- 8. Architecture -->
+  <section class="slide" id="slide-8">
+    <div class="wrap">
+      <p class="eyebrow"><span>Under the hood</span><span class="rule"></span></p>
+      <h2 class="title">Two loops. Streamed where it matters, deterministic where it counts.</h2>
+      <div class="grid g-2">
+        <div class="card">
+          <div class="k">Loop A, sourcing</div>
+          <p class="desc">Always-on Vercel Cron. A thesis fans out to discovery workers, results are triaged and pushed to a candidate queue. This is what put Luis on the Radar.</p>
+          <div class="flow">
+            <span class="node">thesis</span><span class="arrow">/</span>
+            <span class="node">discover</span><span class="arrow">/</span>
+            <span class="node">triage</span><span class="arrow">/</span>
+            <span class="node">queue</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="k">Loop B, evaluation</div>
+          <p class="desc">On-demand and durable. An orchestrator fans out to three metric workers in parallel, then a deterministic reducer, red-flag gate and anchor calibration produce the dossier.</p>
+          <div class="flow">
+            <span class="node">fan-out x3</span><span class="arrow">/</span>
+            <span class="node strong">reduce</span><span class="arrow">/</span>
+            <span class="node">gate</span><span class="arrow">/</span>
+            <span class="node">calibrate</span>
+          </div>
+        </div>
+      </div>
+      <ul class="clean" style="margin-top:1.3rem">
+        <li>The LLM extracts and explains. The math decides.<span class="n">The reducer is pure and reproducible. The model never invents the number, so the same evidence always yields the same score.</span></li>
+        <li>The reasoning streams as agent traces, the brain at work.<span class="n">Real server-sent events render the evaluation as it happens. There is no chatbot.</span></li>
+        <li>One connector equals a data adapter, an LLM tool and a UI tile.<span class="n">A single connector registry is the source of truth for both the agent's toolset and the data-sources page. Add a source once, it shows up everywhere.</span></li>
+      </ul>
+      <div class="stack">
+        <span class="badge">Angular 22, zoneless, signals</span>
+        <span class="badge">Vercel Functions and Cron</span>
+        <span class="badge">Vercel AI Gateway, provider-agnostic, Claude</span>
+        <span class="badge">pgvector for founder-market-fit</span>
+        <span class="badge">56-founder anchor calibration</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. Why it wins for Maschmeyer -->
+  <section class="slide" id="slide-9">
+    <div class="wrap">
+      <p class="eyebrow"><span>Why it wins</span><span class="rule"></span></p>
+      <h2 class="title">It operationalizes your thesis.</h2>
+      <div class="grid g-2">
+        <div class="card">
+          <div class="k">Measurable</div>
+          <p class="desc">The founder judgment you make by instinct, now a calibrated 0 to 100 you can rank, filter and track across the whole pipeline.</p>
+        </div>
+        <div class="card">
+          <div class="k">Explainable</div>
+          <p class="desc">Every number clicks through to its live source. Defensible in an IC meeting, auditable after the fact, impossible to hand-wave.</p>
+        </div>
+        <div class="card">
+          <div class="k">Honest</div>
+          <p class="desc">It gates on confidence and flags what it cannot see. It routes the uncertain cases to a human instead of bluffing a number.</p>
+        </div>
+        <div class="card">
+          <div class="k">Your lens</div>
+          <p class="desc">The default preset weights Gravity highest, the attract-and-sell signal you have said matters most in a founder.</p>
+        </div>
+      </div>
+      <p class="hardcut" style="margin-top:1.7rem">People over product, made mechanical, at the speed and scale of a fund.</p>
+    </div>
+  </section>
+
+  <!-- 10. What's next / CTA -->
+  <section class="slide" id="slide-10">
+    <div class="wrap">
+      <p class="eyebrow"><span>What is next</span><span class="rule"></span></p>
+      <h2 class="title">From 56 anchors to a living benchmark.</h2>
+      <ul class="clean">
+        <li>More connectors, deeper Gravity.<span class="n">LinkedIn, X, Crunchbase, patents and press. Each source deepens Gravity and tightens confidence, so fewer founders land provisional.</span></li>
+        <li>Portfolio learning.<span class="n">Feed real outcomes back into the anchor set so the calibration sharpens with every deal the fund does.</span></li>
+        <li>One click from score to memo.<span class="n">Turn any dossier into an IC-ready, fully-sourced diligence memo.</span></li>
+        <li>Persistent, team-wide pipeline.<span class="n">Supabase and pgvector are pre-staged, a sub-two-minute activation, for shared state across the whole investment team.</span></li>
+      </ul>
+      <p class="hardcut" style="margin-top:1.8rem">aficionado. The VC brain that judges the founder, shows its work, and admits what it does not know.</p>
+      <div class="colophon" style="margin-top:1.4rem">
+        <span class="badge">github.com/luisreindlmeier</span>
+        <span class="badge">Luis Reindlmeier, gedonus</span>
+        <span class="badge">The VC Brain, Maschmeyer Group</span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<button class="nav nav-prev" id="prev" aria-label="Previous slide">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 5l-7 7 7 7"/></svg>
+</button>
+<button class="nav nav-next" id="next" aria-label="Next slide">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 5l7 7-7 7"/></svg>
+</button>
+
+<div class="counter"><span class="cur">01</span> / <span class="tot">10</span></div>
+<div class="hint">arrow keys to navigate</div>
+
+<script>
+  (function () {
+    var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+    var total = slides.length;
+    var i = 0;
+    var progress = document.getElementById('progress');
+    var cur = document.querySelector('.counter .cur');
+    document.querySelector('.counter .tot').textContent = String(total).padStart(2, '0');
+
+    function show(n) {
+      i = Math.max(0, Math.min(total - 1, n));
+      for (var k = 0; k < total; k++) slides[k].classList.toggle('active', k === i);
+      cur.textContent = String(i + 1).padStart(2, '0');
+      progress.style.width = ((i + 1) / total * 100) + '%';
+      if (history.replaceState) history.replaceState(null, '', '#slide-' + (i + 1));
+      else location.hash = 'slide-' + (i + 1);
+    }
+    function next() { show(i + 1); }
+    function prev() { show(i - 1); }
+
+    document.addEventListener('keydown', function (e) {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      switch (e.key) {
+        case 'ArrowRight': case 'ArrowDown': case 'PageDown': case ' ': case 'Spacebar':
+          e.preventDefault(); next(); break;
+        case 'ArrowLeft': case 'ArrowUp': case 'PageUp':
+          e.preventDefault(); prev(); break;
+        case 'Home': e.preventDefault(); show(0); break;
+        case 'End': e.preventDefault(); show(total - 1); break;
+      }
+    });
+
+    document.getElementById('next').addEventListener('click', next);
+    document.getElementById('prev').addEventListener('click', prev);
+
+    var m = (location.hash || '').match(/slide-(\d+)/);
+    show(m ? parseInt(m[1], 10) - 1 : 0);
+  })();
+</script>
+</body>
+</html>

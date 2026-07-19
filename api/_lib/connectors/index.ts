@@ -3,11 +3,15 @@ import type {
   ConnectorResult,
   FounderQuery,
 } from '../../../src/app/core/connectors/types';
+import type { Metric } from '../../../src/app/core/metrics';
 import { runGithub } from './github';
 import { runNpm } from './npm';
 import { runPypi } from './pypi';
 import { runArxiv } from './arxiv';
 import { runProductHunt } from './producthunt';
+import { runWayback } from './wayback';
+import { runSemanticScholar } from './semanticscholar';
+import { runStackExchange } from './stackexchange';
 
 export type RunFn = (query: FounderQuery) => Promise<ConnectorResult>;
 
@@ -19,7 +23,19 @@ export const RUNNERS: Partial<Record<ConnectorId, RunFn>> = {
   pypi: runPypi,
   arxiv: runArxiv,
   producthunt: runProductHunt,
+  wayback: runWayback,
+  semanticscholar: runSemanticScholar,
+  stackexchange: runStackExchange,
 };
 
-/** Live connectors that feed the Proof metric. */
-export const PROOF_CONNECTORS: ConnectorId[] = ['github', 'npm', 'pypi', 'arxiv', 'producthunt'];
+// Live connectors grouped by the metric they feed. GitHub feeds all three:
+// its signals carry their own `metric`, so a phase only keeps the ones it asked
+// for. A connector may appear under more than one metric.
+export const METRIC_CONNECTORS: Record<Metric, ConnectorId[]> = {
+  Proof: ['github', 'npm', 'pypi', 'arxiv', 'semanticscholar', 'stackexchange', 'producthunt'],
+  Gravity: ['github'],
+  Trajectory: ['github', 'wayback'],
+};
+
+/** Live connectors that feed the Proof metric (legacy alias for METRIC_CONNECTORS.Proof). */
+export const PROOF_CONNECTORS: ConnectorId[] = METRIC_CONNECTORS.Proof;
