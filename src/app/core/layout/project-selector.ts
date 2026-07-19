@@ -2,7 +2,7 @@ import { Component, HostListener, computed, ElementRef, inject, signal } from '@
 import { NgIcon } from '@ng-icons/core';
 import { Logo } from '../brand/logo';
 
-/** Top-left project / deal switcher. Functional shell — no real data yet. */
+/** Top-left project / deal switcher. Functional shell, no real data yet. */
 @Component({
   selector: 'app-project-selector',
   imports: [NgIcon, Logo],

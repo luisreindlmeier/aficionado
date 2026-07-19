@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
 
-/** Intentionally empty page — only the title, wired from the route data. */
+/** Intentionally empty page: only the title, wired from the route data. */
 @Component({
   selector: 'app-placeholder-page',
   styles: `

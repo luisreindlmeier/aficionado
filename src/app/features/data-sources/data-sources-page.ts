@@ -21,7 +21,7 @@ import {
 } from '@ng-icons/heroicons/outline';
 
 // ─────────────────────────────────────────────────────────────
-// Mock data — hardcoded, typed so it's trivial to edit. Every
+// Mock data, hardcoded and typed so it's trivial to edit. Every
 // source, the founder metric it feeds, and its connection state.
 // `icon` is a real brand glyph (@ng-icons/simple-icons) drawn in
 // the brand's official colour via `color`; sources with no real
@@ -45,24 +45,140 @@ interface DataSource {
 
 const SOURCES: readonly DataSource[] = [
   // Connected
-  { name: 'GitHub', icon: 'simpleGithub', color: '#181717', group: 'Connected', metrics: ['Proof', 'Trajectory'], note: 'Free · GitHub API', action: 'connected' },
-  { name: 'npm downloads', icon: 'simpleNpm', color: '#CB3837', group: 'Connected', metrics: ['Proof'], note: 'Free · no auth', action: 'connected' },
-  { name: 'PyPI stats', icon: 'simplePypi', color: '#3775A9', group: 'Connected', metrics: ['Proof'], note: 'Free · no auth', action: 'connected' },
-  { name: 'Product Hunt', icon: 'simpleProducthunt', color: '#DA552F', group: 'Connected', metrics: ['Proof', 'Trajectory'], note: 'Free · dev token', action: 'connected' },
-  { name: 'Wayback Machine', icon: 'simpleInternetarchive', color: '#666666', group: 'Connected', metrics: ['Trajectory'], note: 'Free · Internet Archive', action: 'connected' },
-  { name: 'arXiv', icon: 'simpleArxiv', color: '#B31B1B', group: 'Connected', metrics: ['Proof'], note: 'Free · no auth', action: 'connected' },
-  { name: 'Semantic Scholar', icon: 'simpleSemanticscholar', color: '#1857B6', group: 'Connected', metrics: ['Proof'], note: 'Free · no auth', action: 'connected' },
-  { name: 'Stack Exchange', icon: 'simpleStackexchange', color: '#1E5397', group: 'Connected', metrics: ['Proof'], note: 'Free · optional key', action: 'connected' },
+  {
+    name: 'GitHub',
+    icon: 'simpleGithub',
+    color: '#181717',
+    group: 'Connected',
+    metrics: ['Proof', 'Trajectory'],
+    note: 'Free, GitHub API',
+    action: 'connected',
+  },
+  {
+    name: 'npm downloads',
+    icon: 'simpleNpm',
+    color: '#CB3837',
+    group: 'Connected',
+    metrics: ['Proof'],
+    note: 'Free, no auth',
+    action: 'connected',
+  },
+  {
+    name: 'PyPI stats',
+    icon: 'simplePypi',
+    color: '#3775A9',
+    group: 'Connected',
+    metrics: ['Proof'],
+    note: 'Free, no auth',
+    action: 'connected',
+  },
+  {
+    name: 'Product Hunt',
+    icon: 'simpleProducthunt',
+    color: '#DA552F',
+    group: 'Connected',
+    metrics: ['Proof', 'Trajectory'],
+    note: 'Free, dev token',
+    action: 'connected',
+  },
+  {
+    name: 'Wayback Machine',
+    icon: 'simpleInternetarchive',
+    color: '#666666',
+    group: 'Connected',
+    metrics: ['Trajectory'],
+    note: 'Free, Internet Archive',
+    action: 'connected',
+  },
+  {
+    name: 'arXiv',
+    icon: 'simpleArxiv',
+    color: '#B31B1B',
+    group: 'Connected',
+    metrics: ['Proof'],
+    note: 'Free, no auth',
+    action: 'connected',
+  },
+  {
+    name: 'Semantic Scholar',
+    icon: 'simpleSemanticscholar',
+    color: '#1857B6',
+    group: 'Connected',
+    metrics: ['Proof'],
+    note: 'Free, no auth',
+    action: 'connected',
+  },
+  {
+    name: 'Stack Exchange',
+    icon: 'simpleStackexchange',
+    color: '#1E5397',
+    group: 'Connected',
+    metrics: ['Proof'],
+    note: 'Free, optional key',
+    action: 'connected',
+  },
   // Available
-  { name: 'X (Twitter)', icon: 'simpleX', color: '#000000', group: 'Available', metrics: ['Gravity', 'Trajectory'], note: 'Third-party API · low cost', action: 'add-key' },
-  { name: 'Handelsregister', icon: 'heroBuildingLibrary', group: 'Available', metrics: ['Proof'], note: 'Third-party API · free tier', action: 'connect' },
-  { name: 'Google Patents', icon: 'heroLightBulb', group: 'Available', metrics: ['Proof'], note: 'BigQuery · free tier', action: 'connect' },
-  { name: 'Devpost', icon: 'simpleDevpost', color: '#003E54', group: 'Available', metrics: ['Proof'], note: 'Scrape / RSS', action: 'connect' },
+  {
+    name: 'X (Twitter)',
+    icon: 'simpleX',
+    color: '#000000',
+    group: 'Available',
+    metrics: ['Gravity', 'Trajectory'],
+    note: 'Third-party API, low cost',
+    action: 'add-key',
+  },
+  {
+    name: 'Handelsregister',
+    icon: 'heroBuildingLibrary',
+    group: 'Available',
+    metrics: ['Proof'],
+    note: 'Third-party API, free tier',
+    action: 'connect',
+  },
+  {
+    name: 'Google Patents',
+    icon: 'heroLightBulb',
+    group: 'Available',
+    metrics: ['Proof'],
+    note: 'BigQuery, free tier',
+    action: 'connect',
+  },
+  {
+    name: 'Devpost',
+    icon: 'simpleDevpost',
+    color: '#003E54',
+    group: 'Available',
+    metrics: ['Proof'],
+    note: 'Scrape / RSS',
+    action: 'connect',
+  },
   // Manual input
-  { name: 'LinkedIn', icon: 'heroBriefcase', group: 'Manual input', metrics: ['Proof', 'Gravity'], note: 'Paste profile (no scraping)', action: 'paste' },
+  {
+    name: 'LinkedIn',
+    icon: 'heroBriefcase',
+    group: 'Manual input',
+    metrics: ['Proof', 'Gravity'],
+    note: 'Paste profile (no scraping)',
+    action: 'paste',
+  },
   // Not supported
-  { name: 'Crunchbase', icon: 'simpleCrunchbase', color: '#0288D1', group: 'Not supported', metrics: [], note: 'Enterprise license only', action: 'unsupported' },
-  { name: 'Evertrace', icon: 'heroChartBar', group: 'Not supported', metrics: [], note: 'Sales-gated', action: 'unsupported' },
+  {
+    name: 'Crunchbase',
+    icon: 'simpleCrunchbase',
+    color: '#0288D1',
+    group: 'Not supported',
+    metrics: [],
+    note: 'Enterprise license only',
+    action: 'unsupported',
+  },
+  {
+    name: 'Evertrace',
+    icon: 'heroChartBar',
+    group: 'Not supported',
+    metrics: [],
+    note: 'Sales-gated',
+    action: 'unsupported',
+  },
 ];
 
 const GROUP_ORDER: readonly Group[] = ['Connected', 'Available', 'Manual input', 'Not supported'];
@@ -101,7 +217,9 @@ const GROUP_ORDER: readonly Group[] = ['Connected', 'Available', 'Manual input',
     <div class="flex min-w-0 flex-1 flex-col overflow-y-auto">
       <div class="mx-auto w-full max-w-5xl px-6 py-8 md:px-8 md:py-10">
         <header>
-          <h1 class="font-serif text-[26px] leading-[1.1] tracking-[-0.01em] text-foreground md:text-[28px]">
+          <h1
+            class="font-serif text-[26px] leading-[1.1] tracking-[-0.01em] text-foreground md:text-[28px]"
+          >
             Data sources
           </h1>
           <p class="mt-2 text-[14px] leading-relaxed text-muted-foreground">

@@ -3,7 +3,7 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroArrowTopRightOnSquare } from '@ng-icons/heroicons/outline';
 
 // ─────────────────────────────────────────────────────────────
-// Mock data — hardcoded for now, typed so it swaps 1:1 for a
+// Mock data, hardcoded for now, typed so it swaps 1:1 for a
 // real API response later. Nothing below this const fetches.
 // ─────────────────────────────────────────────────────────────
 type Source = 'GitHub' | 'X' | 'LinkedIn' | 'Wayback';
@@ -43,13 +43,13 @@ interface FounderDossier {
 const DOSSIER: FounderDossier = {
   name: 'Lena Vogt',
   initials: 'LV',
-  subtitle: 'building dev-tooling for X · Berlin · solo',
+  subtitle: 'building dev-tooling for X, Berlin, solo',
   links: [{ label: 'GitHub' }, { label: 'X' }, { label: 'LinkedIn' }],
   verdict: {
     percentile: 78,
-    comparison: 'vs anchor set · sits next to Guillermo Rauch',
+    comparison: 'vs anchor set, sits next to Guillermo Rauch',
     status: 'Invest',
-    confidence: 'Confidence high · no red flags',
+    confidence: 'Confidence high, no red flags',
   },
   metrics: [
     {
@@ -97,7 +97,7 @@ const DOSSIER: FounderDossier = {
   template: `
     <div class="flex min-w-0 flex-1 flex-col overflow-y-auto">
       <div class="mx-auto w-full max-w-5xl px-6 py-8 md:px-8 md:py-10">
-        <!-- 1 · Founder header — person is primary, company is context -->
+        <!-- 1. Founder header: person is primary, company is context -->
         <header class="flex items-start gap-4">
           <div
             class="grid size-14 shrink-0 place-items-center rounded-full border-[0.5px] border-border bg-surface text-[15px] font-medium text-foreground"
@@ -128,7 +128,7 @@ const DOSSIER: FounderDossier = {
           </div>
         </header>
 
-        <!-- 2 · Verdict -->
+        <!-- 2. Verdict -->
         <section class="mt-6 rounded-xl border-[0.5px] border-border bg-card p-5">
           <div class="flex items-start justify-between gap-4">
             <div>
@@ -156,7 +156,7 @@ const DOSSIER: FounderDossier = {
           </div>
         </section>
 
-        <!-- 3 · Metric cards — stacked, order = weight -->
+        <!-- 3. Metric cards: stacked, order = weight -->
         <section class="mt-4 flex flex-col gap-4">
           @for (metric of dossier.metrics; track metric.name) {
             <article class="rounded-xl border-[0.5px] border-border bg-card p-5">

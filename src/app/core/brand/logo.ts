@@ -1,7 +1,7 @@
 import { Component, computed, input } from '@angular/core';
 
 /**
- * Aficionado brand logo — the graduated dot-matrix "A".
+ * Aficionado brand logo: the graduated dot-matrix "A".
  *
  * The mark is drawn with `fill="currentColor"`, so it inherits the surrounding
  * text color (ink on light surfaces, white on dark ones). Set `[wordmark]="false"`
@@ -38,7 +38,9 @@ import { Component, computed, input } from '@angular/core';
       </svg>
 
       @if (wordmark()) {
-        <span class="brand-wordmark leading-none" [style.fontSize.px]="wordmarkSize()">aficionado</span>
+        <span class="brand-wordmark leading-none" [style.fontSize.px]="wordmarkSize()"
+          >aficionado</span
+        >
       }
     </span>
   `,

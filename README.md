@@ -7,25 +7,25 @@
 ---
 
 Aficionado is the sourcing-to-diligence operating system for VCs: find founders at the
-very earliest stage — before anyone else — then evaluate them, generate an investment
+very earliest stage, before anyone else, then evaluate them, generate an investment
 recommendation, and run diligence, end to end and fully automated.
 
-This repository is the **app shell** — sidebar, header, footer, project selector, and a
+This repository is the **app shell**: sidebar, header, footer, project selector, and a
 ⌘K command palette. No product features yet.
 
 ## Workflow (sidebar)
 
-1. **Sourcing** — surface very-early-stage founders and startups first.
-2. **Evaluation** — assess founders and teams.
-3. **Recommendation** — produce an investment recommendation.
-4. **Diligence** — automated due diligence.
+1. **Sourcing**: surface very-early-stage founders and startups first.
+2. **Evaluation**: assess founders and teams.
+3. **Recommendation**: produce an investment recommendation.
+4. **Diligence**: automated due diligence.
 
 ## Stack
 
-- **Angular 22** — standalone, signals, zoneless change detection
-- **Static SPA** (client-rendered) — deployed on Vercel
+- **Angular 22**: standalone, signals, zoneless change detection
+- **Static SPA** (client-rendered), deployed on Vercel
 - **Tailwind CSS v4**
-- **angular-eslint** + **Prettier** · **TypeScript** (strict) · **Node 22.23** (`.nvmrc`) · **pnpm**
+- **angular-eslint** + **Prettier**, **TypeScript** (strict), **Node 22.23** (`.nvmrc`), **pnpm**
 
 ## Getting started
 
