@@ -27,7 +27,7 @@ export const NAV_GROUPS: readonly NavGroup[] = [
     items: [
       { label: 'Decision', route: 'decision', icon: 'heroScale' },
       { label: 'Evaluation', route: 'evaluation', icon: 'heroClipboardDocumentCheck' },
-      { label: 'Diligence', route: 'diligence', icon: 'heroDocumentMagnifyingGlass', dimmed: true },
+      { label: 'Diligence', route: 'diligence', icon: 'heroDocumentMagnifyingGlass' },
     ],
   },
   {

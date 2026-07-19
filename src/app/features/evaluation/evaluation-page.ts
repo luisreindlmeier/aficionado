@@ -13,6 +13,7 @@ import {
 } from '@ng-icons/heroicons/outline';
 import { DataService } from '../../core/data/data.service';
 import { EvaluationService } from './evaluation.service';
+import { MetricDetail } from './metric-detail';
 import { SectionHeading } from '../../core/ui/section-heading';
 import { METRIC_COLORS } from '../../core/metrics';
 import type { Metric } from '../../core/metrics';
@@ -59,7 +60,7 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
 // replay, and a live streaming "brain at work" panel driven by /api/evaluate.
 @Component({
   selector: 'app-evaluation-page',
-  imports: [NgIcon, RouterLink, SectionHeading],
+  imports: [NgIcon, RouterLink, SectionHeading, MetricDetail],
   viewProviders: [
     provideIcons({
       heroArrowTopRightOnSquare,
@@ -318,8 +319,10 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
               <!-- Metric cards, side by side under the overall score -->
               <div class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
                 @for (m of metricViews(f); track m.key) {
-                  <article
-                    class="flex flex-col rounded-xl border-[0.5px] border-border bg-card p-5"
+                  <button
+                    type="button"
+                    (click)="openMetric(m)"
+                    class="flex flex-col rounded-xl border-[0.5px] border-border bg-card p-5 text-left transition-colors hover:bg-accent"
                   >
                     <div class="flex flex-col items-center gap-4">
                       <!-- donut -->
@@ -380,41 +383,17 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
                       </div>
                     </div>
 
-                    <!-- receipts -->
-                    @if (m.score.receipts?.length) {
-                      <ul
-                        class="mt-4 flex flex-col divide-y-[0.5px] divide-border border-t-[0.5px] border-border"
-                      >
-                        @for (r of m.score.receipts; track $index) {
-                          <li class="flex items-start gap-3 py-3">
-                            <span
-                              class="mt-0.5 shrink-0 rounded-full border-[0.5px] border-border px-2 py-0.5 text-[10px] text-muted-foreground"
-                              >{{ r.connector }}</span
-                            >
-                            <div class="min-w-0 flex-1">
-                              <p class="text-[13px] text-foreground">{{ r.text }}</p>
-                              @if (r.quote) {
-                                <p class="mt-0.5 text-[12px] italic text-muted-foreground">
-                                  {{ r.quote }}
-                                </p>
-                              }
-                            </div>
-                            @if (r.url) {
-                              <a
-                                [href]="normalizeUrl(r.url)"
-                                target="_blank"
-                                rel="noopener"
-                                class="mt-0.5 shrink-0 text-muted-foreground transition-colors hover:text-foreground"
-                                [title]="r.url"
-                              >
-                                <ng-icon name="heroArrowTopRightOnSquare" size="0.85rem" />
-                              </a>
-                            }
-                          </li>
-                        }
-                      </ul>
-                    }
-                  </article>
+                    <!-- evidence affordance: references live in the detail popout -->
+                    <div
+                      class="mt-4 flex items-center justify-between gap-2 border-t-[0.5px] border-border pt-3 text-[12px] text-muted-foreground"
+                    >
+                      <span>{{ evidenceLabel(m) }}</span>
+                      <span class="inline-flex items-center gap-1 text-foreground">
+                        View evidence
+                        <ng-icon name="heroArrowRight" size="0.75rem" />
+                      </span>
+                    </div>
+                  </button>
                 }
               </div>
 
@@ -749,6 +728,10 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
         }
       </div>
     </div>
+
+    @if (activeMetric(); as m) {
+      <app-metric-detail [v]="m" (close)="activeMetric.set(null)" />
+    }
   `,
 })
 export class EvaluationPage {
@@ -811,9 +794,25 @@ export class EvaluationPage {
     });
   }
 
+  protected readonly activeMetric = signal<MetricView | null>(null);
+
+  protected openMetric(m: MetricView): void {
+    this.activeMetric.set(m);
+  }
+
+  protected evidenceLabel(m: MetricView): string {
+    const receipts = m.score.receipts ?? [];
+    if (!receipts.length) return 'No references connected yet';
+    const sources = new Set(receipts.map((r) => r.connector)).size;
+    const refWord = receipts.length === 1 ? 'reference' : 'references';
+    const srcWord = sources === 1 ? 'source' : 'sources';
+    return `${receipts.length} ${refWord} across ${sources} ${srcWord}`;
+  }
+
   protected select(id: string): void {
     this.selectedId.set(id);
     this.resetLive();
+    this.activeMetric.set(null);
   }
 
   protected metricViews(f: Founder): MetricView[] {

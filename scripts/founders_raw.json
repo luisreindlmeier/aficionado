@@ -76,6 +76,103 @@
     "__rl": "52"
   },
   {
+    "handle": "StevWorks",
+    "name": "Stefan Cames",
+    "bio": null,
+    "company": null,
+    "blog": "",
+    "location": null,
+    "followers": 3,
+    "following": 3,
+    "public_repos": 6,
+    "created_at": "2019-07-24T10:45:51Z",
+    "html_url": "https://github.com/StevWorks",
+    "twitter": null,
+    "derived": {
+      "ownedCount": 6,
+      "stars": 1,
+      "forks": 0,
+      "topRepos": [
+        {
+          "name": "Tankrechner",
+          "stars": 1,
+          "lang": "Java",
+          "desc": null,
+          "pushed": "2019-10-05T08:22:36Z",
+          "created": "2019-10-05T08:14:06Z",
+          "url": "https://github.com/StevWorks/Tankrechner",
+          "archived": false
+        },
+        {
+          "name": "agentic-sdlc",
+          "stars": 0,
+          "lang": "JavaScript",
+          "desc": null,
+          "pushed": "2026-06-01T07:19:41Z",
+          "created": "2026-04-27T14:46:22Z",
+          "url": "https://github.com/StevWorks/agentic-sdlc",
+          "archived": false
+        },
+        {
+          "name": "zwickroell-mcp-server",
+          "stars": 0,
+          "lang": "TypeScript",
+          "desc": null,
+          "pushed": "2026-03-20T01:23:04Z",
+          "created": "2026-03-20T01:22:07Z",
+          "url": "https://github.com/StevWorks/zwickroell-mcp-server",
+          "archived": false
+        },
+        {
+          "name": "Hackathon2023",
+          "stars": 0,
+          "lang": "TypeScript",
+          "desc": null,
+          "pushed": "2023-05-09T08:08:55Z",
+          "created": "2023-05-09T08:08:53Z",
+          "url": "https://github.com/StevWorks/Hackathon2023",
+          "archived": false
+        },
+        {
+          "name": "Binomialkoeffizient",
+          "stars": 0,
+          "lang": "Java",
+          "desc": "Rekursiv / Iterativ",
+          "pushed": "2021-01-15T13:00:33Z",
+          "created": "2021-01-15T13:00:26Z",
+          "url": "https://github.com/StevWorks/Binomialkoeffizient",
+          "archived": false
+        },
+        {
+          "name": "BWInf-Runde1",
+          "stars": 0,
+          "lang": "Java",
+          "desc": "Runde 1 - Bundeswettbewerb Informatik 2020",
+          "pushed": "2021-01-15T12:57:23Z",
+          "created": "2021-01-15T12:52:46Z",
+          "url": "https://github.com/StevWorks/BWInf-Runde1",
+          "archived": false
+        }
+      ],
+      "langs": {
+        "JavaScript": 1,
+        "TypeScript": 2,
+        "Java": 3
+      },
+      "byYear": {
+        "2019": 1,
+        "2021": 2,
+        "2023": 1,
+        "2026": 2
+      },
+      "recentEventTypes": {
+        "WatchEvent": 1
+      },
+      "recentEventCount": 1,
+      "lastActive": "2026-07-14T06:43:25Z"
+    }
+  },
+  {
     "handle": "steipete",
     "name": "Peter Steinberger",
     "bio": "Came back from retirement to mess with AI. Clawdfather @OpenClaw\r\n\r\nPreviously: Founder of @PSPDFKit.",

@@ -192,13 +192,47 @@ export interface VentureDecision {
  *  once a venture has two or more evaluated founders; a solo founder has no
  *  team to harmonize yet. */
 export interface TeamAnalysis {
-  readonly score: number; // 0..100, the harmonized team score
+  readonly score: number; // 0..100, the harmonized team score: base x compatibility
+  /** The team's coverage profile run through the founder composite, so it is
+   *  directly comparable to any individual founder's score. */
+  readonly base: number;
+  /** The founders' average profile through the same composite: what a typical
+   *  founder on this team reaches alone. The denominator of compatibility. */
+  readonly soloComposite: number;
+  /** Weakest trusted confidence across the team's covered metrics. */
+  readonly confidence: ConfidenceLevel;
+  /** Confidence per covered metric, inherited from the founder who carries it. */
+  readonly metricConfidence: Readonly<Record<Metric, ConfidenceLevel>>;
   readonly coverage: SkillVector; // combined across founders, max per axis
   readonly gaps: readonly string[];
   readonly redundancies: readonly string[];
   /** Qualitative narrative (e.g. "worked together at X before"), left empty
    *  by the deterministic pass; a future AI pass fills this in. */
   readonly sharedHistory: readonly string[];
+  /** Each evaluated founder's skill vector, so the UI can show who covers what
+   *  behind the harmonized coverage. */
+  readonly perFounder: readonly TeamMember[];
+  /** Team coverage on the three metrics the aficionado score is built from:
+   *  the best founder on Proof, Gravity and Trajectory. */
+  readonly metricCoverage: Readonly<Record<Metric, number>>;
+  /** The multiplier applied to `base`: the team composite over the solo
+   *  composite. 1.00 = identical profiles, 1.19 = 19% more ground covered. */
+  readonly compatibility: number;
+}
+
+/** One evaluated founder's contribution to the team's skill coverage. */
+export interface TeamMember {
+  readonly founderId: string;
+  readonly name: string;
+  readonly initials: string;
+  readonly skills: SkillVector;
+  /** Proof / Gravity / Trajectory, the same three the founder page shows. */
+  readonly metrics: Readonly<Record<Metric, number>>;
+  /** Per-metric confidence, so the team can inherit a trusted metric from
+   *  whichever founder actually has one. */
+  readonly confidences: Readonly<Record<Metric, ConfidenceLevel>>;
+  readonly composite: number;
+  readonly band: Band;
 }
 
 export interface Thesis {

@@ -11,7 +11,9 @@ import {
 } from '@ng-icons/heroicons/outline';
 import { DataService } from '../../core/data/data.service';
 import { SectionHeading } from '../../core/ui/section-heading';
-import type { Founder, SkillVector, Venture } from '../../core/model';
+import { METRIC_COLORS } from '../../core/metrics';
+import type { Metric } from '../../core/metrics';
+import type { Founder, SkillVector, TeamAnalysis, Venture } from '../../core/model';
 
 const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
   { key: 'technical', label: 'Technical' },
@@ -19,6 +21,10 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
   { key: 'domain', label: 'Domain' },
   { key: 'product', label: 'Product' },
 ];
+
+// The same three the founder evaluation is built from, in the same order. The
+// team is read on these, not on a separate vocabulary.
+const METRIC_COLUMNS: readonly Metric[] = ['Proof', 'Gravity', 'Trajectory'];
 
 // The Company dossier: everything the Evaluation page shows about a venture as
 // context, plus what it can't: every founder side by side, and the harmonized
@@ -146,36 +152,187 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
                 <div class="min-w-0 max-w-lg">
                   <p class="text-[12px] font-medium text-muted-foreground">Harmonized team score</p>
                   <p class="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">
-                    Not an average of {{ founders().length }} individual scores, an intelligent read
-                    of how well this team complements each other: broad skill coverage counts for
-                    more than any one founder's number, overlap on the same axis counts for less.
+                    Not an average of {{ founders().length }} individual scores. The team's coverage,
+                    the best founder on each metric, runs through the same composite a founder does,
+                    so the team row below is directly comparable to the founder rows. Compatibility
+                    then multiplies it: how much that coverage beats the founders' average profile.
                   </p>
-                  @if (avgComposite(); as avg) {
-                    <p class="mt-3 text-[12px] text-muted-foreground">
-                      Average of individual scores: {{ avg }}.
-                      @if (t.score > avg) {
-                        Harmonized team score is +{{ t.score - avg }} for complementary coverage.
-                      } @else if (t.score < avg) {
-                        Harmonized team score is {{ t.score - avg }}, coverage overlaps more than
-                        it complements.
-                      } @else {
-                        Harmonized team score matches the average, coverage is exactly what the
-                        founders already carry alone.
-                      }
-                    </p>
-                  }
+                  <p class="mt-3 text-[12px] text-muted-foreground">
+                    This is the venture's verdict above: with two founders evaluated, the team is
+                    the company.
+                  </p>
                 </div>
-                <div class="flex items-baseline gap-2">
-                  <span class="font-title text-[46px] leading-none tracking-[-0.02em] text-foreground">{{
-                    t.score
-                  }}</span>
-                  <span class="text-[13px] text-muted-foreground">/ 100</span>
+                <!-- The score as its arithmetic: base, compatibility multiplier, result -->
+                <div class="flex shrink-0 items-baseline gap-3">
+                  <div class="text-right">
+                    <span class="font-title text-[22px] leading-none text-muted-foreground">{{
+                      t.base
+                    }}</span>
+                    <span class="mt-1 block text-[11px] text-muted-foreground">team</span>
+                  </div>
+                  <span class="text-[15px] text-muted-foreground">&times;</span>
+                  <div class="text-right">
+                    <span class="font-title text-[22px] leading-none text-foreground">{{
+                      multiplierLabel(t.compatibility)
+                    }}</span>
+                    <span class="mt-1 block text-[11px] text-muted-foreground">compatibility</span>
+                  </div>
+                  <span class="text-[15px] text-muted-foreground">=</span>
+                  <div class="flex items-baseline gap-2">
+                    <span
+                      class="font-title text-[46px] leading-none tracking-[-0.02em] text-foreground"
+                      >{{ t.score }}</span
+                    >
+                    <span class="text-[13px] text-muted-foreground">/ 100</span>
+                  </div>
                 </div>
               </div>
 
-              <div class="mt-5 grid gap-4 border-t-[0.5px] border-border pt-4 sm:grid-cols-2">
+              <!-- Founder x metric matrix, on the same Proof / Gravity /
+                   Trajectory the aficionado score is built from -->
+              <div class="mt-5 overflow-x-auto border-t-[0.5px] border-border pt-4">
+                <table class="w-full min-w-[560px] border-collapse text-left">
+                  <thead>
+                    <tr>
+                      <th class="pb-3 text-[12px] font-normal text-muted-foreground">Founder</th>
+                      @for (m of metricColumns; track m) {
+                        <th class="pb-3 pl-4 text-[12px] font-normal text-muted-foreground">
+                          <span class="flex items-center gap-1.5">
+                            <span
+                              class="size-1.5 rounded-full"
+                              [style.background]="metricColor(m)"
+                            ></span>
+                            {{ m }}
+                          </span>
+                        </th>
+                      }
+                      <th
+                        class="pb-3 pl-4 text-right text-[12px] font-normal text-muted-foreground"
+                      >
+                        Score
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (member of t.perFounder; track member.founderId) {
+                      <tr class="border-t-[0.5px] border-border">
+                        <td class="py-3 pr-4">
+                          <span class="flex items-center gap-2.5">
+                            <span
+                              class="grid size-7 shrink-0 place-items-center rounded-full border-[0.5px] border-border bg-surface text-[11px] font-medium text-foreground"
+                              >{{ member.initials }}</span
+                            >
+                            <span class="truncate text-[13px] text-foreground">{{
+                              member.name
+                            }}</span>
+                          </span>
+                        </td>
+                        @for (m of metricColumns; track m) {
+                          <td class="py-3 pl-4">
+                            <span class="flex items-center gap-2">
+                              <span
+                                class="h-1.5 w-16 shrink-0 overflow-hidden rounded-full bg-[#e5e5e5]"
+                              >
+                                <span
+                                  class="block h-full rounded-full"
+                                  [style.width.%]="member.metrics[m]"
+                                  [style.background]="metricColor(m)"
+                                ></span>
+                              </span>
+                              <span class="text-[12px] tabular-nums text-foreground">{{
+                                member.metrics[m]
+                              }}</span>
+                              @if (leads(t, member.founderId, m)) {
+                                <span class="text-[10px] text-muted-foreground">leads</span>
+                              }
+                            </span>
+                          </td>
+                        }
+                        <td class="py-3 pl-4 text-right">
+                          <span class="inline-flex items-center justify-end gap-1.5">
+                            <span
+                              class="size-1.5 rounded-full"
+                              [style.background]="data.bandColor(member.band)"
+                            ></span>
+                            <span class="font-title text-[17px] leading-none tabular-nums text-foreground">{{
+                              member.composite
+                            }}</span>
+                          </span>
+                        </td>
+                      </tr>
+                    }
+                    <!-- Best-of row: one founder carrying a metric carries it
+                         for the whole team, so this is a max, not a mean -->
+                    <tr class="border-t-[0.5px] border-foreground bg-surface">
+                      <td class="rounded-l-lg py-3 pl-3 pr-4">
+                        <span class="text-[12px] font-medium text-foreground">Team coverage</span>
+                        <span class="mt-0.5 block text-[10px] text-muted-foreground"
+                          >best of {{ t.perFounder.length }}</span
+                        >
+                      </td>
+                      @for (m of metricColumns; track m) {
+                        <td class="py-3 pl-4">
+                          <span class="flex items-center gap-2">
+                            <span
+                              class="h-1.5 w-16 shrink-0 overflow-hidden rounded-full bg-[#e5e5e5]"
+                            >
+                              <span
+                                class="block h-full rounded-full"
+                                [style.width.%]="t.metricCoverage[m]"
+                                [style.background]="metricColor(m)"
+                              ></span>
+                            </span>
+                            <span class="font-title text-[17px] leading-none tabular-nums text-foreground">{{
+                              t.metricCoverage[m]
+                            }}</span>
+                          </span>
+                        </td>
+                      }
+                      <td class="rounded-r-lg py-3 pl-4 pr-3 text-right">
+                        <span class="font-title text-[22px] leading-none tabular-nums text-foreground">{{
+                          t.base
+                        }}</span>
+                        <span class="mt-0.5 block text-[10px] text-muted-foreground"
+                          >same composite</span
+                        >
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Compatibility: how well the founders cover for each other -->
+              <div
+                class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t-[0.5px] border-border pt-4"
+              >
+                <span class="text-[12px] text-muted-foreground">Compatibility</span>
+                <span class="font-title text-[20px] leading-none text-foreground">{{
+                  multiplierLabel(t.compatibility)
+                }}</span>
+                <p class="min-w-0 flex-1 text-[12px] text-muted-foreground">
+                  Team {{ t.base }} over the founders' average profile {{ t.soloComposite }}.
+                  {{ compatibilityRead(t.compatibility) }}
+                </p>
+              </div>
+
+              @if (t.sharedHistory.length) {
+                <ul
+                  class="mt-4 flex flex-col gap-1 border-t-[0.5px] border-border pt-4 text-[12px]"
+                >
+                  @for (h of t.sharedHistory; track h) {
+                    <li class="flex items-start gap-2 text-muted-foreground">
+                      <span class="mt-1.5 size-1.5 shrink-0 rounded-full bg-[#a3a3a3]"></span>{{ h }}
+                    </li>
+                  }
+                </ul>
+              }
+            </section>
+
+            <!-- Skill coverage, the layer behind the metrics -->
+            <app-section-heading title="Combined skill coverage" />
+            <section class="rounded-xl border-[0.5px] border-border bg-card p-5">
+              <div class="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <p class="mb-3 text-[12px] text-muted-foreground">Combined skill coverage</p>
                   @for (axis of skillAxes; track axis.key) {
                     <div class="mb-2.5 flex items-center gap-3">
                       <span class="w-20 shrink-0 text-[12px] text-muted-foreground">{{
@@ -256,18 +413,25 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
                       {{ f.headline }}
                     </p>
                     @if (f.score; as s) {
-                      <div class="mt-3 grid max-w-sm grid-cols-4 gap-2">
-                        @for (axis of skillAxes; track axis.key) {
+                      <div class="mt-3 grid max-w-sm grid-cols-3 gap-3">
+                        @for (m of metricViews(s); track m.key) {
                           <div>
                             <div class="h-1 overflow-hidden rounded-full bg-[#e5e5e5]">
                               <div
-                                class="h-full rounded-full bg-foreground"
-                                [style.width.%]="pctOf(s.skills[axis.key])"
+                                class="h-full rounded-full"
+                                [style.width.%]="m.score"
+                                [style.background]="m.color"
                               ></div>
                             </div>
-                            <span class="mt-1 block text-[10px] text-muted-foreground">{{
-                              axis.label
-                            }}</span>
+                            <span
+                              class="mt-1 flex items-baseline gap-1.5 text-[10px] text-muted-foreground"
+                            >
+                              {{ m.key }}
+                              <span class="tabular-nums text-foreground">{{ m.score }}</span>
+                              @if (m.confidence === 'low') {
+                                <span class="text-muted-foreground">unverified</span>
+                              }
+                            </span>
                           </div>
                         }
                       </div>
@@ -305,6 +469,7 @@ export class CompanyPage {
   private readonly location = inject(Location);
 
   protected readonly skillAxes = SKILL_LABELS;
+  protected readonly metricColumns = METRIC_COLUMNS;
 
   private readonly ventureId = signal<string | undefined>(undefined);
   protected readonly venture = computed<Venture | undefined>(() => this.data.venture(this.ventureId()));
@@ -316,14 +481,6 @@ export class CompanyPage {
     );
   });
   protected readonly team = computed(() => this.venture()?.team);
-
-  protected readonly avgComposite = computed<number | undefined>(() => {
-    const scored = this.founders()
-      .map((f) => f.score?.composite)
-      .filter((c): c is number => c != null);
-    if (!scored.length) return undefined;
-    return Math.round(scored.reduce((a, b) => a + b, 0) / scored.length);
-  });
 
   protected readonly foundersTitle = computed(() =>
     this.founders().length === 1 ? 'Founder' : `Founders (${this.founders().length})`,
@@ -347,6 +504,39 @@ export class CompanyPage {
 
   protected pctOf(x: number): number {
     return Math.round(x * 100);
+  }
+
+  protected multiplierLabel(m: number): string {
+    return `${m.toFixed(2)}x`;
+  }
+
+  protected metricColor(m: Metric): string {
+    return METRIC_COLORS[m];
+  }
+
+  /** The founder's three metrics in the same order the Evaluation page shows them. */
+  protected metricViews(
+    s: NonNullable<Founder['score']>,
+  ): readonly { key: Metric; score: number; color: string; confidence: string }[] {
+    return METRIC_COLUMNS.map((key) => {
+      const ms = key === 'Proof' ? s.proof : key === 'Gravity' ? s.gravity : s.trajectory;
+      return { key, score: ms.score, color: METRIC_COLORS[key], confidence: ms.confidence };
+    });
+  }
+
+  /** True when this founder is the single strongest on the metric, so the matrix
+   *  can mark who carries it for the team. */
+  protected leads(t: TeamAnalysis, founderId: string, m: Metric): boolean {
+    const best = t.metricCoverage[m];
+    const holders = t.perFounder.filter((p) => p.metrics[m] === best);
+    return holders.length === 1 && holders[0].founderId === founderId;
+  }
+
+  protected compatibilityRead(c: number): string {
+    if (c >= 1.15)
+      return 'Each founder is strongest where the others are not, so the team covers meaningfully more ground than any of them alone.';
+    if (c >= 1.05) return 'Some genuine complementarity, with partial overlap on the same metrics.';
+    return 'Near-identical profiles, the second founder adds little the first did not already bring.';
   }
 
   protected confColor(c: string): string {
