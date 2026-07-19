@@ -33,6 +33,7 @@ export const NAV_GROUPS: readonly NavGroup[] = [
   {
     label: 'Workspace',
     items: [
+      { label: 'Agent Runs', route: 'agent-runs', icon: 'heroCpuChip' },
       { label: 'Data Sources', route: 'data-sources', icon: 'heroCircleStack' },
       { label: 'Settings', route: 'settings', icon: 'heroCog6Tooth' },
     ],

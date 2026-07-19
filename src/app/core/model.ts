@@ -270,7 +270,18 @@ export interface TraceStep {
   readonly detail?: string;
   readonly metric?: Metric;
   readonly connector?: ConnectorId;
-  readonly kind: 'plan' | 'fetch' | 'extract' | 'reduce' | 'gate' | 'calibrate' | 'done';
+  readonly kind:
+    | 'plan'
+    | 'fetch'
+    | 'extract'
+    | 'reduce'
+    | 'gate'
+    | 'calibrate'
+    | 'done'
+    // LOOP A (sourcing) step kinds.
+    | 'discover'
+    | 'rank'
+    | 'persist';
 }
 
 /** The streaming contract for LOOP B (on-demand evaluation). Server-sent from
@@ -291,3 +302,53 @@ export type EvalEvent =
   | { type: 'final'; score: FounderScore }
   | { type: 'done' }
   | { type: 'error'; message: string };
+
+/** One founder surfaced by the sourcing pass, as streamed and as persisted to
+ *  the Supabase candidate queue. `reason` is the discovery agent's one-liner;
+ *  it is absent when the deterministic triage fallback surfaced the candidate. */
+export interface SourcedCandidate {
+  readonly id: string;
+  readonly name: string;
+  readonly headline?: string;
+  readonly github?: string;
+  readonly thesisId?: string;
+  readonly triage: number;
+  readonly onThesis: boolean;
+  readonly reason?: string;
+  readonly evaluated?: boolean;
+}
+
+/** The streaming contract for LOOP A (thesis sourcing). Server-sent from
+ *  /api/sourcing?stream=1 so the VC can watch the discovery agent work instead
+ *  of only seeing yesterday's cron output. The cron itself keeps using the
+ *  plain JSON response. */
+export type SourcingEvent =
+  | { type: 'trace'; step: TraceStep }
+  | { type: 'thesis'; id?: string; label?: string; keywords: readonly string[] }
+  | { type: 'candidate'; candidate: SourcedCandidate }
+  | {
+      type: 'summary';
+      scanned: number;
+      surfaced: number;
+      persisted: boolean;
+      rankedBy: 'agent' | 'triage';
+    }
+  | { type: 'done' }
+  | { type: 'error'; message: string };
+
+/** A single workflow execution, recorded so the app can show what the agents
+ *  did rather than pointing the user at an external tracing dashboard. */
+export interface AgentRun {
+  readonly id: string;
+  readonly workflow: 'founder-evaluation' | 'thesis-sourcing';
+  /** What the run was about, e.g. the founder or thesis name. */
+  readonly subject: string;
+  readonly startedAt: string;
+  readonly finishedAt?: string;
+  readonly status: 'running' | 'ok' | 'error';
+  readonly trace: readonly TraceStep[];
+  /** Connector tools the agents actually called during the run. */
+  readonly tools: readonly ConnectorId[];
+  readonly summary?: string;
+  readonly error?: string;
+}

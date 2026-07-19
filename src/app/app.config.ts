@@ -17,6 +17,7 @@ import {
   heroScale,
   heroDocumentMagnifyingGlass,
   heroCircleStack,
+  heroCpuChip,
   // project selector
   heroChevronUpDown,
   heroFolderOpen,
@@ -47,6 +48,7 @@ export const appConfig: ApplicationConfig = {
       heroScale,
       heroDocumentMagnifyingGlass,
       heroCircleStack,
+      heroCpuChip,
       heroChevronUpDown,
       heroFolderOpen,
       heroPlus,
