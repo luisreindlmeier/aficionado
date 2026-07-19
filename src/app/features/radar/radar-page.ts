@@ -1,18 +1,19 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { heroArrowRight, heroSignal } from '@ng-icons/heroicons/outline';
+import { heroArrowRight, heroPlus, heroSignal } from '@ng-icons/heroicons/outline';
 import { DataService } from '../../core/data/data.service';
 import { METRIC_COLORS } from '../../core/metrics';
 import type { Founder } from '../../core/model';
+import { ThesisComposer, type ThesisDraft } from './thesis-composer';
 
 // Radar: the always-on sourcing feed. Freshly discovered founders, newest first,
 // each already triaged and scored. This is the home page and it sells the
 // continuous-sourcing USP: open the app and new founders are already waiting.
 @Component({
   selector: 'app-radar-page',
-  imports: [RouterLink, NgIcon],
-  viewProviders: [provideIcons({ heroArrowRight, heroSignal })],
+  imports: [RouterLink, NgIcon, ThesisComposer],
+  viewProviders: [provideIcons({ heroArrowRight, heroPlus, heroSignal })],
   styles: `
     :host {
       display: flex;
@@ -92,9 +93,35 @@ import type { Founder } from '../../core/model';
               [class.hover:bg-accent]="active() !== t.id"
             >
               {{ t.label }}
+              @if (data.isRunnerThesis(t.id)) {
+                <span class="ml-1 text-[10px] text-muted-foreground">runner</span>
+              }
             </button>
           }
+          <button
+            type="button"
+            (click)="showComposer.set(true)"
+            class="inline-flex items-center gap-1 rounded-full border-[0.5px] border-dashed border-border px-3 py-1 text-[12px] text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
+          >
+            <ng-icon name="heroPlus" size="0.75rem" />
+            New thesis
+          </button>
         </div>
+
+        <!-- Sourcing pass status for a runner-created thesis -->
+        @if (data.isRunnerThesis(active())) {
+          <p class="mt-3 inline-flex items-center gap-2 text-[12px] text-muted-foreground">
+            @if (data.sourcingStatus() === 'running') {
+              <span class="live-dot size-1.5 rounded-full bg-foreground"></span>
+              Running sourcing pass for &ldquo;{{ data.thesis(active())?.label }}&rdquo;...
+            } @else {
+              <span class="size-1.5 rounded-full bg-[#16a34a]"></span>
+              Sourcing pass matched {{ data.matchCountFor(active()) }} founder(s) for &ldquo;{{
+                data.thesis(active())?.label
+              }}&rdquo;.
+            }
+          </p>
+        }
 
         <!-- Feed -->
         <div class="mt-5 flex flex-col gap-3">
@@ -179,18 +206,28 @@ import type { Founder } from '../../core/model';
         </div>
       </div>
     </div>
+
+    @if (showComposer()) {
+      <app-thesis-composer (dismiss)="showComposer.set(false)" (create)="onCreateThesis($event)" />
+    }
   `,
 })
 export class RadarPage {
   protected readonly data = inject(DataService);
   protected readonly radar = this.data.radarFeed;
   protected readonly active = this.data.activeThesisId;
+  protected readonly showComposer = signal(false);
   protected readonly lastPass = computed(() => {
     const feed = this.radar();
     if (!feed.length) return 'just now';
     const freshest = feed.reduce((a, b) => (a.discoveredAt > b.discoveredAt ? a : b));
     return this.data.timeAgo(freshest.discoveredAt);
   });
+
+  protected onCreateThesis(draft: ThesisDraft): void {
+    this.data.createThesis(draft);
+    this.showComposer.set(false);
+  }
 
   protected metrics(f: Founder): { label: string; score: number; color: string }[] {
     if (!f.score) return [];

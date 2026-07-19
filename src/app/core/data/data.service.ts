@@ -146,10 +146,82 @@ export class DataService {
     });
   }
 
-  /** The Radar feed: filtered by the active thesis, freshest first. */
+  /** 'running' while a just-created thesis's sourcing pass is scanning the pool. */
+  readonly sourcingStatus = signal<'idle' | 'running'>('idle');
+
+  /** Founder ids matched by a user-created thesis's sourcing pass, keyed by thesis id.
+   *  Only custom theses get an entry here; the curated seed theses keep their
+   *  original, hand-assigned founder.thesisId filtering untouched. */
+  private readonly thesisMatches = signal<Record<string, readonly string[]>>({});
+
+  /** True once a thesis has a runner pass associated with it (custom, user-created). */
+  isRunnerThesis(id: string | undefined): boolean {
+    return !!id && id in this.thesisMatches();
+  }
+
+  matchCountFor(id: string): number {
+    return this.thesisMatches()[id]?.length ?? 0;
+  }
+
+  /** Create a new sourcing thesis from user-specified parameters (label, description,
+   *  focus keywords covering industry / geography / stage) and immediately run a
+   *  sourcing pass against it, mirroring the triage the Loop A cron (`/api/sourcing`)
+   *  runs server-side, applied here against the client-visible founder pool. */
+  createThesis(input: { label: string; description: string; keywords: readonly string[] }): Thesis {
+    const label = input.label.trim();
+    const base = label
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
+    const existingIds = new Set(this.theses().map((t) => t.id));
+    let id = base || 'thesis';
+    let n = 2;
+    while (existingIds.has(id)) {
+      id = `${base}-${n++}`;
+    }
+    const thesis: Thesis = {
+      id,
+      label,
+      description: input.description.trim(),
+      keywords: input.keywords,
+      active: true,
+    };
+    this.theses.update((list) => [...list, thesis]);
+    this.runSourcingPass(thesis);
+    return thesis;
+  }
+
+  /** Simulate a sourcing pass: scan every founder's public-facing text for the
+   *  thesis's keywords and surface the overlapping ones. Runs on a short delay so
+   *  it reads as a real pass rather than an instant filter. */
+  private runSourcingPass(thesis: Thesis): void {
+    this.sourcingStatus.set('running');
+    this.activeThesisId.set(thesis.id);
+    const keywords = thesis.keywords.map((k) => k.toLowerCase()).filter(Boolean);
+    setTimeout(() => {
+      const matches = this.founders()
+        .filter((f) => {
+          if (!keywords.length) return false;
+          const haystack = `${f.name} ${f.headline} ${f.location ?? ''}`.toLowerCase();
+          return keywords.some((k) => haystack.includes(k));
+        })
+        .map((f) => f.id);
+      this.thesisMatches.update((m) => ({ ...m, [thesis.id]: matches }));
+      this.sourcingStatus.set('idle');
+    }, 900);
+  }
+
+  /** The Radar feed: filtered by the active thesis, freshest first. Custom,
+   *  runner-sourced theses filter by their sourcing-pass matches; curated seed
+   *  theses keep their hand-assigned founder.thesisId filtering. */
   readonly radarFeed = computed<readonly Founder[]>(() => {
     const t = this.activeThesisId();
-    const list = this.founders().filter((f) => t === 'all' || f.thesisId === t);
+    const matches = this.thesisMatches();
+    const list = this.founders().filter((f) => {
+      if (t === 'all') return true;
+      if (t in matches) return matches[t].includes(f.id);
+      return f.thesisId === t;
+    });
     return [...list].sort((a, b) => b.discoveredAt.localeCompare(a.discoveredAt));
   });
 
