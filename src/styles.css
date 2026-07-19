@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+/* ── Typography: Geist (sans) + Tiempos Text (serif UI) ── */
+@font-face {
+  font-family: "Tiempos Text";
+  src: url("/fonts/TiemposText/TiemposText-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Tiempos Text";
+  src: url("/fonts/TiemposText/TiemposText-RegularItalic.otf") format("opentype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Tiempos Text";
+  src: url("/fonts/TiemposText/TiemposText-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Tiempos Text";
+  src: url("/fonts/TiemposText/TiemposText-Semibold.otf") format("opentype");
+  font-weight: 600 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── Design tokens (black / white minimal) ── */
+@theme {
+  --font-sans: "Geist Variable", "Geist", system-ui, -apple-system, sans-serif;
+  --font-serif: "Tiempos Text", Georgia, "Times New Roman", serif;
+
+  --color-bg: #ffffff;
+  --color-surface: #f5f5f5;
+  --color-surface-raised: #ffffff;
+  --color-border: #e5e5e5;
+  --color-text: #000000;
+  --color-text-muted: #737373;
+  --color-placeholder: #a3a3a3;
+  --color-control-hover: #ececec;
+  --color-tag-bg: #ebebeb;
+
+  /* shadcn semantic tokens (emit bg-card / text-muted-foreground / border-border / …) */
+  --color-background: #ffffff;
+  --color-foreground: #000000;
+  --color-card: #ffffff;
+  --color-card-foreground: #000000;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #000000;
+  --color-primary: #000000;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #f5f5f5;
+  --color-secondary-foreground: #000000;
+  --color-muted: #f5f5f5;
+  --color-muted-foreground: #737373;
+  --color-accent: #f3f3f3;
+  --color-accent-foreground: #000000;
+  --color-destructive: #dc2626;
+  --color-destructive-foreground: #ffffff;
+  --color-input: #e5e5e5;
+  --color-ring: #000000;
+  --color-success: #16a34a;
+
+  /* Shadows / radius / easing */
+  --shadow-subtle: 0 1px 6px rgba(0, 0, 0, 0.06);
+  --shadow-card: 0 2px 10px rgba(0, 0, 0, 0.08);
+  --shadow-elevated: 0 4px 18px rgba(0, 0, 0, 0.12);
+  --radius-xs: 3px;
+  --radius-sm: 5px;
+  --radius-md: 7px;
+  --radius-full: 999px;
+  --ease-default: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ── Base ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  border-color: var(--color-border);
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.5;
+  font-feature-settings: "liga" 1, "kern" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Tiempos Text Medium across all serif UI elements */
+.font-serif {
+  font-weight: 500;
+}
+
+/* ── Editorial typography ──
+   Small, wide-tracked uppercase eyebrows used by the sidebar + palette. */
+.af-eyebrow {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  line-height: 1.4;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--color-muted-foreground);
+}
+@media (min-width: 768px) {
+  .af-eyebrow {
+    font-size: 12px;
+  }
+}
+
+/* thin, unobtrusive scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+/* interactive elements get a pointer (Tailwind v4 no longer sets it on buttons) */
+button:not(:disabled),
+[role="button"],
+a[href],
+label[for],
+summary {
+  cursor: pointer;
+}

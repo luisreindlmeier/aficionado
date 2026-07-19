@@ -1,0 +1,2 @@
+# Keep Angular HTML templates out of the language stats (show TypeScript)
+*.html linguist-detectable=false
