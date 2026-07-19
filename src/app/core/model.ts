@@ -12,8 +12,12 @@ import type { ConnectorId, Signal } from './connectors/types';
 
 export type Band = 'Invest' | 'Watch' | 'Pass';
 export type ConfidenceLevel = 'high' | 'medium' | 'low';
-export type FounderStatus = 'discovered' | 'watching' | 'evaluating' | 'decided';
-export type PipelineStage = 'Watch' | 'Evaluating' | 'Decided';
+/** Kanban tracking stage on the Pipeline page. Every founder starts
+ *  'Discovered'; from there they're promoted (automatically by a matching
+ *  sourcing pass, or manually) to 'Watch', and finally decided as 'Invest' or
+ *  'Pass', the same vocabulary the scoring verdict (Band) already uses
+ *  everywhere else in the app. */
+export type PipelineStage = 'Discovered' | Band;
 
 /** One atomic evidence receipt: a Signal plus provenance for the UI. */
 export interface Receipt extends Signal {
@@ -119,6 +123,17 @@ export interface Handles {
   readonly scholar?: string;
 }
 
+/** Change since the last time a watched founder's metrics were checked, e.g.
+ *  "+6" on Proof after a new release. Drives the acceleration hints shown on
+ *  the Pipeline page's Watch column; absent when nothing has moved. */
+export interface ScoreDelta {
+  readonly composite: number;
+  readonly proof?: number;
+  readonly gravity?: number;
+  readonly trajectory?: number;
+  readonly since: string; // human label, e.g. "since last week"
+}
+
 /** First-class entity: carries the score, is what you click into. */
 export interface Founder {
   readonly id: string;
@@ -132,8 +147,8 @@ export interface Founder {
   readonly discoveredAt: string; // ISO
   readonly thesisId: string;
   readonly triage: number; // 0..100 cheap discovery score
-  readonly status: FounderStatus;
-  readonly pipeline?: PipelineStage;
+  readonly pipeline: PipelineStage;
+  readonly scoreDelta?: ScoreDelta;
   // Evaluation (Loop B), present once evaluated
   readonly score?: FounderScore;
   readonly fmf?: Fmf;

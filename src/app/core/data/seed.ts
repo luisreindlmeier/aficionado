@@ -334,8 +334,7 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
     "discoveredOffsetMins": 8,
     "thesisId": "dach-ai-fintech",
     "triage": 58,
-    "status": "evaluating",
-    "pipeline": "Evaluating",
+    "pipeline": "Discovered",
     "score": {
       "proof": {
         "metric": "Proof",
@@ -729,8 +728,7 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
     "discoveredOffsetMins": 34,
     "thesisId": "dach-ai-fintech",
     "triage": 80,
-    "status": "decided",
-    "pipeline": "Decided",
+    "pipeline": "Invest",
     "score": {
       "proof": {
         "metric": "Proof",
@@ -1107,8 +1105,7 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
     "discoveredOffsetMins": 72,
     "thesisId": "ai-devtools",
     "triage": 65,
-    "status": "decided",
-    "pipeline": "Decided",
+    "pipeline": "Invest",
     "score": {
       "proof": {
         "metric": "Proof",
@@ -1499,8 +1496,13 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
     "discoveredOffsetMins": 118,
     "thesisId": "oss-maintainers",
     "triage": 62,
-    "status": "watching",
     "pipeline": "Watch",
+    "scoreDelta": {
+      "composite": 7,
+      "proof": 4,
+      "trajectory": 9,
+      "since": "since last week"
+    },
     "score": {
       "proof": {
         "metric": "Proof",
@@ -1891,7 +1893,6 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
     "discoveredOffsetMins": 155,
     "thesisId": "oss-maintainers",
     "triage": 82,
-    "status": "watching",
     "pipeline": "Watch",
     "score": {
       "proof": {
@@ -2288,8 +2289,12 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
     "discoveredOffsetMins": 203,
     "thesisId": "ai-devtools",
     "triage": 85,
-    "status": "watching",
     "pipeline": "Watch",
+    "scoreDelta": {
+      "composite": 3,
+      "gravity": 6,
+      "since": "since last check"
+    },
     "score": {
       "proof": {
         "metric": "Proof",
@@ -2680,7 +2685,6 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
     "discoveredOffsetMins": 240,
     "thesisId": "ai-devtools",
     "triage": 78,
-    "status": "watching",
     "pipeline": "Watch",
     "score": {
       "proof": {
@@ -3053,8 +3057,7 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
     "discoveredOffsetMins": 290,
     "thesisId": "ai-devtools",
     "triage": 70,
-    "status": "discovered",
-    "pipeline": "Watch",
+    "pipeline": "Discovered",
     "score": {
       "proof": {
         "metric": "Proof",
@@ -3426,8 +3429,7 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
     "discoveredOffsetMins": 340,
     "thesisId": "ai-devtools",
     "triage": 64,
-    "status": "discovered",
-    "pipeline": "Watch",
+    "pipeline": "Discovered",
     "score": {
       "proof": {
         "metric": "Proof",
@@ -3799,8 +3801,7 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
     "discoveredOffsetMins": 410,
     "thesisId": "ai-devtools",
     "triage": 67,
-    "status": "discovered",
-    "pipeline": "Watch",
+    "pipeline": "Discovered",
     "score": {
       "proof": {
         "metric": "Proof",
@@ -4172,8 +4173,7 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
     "discoveredOffsetMins": 520,
     "thesisId": "ai-devtools",
     "triage": 67,
-    "status": "discovered",
-    "pipeline": "Watch",
+    "pipeline": "Discovered",
     "score": {
       "proof": {
         "metric": "Proof",

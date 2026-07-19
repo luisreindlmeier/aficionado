@@ -27,7 +27,7 @@ import { SEED_FOUNDERS, SEED_VENTURES, THESES } from './seed';
 // /api-backed source later without touching the pages.
 // ─────────────────────────────────────────────────────────────
 
-const PIPELINE_STAGES: readonly PipelineStage[] = ['Watch', 'Evaluating', 'Decided'];
+const PIPELINE_STAGES: readonly PipelineStage[] = ['Discovered', 'Watch', 'Invest', 'Pass'];
 
 @Injectable({ providedIn: 'root' })
 export class DataService {
@@ -51,13 +51,19 @@ export class DataService {
    *  moment on the self-demo). */
   private readonly gravityOverrides = signal<Record<string, MetricScore>>({});
 
+  /** Manual (or runner-automated) pipeline-stage moves, keyed by founder id.
+   *  Overrides the seed's starting stage without mutating the snapshot. */
+  private readonly pipelineOverrides = signal<Record<string, PipelineStage>>({});
+
   /** Founders with discovery timestamps filled and scores recomputed live. */
   readonly founders = computed<readonly Founder[]>(() => {
     const w = this.weights();
     const overrides = this.gravityOverrides();
+    const stageOverrides = this.pipelineOverrides();
     return SEED_FOUNDERS.map((f) => {
       const discoveredAt = new Date(this.base - f.discoveredOffsetMins * 60_000).toISOString();
-      if (!f.score) return { ...f, discoveredAt } as Founder;
+      const pipeline = stageOverrides[f.id] ?? f.pipeline;
+      if (!f.score) return { ...f, discoveredAt, pipeline } as Founder;
       const gravity = overrides[f.id] ?? f.score.gravity;
       const r = recomputeComposite(
         {
@@ -90,9 +96,14 @@ export class DataService {
         anchorNeighbor: r.anchorNeighbor ?? f.score.anchorNeighbor,
       };
       const note = overrides[f.id] ? undefined : f.note;
-      return { ...f, discoveredAt, score, note } as Founder;
+      return { ...f, discoveredAt, pipeline, score, note } as Founder;
     });
   });
+
+  /** Move a founder to a different pipeline stage, manually. */
+  setPipelineStage(founderId: string, stage: PipelineStage): void {
+    this.pipelineOverrides.update((o) => ({ ...o, [founderId]: stage }));
+  }
 
   /** True once a founder's Gravity has been completed from a pasted profile. */
   gravityCompleted(founderId: string): boolean {
@@ -193,20 +204,28 @@ export class DataService {
 
   /** Simulate a sourcing pass: scan every founder's public-facing text for the
    *  thesis's keywords and surface the overlapping ones. Runs on a short delay so
-   *  it reads as a real pass rather than an instant filter. */
+   *  it reads as a real pass rather than an instant filter. A match is enough
+   *  signal to automatically promote a fresh 'Discovered' founder onto Watch,
+   *  the same way a human would after noticing them. */
   private runSourcingPass(thesis: Thesis): void {
     this.sourcingStatus.set('running');
     this.activeThesisId.set(thesis.id);
     const keywords = thesis.keywords.map((k) => k.toLowerCase()).filter(Boolean);
     setTimeout(() => {
-      const matches = this.founders()
-        .filter((f) => {
-          if (!keywords.length) return false;
-          const haystack = `${f.name} ${f.headline} ${f.location ?? ''}`.toLowerCase();
-          return keywords.some((k) => haystack.includes(k));
-        })
-        .map((f) => f.id);
-      this.thesisMatches.update((m) => ({ ...m, [thesis.id]: matches }));
+      const matches = this.founders().filter((f) => {
+        if (!keywords.length) return false;
+        const haystack = `${f.name} ${f.headline} ${f.location ?? ''}`.toLowerCase();
+        return keywords.some((k) => haystack.includes(k));
+      });
+      this.thesisMatches.update((m) => ({ ...m, [thesis.id]: matches.map((f) => f.id) }));
+      const toPromote = matches.filter((f) => f.pipeline === 'Discovered').map((f) => f.id);
+      if (toPromote.length) {
+        this.pipelineOverrides.update((o) => {
+          const next = { ...o };
+          for (const id of toPromote) next[id] = 'Watch';
+          return next;
+        });
+      }
       this.sourcingStatus.set('idle');
     }, 900);
   }
@@ -227,10 +246,14 @@ export class DataService {
 
   /** Founders grouped by pipeline stage, for the kanban. */
   readonly pipeline = computed<Record<PipelineStage, Founder[]>>(() => {
-    const groups: Record<PipelineStage, Founder[]> = { Watch: [], Evaluating: [], Decided: [] };
+    const groups: Record<PipelineStage, Founder[]> = {
+      Discovered: [],
+      Watch: [],
+      Invest: [],
+      Pass: [],
+    };
     for (const f of this.founders()) {
-      const stage = f.pipeline ?? 'Watch';
-      groups[stage].push(f);
+      groups[f.pipeline].push(f);
     }
     return groups;
   });
@@ -300,7 +323,9 @@ export class DataService {
     return `${days}d ago`;
   }
 
-  bandColor(band: Band | undefined): string {
+  /** Color for a Band verdict or a Pipeline stage; both share the same
+   *  Invest / Watch / Pass vocabulary, plus the neutral 'Discovered' stage. */
+  bandColor(band: PipelineStage | Band | undefined): string {
     switch (band) {
       case 'Invest':
         return '#16a34a';
@@ -308,6 +333,8 @@ export class DataService {
         return '#d97706';
       case 'Pass':
         return '#a3a3a3';
+      case 'Discovered':
+        return '#2563eb';
       default:
         return '#a3a3a3';
     }
