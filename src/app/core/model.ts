@@ -119,6 +119,7 @@ export interface Handles {
   readonly linkedin?: string;
   readonly npm?: string;
   readonly pypi?: string;
+  readonly producthunt?: string;
   readonly website?: string;
   readonly scholar?: string;
 }

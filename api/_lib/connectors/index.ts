@@ -32,7 +32,7 @@ export const RUNNERS: Partial<Record<ConnectorId, RunFn>> = {
 // its signals carry their own `metric`, so a phase only keeps the ones it asked
 // for. A connector may appear under more than one metric.
 export const METRIC_CONNECTORS: Record<Metric, ConnectorId[]> = {
-  Proof: ['github', 'npm', 'pypi', 'arxiv', 'semanticscholar', 'stackexchange', 'producthunt'],
+  Proof: ['github', 'npm', 'pypi', 'arxiv', 'semanticscholar', 'stackexchange'],
   Gravity: ['github'],
   Trajectory: ['github', 'wayback'],
 };

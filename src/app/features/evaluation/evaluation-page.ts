@@ -966,6 +966,7 @@ export class EvaluationPage {
       github: f.handles.github,
       npm: f.handles.npm,
       pypi: f.handles.pypi,
+      producthunt: f.handles.producthunt,
       x: f.handles.x,
       linkedin: f.handles.linkedin,
       domain: f.handles.website,

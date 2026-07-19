@@ -21,6 +21,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     github: body.github,
     npm: body.npm,
     pypi: body.pypi,
+    producthunt: body.producthunt,
     x: body.x,
     linkedin: body.linkedin,
     domain: body.domain,

@@ -58,6 +58,7 @@ export interface FounderQuery {
   readonly github?: string;
   readonly npm?: string;
   readonly pypi?: string;
+  readonly producthunt?: string;
   readonly x?: string;
   readonly linkedin?: string;
   readonly domain?: string;
