@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroArrowTopRightOnSquare, heroExclamationTriangle } from '@ng-icons/heroicons/outline';
+import { METRIC_COLORS } from '../../core/metrics';
 
 // ─────────────────────────────────────────────────────────────
 // Mock data, hardcoded for now, typed so it swaps 1:1 for a
@@ -81,7 +82,7 @@ const DOSSIER: FounderDossier = {
     {
       name: 'Proof',
       score: 74,
-      dot: '#14b8a6',
+      dot: METRIC_COLORS.Proof,
       evidence: [
         { text: 'Shipped 3 products end-to-end', source: 'GitHub' },
         { text: 'Repos starred by senior infra engineers', source: 'GitHub' },
@@ -90,7 +91,7 @@ const DOSSIER: FounderDossier = {
     {
       name: 'Gravity',
       score: 68,
-      dot: '#8b5cf6',
+      dot: METRIC_COLORS.Gravity,
       evidence: [
         { text: 'Followed by 5 notable founders', source: 'X' },
         { text: 'Recruited co-founder: ex-Stripe staff eng', source: 'LinkedIn' },
@@ -99,7 +100,7 @@ const DOSSIER: FounderDossier = {
     {
       name: 'Trajectory',
       score: 81,
-      dot: '#fb7185',
+      dot: METRIC_COLORS.Trajectory,
       evidence: [
         { text: 'Shipping cadence 3× in 6 months', source: 'GitHub' },
         { text: 'Clean pivot after v1', source: 'Wayback' },
@@ -177,7 +178,9 @@ const DOSSIER: FounderDossier = {
             </div>
             <div class="min-w-0 flex-1">
               <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
-                <h2 class="text-[15px] font-semibold text-foreground">{{ dossier.company.name }}</h2>
+                <h2 class="text-[15px] font-semibold text-foreground">
+                  {{ dossier.company.name }}
+                </h2>
                 <span
                   class="rounded-full border-[0.5px] border-border px-2 py-0.5 text-[11px] text-muted-foreground"
                 >
@@ -262,7 +265,9 @@ const DOSSIER: FounderDossier = {
 
               <div class="mt-3 flex items-center justify-center gap-2">
                 <span class="size-2 rounded-full" [style.backgroundColor]="metric.dot"></span>
-                <span class="text-[14px] font-medium text-foreground">{{ metric.name }}</span>
+                <span class="text-[14px] font-medium" [style.color]="metric.dot">{{
+                  metric.name
+                }}</span>
               </div>
 
               <div class="mt-4 flex flex-col gap-3 border-t-[0.5px] border-border pt-4">

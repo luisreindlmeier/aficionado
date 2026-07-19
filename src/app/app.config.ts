@@ -22,8 +22,6 @@ import {
   heroFolderOpen,
   heroPlus,
   heroArrowRightOnRectangle,
-  // footer
-  heroLifebuoy,
   // command palette
   heroChatBubbleLeftRight,
 } from '@ng-icons/heroicons/outline';
@@ -53,7 +51,6 @@ export const appConfig: ApplicationConfig = {
       heroFolderOpen,
       heroPlus,
       heroArrowRightOnRectangle,
-      heroLifebuoy,
       heroChatBubbleLeftRight,
     }),
   ],
