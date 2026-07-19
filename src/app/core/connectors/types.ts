@@ -13,6 +13,7 @@ export type ConnectorId =
   | 'wayback'
   | 'arxiv'
   | 'semanticscholar'
+  | 'openalex'
   | 'stackexchange'
   | 'x'
   | 'handelsregister'
