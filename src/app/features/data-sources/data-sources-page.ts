@@ -13,7 +13,7 @@ import {
   simpleDevpost,
   simpleCrunchbase,
 } from '@ng-icons/simple-icons';
-import { heroBuildingLibrary } from '@ng-icons/heroicons/outline';
+import { heroBuildingLibrary, heroCheck } from '@ng-icons/heroicons/outline';
 import { Metric, METRIC_COLORS } from '../../core/metrics';
 
 // Brand marks not carried by the icon sets, taken from each company's own assets.
@@ -26,17 +26,18 @@ const brandGoogle =
 const brandEvertrace =
   '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="-0.6 -0.6 25.64 25.64"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M12.4857 0.346619H24.0998V11.9566H19.2231C15.5021 11.9566 12.4857 8.94012 12.4857 5.21912V0.346619ZM11.0155 0.346619L6.13883 0.346619C2.41783 0.346619 -0.598633 3.36308 -0.598633 7.08408L-0.598633 11.9566H4.27805C7.99905 11.9566 11.0155 8.94012 11.0155 5.21912V0.346619ZM12.4857 25.0362H24.0998V13.4262H19.2231C15.5021 13.4262 12.4857 16.4427 12.4857 20.1637V25.0362ZM11.0155 25.0362H6.13883C2.41783 25.0362 -0.598633 22.0197 -0.598633 18.2987L-0.598633 13.4262H4.27805C7.99905 13.4262 11.0155 16.4427 11.0155 20.1637V25.0362Z"/></svg>';
 
-// Mock data, hardcoded and typed so it's trivial to edit. Every
-// source, the founder metric it feeds, and its connection state.
-// `icon` is a real brand glyph drawn in the brand's official colour
-// via `color`; sources with no real brand mark fall back to a
-// neutral heroicon (no `color`).
+// Mock data, hardcoded and typed so it's trivial to edit. Every source, its
+// domain, the founder metric it feeds, and its connection state. `icon` is a
+// real brand glyph drawn in the brand's official colour via `color`; sources
+// with no real brand mark fall back to a neutral heroicon (no `color`).
 // Nothing here connects to anything; buttons are visual only.
 type Group = 'Connected' | 'Available' | 'Manual input' | 'Not supported';
 type Action = 'connected' | 'connect' | 'add-key' | 'paste' | 'unsupported';
 
 interface DataSource {
   readonly name: string;
+  readonly domain: string;
+  readonly description: string;
   readonly icon: string;
   /** Official brand colour; omit for neutral heroicon fallbacks. */
   readonly color?: string;
@@ -50,6 +51,8 @@ const SOURCES: readonly DataSource[] = [
   // Connected
   {
     name: 'GitHub',
+    domain: 'github.com',
+    description: 'Repos, stars and contribution history',
     icon: 'simpleGithub',
     color: '#181717',
     group: 'Connected',
@@ -59,6 +62,8 @@ const SOURCES: readonly DataSource[] = [
   },
   {
     name: 'npm downloads',
+    domain: 'npmjs.com',
+    description: 'Package download counts over time',
     icon: 'simpleNpm',
     color: '#CB3837',
     group: 'Connected',
@@ -68,6 +73,8 @@ const SOURCES: readonly DataSource[] = [
   },
   {
     name: 'PyPI stats',
+    domain: 'pypi.org',
+    description: 'Python package download volume',
     icon: 'simplePypi',
     color: '#3775A9',
     group: 'Connected',
@@ -77,6 +84,8 @@ const SOURCES: readonly DataSource[] = [
   },
   {
     name: 'Product Hunt',
+    domain: 'producthunt.com',
+    description: 'Launches, upvotes and maker activity',
     icon: 'simpleProducthunt',
     color: '#DA552F',
     group: 'Connected',
@@ -86,6 +95,8 @@ const SOURCES: readonly DataSource[] = [
   },
   {
     name: 'Wayback Machine',
+    domain: 'web.archive.org',
+    description: 'Historical snapshots of past sites',
     icon: 'simpleInternetarchive',
     color: '#a92e34',
     group: 'Connected',
@@ -95,6 +106,8 @@ const SOURCES: readonly DataSource[] = [
   },
   {
     name: 'arXiv',
+    domain: 'arxiv.org',
+    description: 'Preprints and research authorship',
     icon: 'simpleArxiv',
     color: '#B31B1B',
     group: 'Connected',
@@ -104,6 +117,8 @@ const SOURCES: readonly DataSource[] = [
   },
   {
     name: 'Semantic Scholar',
+    domain: 'semanticscholar.org',
+    description: 'Citations and academic influence',
     icon: 'simpleSemanticscholar',
     color: '#1857B6',
     group: 'Connected',
@@ -113,6 +128,8 @@ const SOURCES: readonly DataSource[] = [
   },
   {
     name: 'Stack Exchange',
+    domain: 'stackexchange.com',
+    description: 'Answers, reputation and expertise',
     icon: 'simpleStackexchange',
     color: '#1E5397',
     group: 'Connected',
@@ -123,6 +140,8 @@ const SOURCES: readonly DataSource[] = [
   // Available
   {
     name: 'X (Twitter)',
+    domain: 'x.com',
+    description: 'Followers, reach and network signal',
     icon: 'simpleX',
     color: '#000000',
     group: 'Available',
@@ -132,6 +151,8 @@ const SOURCES: readonly DataSource[] = [
   },
   {
     name: 'Handelsregister',
+    domain: 'handelsregister.de',
+    description: 'German company filings and officers',
     icon: 'heroBuildingLibrary',
     group: 'Available',
     metrics: ['Proof'],
@@ -140,6 +161,8 @@ const SOURCES: readonly DataSource[] = [
   },
   {
     name: 'Google Patents',
+    domain: 'patents.google.com',
+    description: 'Patent filings and inventorship',
     icon: 'brandGoogle',
     group: 'Available',
     metrics: ['Proof'],
@@ -148,6 +171,8 @@ const SOURCES: readonly DataSource[] = [
   },
   {
     name: 'Devpost',
+    domain: 'devpost.com',
+    description: 'Hackathon projects and wins',
     icon: 'simpleDevpost',
     color: '#003E54',
     group: 'Available',
@@ -158,6 +183,8 @@ const SOURCES: readonly DataSource[] = [
   // Manual input
   {
     name: 'LinkedIn',
+    domain: 'linkedin.com',
+    description: 'Career history and professional network',
     icon: 'brandLinkedin',
     group: 'Manual input',
     metrics: ['Proof', 'Gravity'],
@@ -167,6 +194,8 @@ const SOURCES: readonly DataSource[] = [
   // Not supported
   {
     name: 'Crunchbase',
+    domain: 'crunchbase.com',
+    description: 'Funding rounds and company data',
     icon: 'simpleCrunchbase',
     color: '#0288D1',
     group: 'Not supported',
@@ -176,6 +205,8 @@ const SOURCES: readonly DataSource[] = [
   },
   {
     name: 'Evertrace',
+    domain: 'evertrace.ai',
+    description: 'Early founder detection signals',
     icon: 'brandEvertrace',
     color: '#262626',
     group: 'Not supported',
@@ -204,6 +235,7 @@ const GROUP_ORDER: readonly Group[] = ['Connected', 'Available', 'Manual input',
       simpleDevpost,
       simpleCrunchbase,
       heroBuildingLibrary,
+      heroCheck,
       brandLinkedin,
       brandGoogle,
       brandEvertrace,
@@ -239,21 +271,51 @@ const GROUP_ORDER: readonly Group[] = ['Connected', 'Available', 'Manual input',
 
             <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               @for (source of sourcesIn(group); track source.name) {
-                <div
-                  class="flex flex-col gap-3 rounded-xl border-[0.5px] border-border bg-card p-4"
-                >
-                  <!-- brand + name -->
-                  <div class="flex items-center gap-2.5">
-                    <ng-icon
-                      [name]="source.icon"
-                      size="1.15rem"
-                      class="shrink-0"
-                      [class.text-muted-foreground]="!source.color"
-                      [style.color]="source.color"
-                    />
-                    <span class="min-w-0 truncate text-[14px] font-medium text-foreground">
-                      {{ source.name }}
-                    </span>
+                <div class="flex flex-col gap-3 rounded-xl border-[0.5px] border-border bg-card p-4">
+                  <!-- header: logo + name/domain, status top-right -->
+                  <div class="flex items-start justify-between gap-3">
+                    <div class="flex min-w-0 items-center gap-3">
+                      <span
+                        class="grid size-9 shrink-0 place-items-center rounded-lg border-[0.5px] border-border bg-surface"
+                      >
+                        <ng-icon
+                          [name]="source.icon"
+                          size="1.1rem"
+                          [class.text-muted-foreground]="!source.color"
+                          [style.color]="source.color"
+                        />
+                      </span>
+                      <div class="min-w-0">
+                        <p class="truncate text-[14px] font-medium text-foreground">
+                          {{ source.name }}
+                        </p>
+                        <p class="truncate text-[12px] text-muted-foreground">{{ source.domain }}</p>
+                      </div>
+                    </div>
+
+                    <div class="shrink-0">
+                      @switch (source.action) {
+                        @case ('connected') {
+                          <span
+                            title="Connected"
+                            class="grid size-7 place-items-center rounded-full border border-success/40 text-success"
+                          >
+                            <ng-icon name="heroCheck" size="0.95rem" />
+                          </span>
+                        }
+                        @case ('unsupported') {
+                          <span class="text-[12px] text-muted-foreground">Not supported</span>
+                        }
+                        @default {
+                          <button
+                            type="button"
+                            class="rounded-full border-[0.5px] border-border px-3 py-1 text-[12px] font-medium text-foreground transition-colors hover:bg-accent"
+                          >
+                            {{ actionLabel(source.action) }}
+                          </button>
+                        }
+                      }
+                    </div>
                   </div>
 
                   <!-- metrics -->
@@ -270,34 +332,12 @@ const GROUP_ORDER: readonly Group[] = ['Connected', 'Available', 'Manual input',
                     </div>
                   }
 
-                  <!-- note + status, pinned to the bottom for equal-height tiles -->
-                  <div class="mt-auto flex items-center justify-between gap-2 pt-1">
-                    <span class="min-w-0 truncate text-[12px] text-muted-foreground">
-                      {{ source.note }}
-                    </span>
-                    <div class="shrink-0">
-                      @switch (source.action) {
-                        @case ('connected') {
-                          <span
-                            class="inline-flex items-center gap-1.5 rounded-full border-[0.5px] border-border px-2.5 py-1 text-[12px] text-muted-foreground"
-                          >
-                            <span class="size-1.5 rounded-full bg-success"></span>
-                            Connected
-                          </span>
-                        }
-                        @case ('unsupported') {
-                          <span class="text-[12px] text-muted-foreground">Not supported</span>
-                        }
-                        @default {
-                          <button
-                            type="button"
-                            class="rounded-full border-[0.5px] border-border px-3 py-1 text-[12px] font-medium text-foreground transition-colors hover:bg-accent"
-                          >
-                            {{ actionLabel(source.action) }}
-                          </button>
-                        }
-                      }
-                    </div>
+                  <!-- description + access note -->
+                  <div class="mt-auto">
+                    <p class="text-[12px] leading-relaxed text-foreground">
+                      {{ source.description }}
+                    </p>
+                    <p class="mt-1 text-[11px] text-muted-foreground">{{ source.note }}</p>
                   </div>
                 </div>
               }

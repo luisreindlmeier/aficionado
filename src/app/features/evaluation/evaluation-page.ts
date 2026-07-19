@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroArrowTopRightOnSquare, heroExclamationTriangle } from '@ng-icons/heroicons/outline';
 import { METRIC_COLORS } from '../../core/metrics';
+import { SectionHeading } from '../../core/ui/section-heading';
 
 // ─────────────────────────────────────────────────────────────
 // Mock data, hardcoded for now, typed so it swaps 1:1 for a
@@ -99,7 +100,7 @@ const DOSSIER: FounderDossier = {
 
 @Component({
   selector: 'app-evaluation-page',
-  imports: [NgIcon],
+  imports: [NgIcon, SectionHeading],
   viewProviders: [provideIcons({ heroArrowTopRightOnSquare, heroExclamationTriangle })],
   styles: `
     :host {
@@ -182,7 +183,7 @@ const DOSSIER: FounderDossier = {
         <section class="mt-4 rounded-xl border-[0.5px] border-border bg-card p-5">
           <div class="flex items-start justify-between gap-4">
             <div>
-              <p class="af-eyebrow mb-2">aficionado score</p>
+              <p class="mb-2 text-[12px] font-medium text-muted-foreground">aficionado score</p>
               <div class="flex items-baseline gap-1.5">
                 <span
                   class="font-serif text-[44px] leading-none tracking-[-0.02em] text-foreground"
@@ -208,7 +209,7 @@ const DOSSIER: FounderDossier = {
         </section>
 
         <!-- 4. Key criteria: three donuts side by side, order = weight -->
-        <p class="af-eyebrow mt-8 mb-3">Key criteria</p>
+        <app-section-heading title="Key criteria" />
         <section class="grid grid-cols-1 gap-4 sm:grid-cols-3">
           @for (metric of dossier.metrics; track metric.name) {
             <article class="flex flex-col rounded-xl border-[0.5px] border-border bg-card p-5">
@@ -250,7 +251,7 @@ const DOSSIER: FounderDossier = {
         </section>
 
         <!-- 5. Potential red flags -->
-        <p class="af-eyebrow mt-8 mb-3">Potential red flags</p>
+        <app-section-heading title="Potential red flags" />
         <section
           class="divide-y-[0.5px] divide-border rounded-xl border-[0.5px] border-border bg-card px-5"
         >

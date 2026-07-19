@@ -18,6 +18,10 @@ palette). Product features are not built yet.
   `mx-auto w-full max-w-5xl px-6 py-8 md:px-8 md:py-10` (inside a
   `flex min-w-0 flex-1 flex-col overflow-y-auto` scroll region). Use the available
   width, don't squeeze content into a narrow column.
+- **Section headings**: divide page content into sections with
+  `<app-section-heading title="…">` (`src/app/core/ui/section-heading.ts`), an editorial
+  serif title with a clean divider beneath. Never use the small uppercase eyebrow style
+  (`.af-eyebrow`) for page section headings; that style is for sidebar/nav labels only.
 - **Punctuation**: never use em dashes (`—`) or the middle-dot separator (`·`) anywhere,
   in UI copy, comments, docs, or commit messages. Use commas, colons, periods, or a plain
   slash (` / `) instead. This applies to all content generated in this repo.
