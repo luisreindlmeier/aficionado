@@ -21,7 +21,7 @@ import type {
   TraceStep,
   SkillVector,
 } from '../../core/model';
-import type { ConnectorId, FounderQuery } from '../../core/connectors/types';
+import type { FounderQuery } from '../../core/connectors/types';
 
 interface MetricView {
   readonly key: Metric;
