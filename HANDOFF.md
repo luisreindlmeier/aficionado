@@ -62,11 +62,25 @@ the first 30 to 90 seconds), the line "Fuer mich sind immer die Personen wichtig
 Produkt". Scrub to confirm the exact second, since the source did not expose a timestamp.
 On-screen quote is cited to brutkasten, 22.10.2024.
 
-### 5. Final production deploy
+### 5. Trigger the production deploy (about 1 minute, needed)
 
-The app auto-deploys from `main` on push. For the final cut, connect your domain in Vercel
-and set the production secrets from step 1. Then open the app and verify your own live
-self-evaluation reads as expected.
+All the work is committed and pushed to `main` (github.com/luisreindlmeier/aficionado). The
+code builds green locally and the last 20 auto-deploys built fine on Vercel's Node 24, so it
+is deploy-ready. However, the Vercel GitHub auto-deploy did not fire for tonight's pushes
+(the last live deploy is the pre-work commit from the previous session, and two fresh pushes
+produced no new deployment). This is a Vercel-side webhook or account issue that needs your
+dashboard access, not a code problem.
+
+To go live, do any one of these:
+- Vercel dashboard, aficionado project, Deployments, open the latest `main` commit and click
+  Redeploy. Or click "Create Deployment" from `main`.
+- Or Settings, Git, disconnect and reconnect the GitHub repository, then push once more.
+- Or from a shell logged into your Vercel account (the local CLI is currently signed in as a
+  different account): `vercel --prod` from the repo root.
+
+The domain `aficionado.dev` is already attached, so once a `main` deploy is READY the full
+app is live there. Then set the production secrets from step 1 and verify your live
+self-evaluation.
 
 ## Open notes
 
