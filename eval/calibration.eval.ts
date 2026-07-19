@@ -11,7 +11,7 @@ import {
   recomputeComposite,
   redFlagGate,
   routeToHuman,
-  teamBonus,
+  harmonizedTeamScore,
 } from '../src/app/core/scoring';
 import { ANCHORS } from '../src/app/core/data/anchors';
 import {
@@ -235,25 +235,27 @@ describe('properties', () => {
     expect(clean?.outcome).not.toBe('failed');
   });
 
-  it('a solo founder gets teamBonus 0 (never a penalty)', () => {
+  it('a solo founder has no team to harmonize (returns undefined, never a penalty)', () => {
     const solos: SkillVector[] = [
       { technical: 0.9, commercial: 0.2, domain: 0.2, product: 0.2 },
       { technical: 0.1, commercial: 0.1, domain: 0.1, product: 0.1 },
       { technical: 0.8, commercial: 0.8, domain: 0.8, product: 0.8 },
     ];
-    for (const v of solos) expect(teamBonus([v]).bonus).toBe(0);
+    for (const v of solos) {
+      expect(harmonizedTeamScore([{ skills: v, composite: 70 }])).toBeUndefined();
+    }
   });
 
   it('a complementary two-founder team beats a redundant one', () => {
-    const complementary = teamBonus([
-      { technical: 0.9, commercial: 0.2, domain: 0.2, product: 0.8 },
-      { technical: 0.2, commercial: 0.9, domain: 0.85, product: 0.2 },
-    ]);
-    const redundant = teamBonus([
-      { technical: 0.9, commercial: 0.2, domain: 0.2, product: 0.2 },
-      { technical: 0.85, commercial: 0.2, domain: 0.2, product: 0.2 },
-    ]);
-    expect(complementary.bonus).toBeGreaterThan(redundant.bonus);
+    const complementary = harmonizedTeamScore([
+      { skills: { technical: 0.9, commercial: 0.2, domain: 0.2, product: 0.8 }, composite: 70 },
+      { skills: { technical: 0.2, commercial: 0.9, domain: 0.85, product: 0.2 }, composite: 70 },
+    ])!;
+    const redundant = harmonizedTeamScore([
+      { skills: { technical: 0.9, commercial: 0.2, domain: 0.2, product: 0.2 }, composite: 70 },
+      { skills: { technical: 0.85, commercial: 0.2, domain: 0.2, product: 0.2 }, composite: 70 },
+    ])!;
+    expect(complementary.score).toBeGreaterThan(redundant.score);
     expect(complementary.gaps.length).toBe(0); // full coverage
     expect(redundant.redundancies.length).toBeGreaterThan(0); // overlap flagged
   });
