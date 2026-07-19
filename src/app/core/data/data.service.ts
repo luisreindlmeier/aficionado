@@ -5,9 +5,11 @@ import type {
   ConfidenceLevel,
   Founder,
   FounderScore,
+  Handles,
   MetricScore,
   PipelineStage,
   Receipt,
+  SkillVector,
   Thesis,
   Venture,
   WeightPreset,
@@ -36,10 +38,112 @@ import { SEED_FOUNDERS, SEED_VENTURES, THESES } from './seed';
 
 const PIPELINE_STAGES: readonly PipelineStage[] = ['Discovered', 'Watch', 'Invest', 'Pass'];
 
+const ZERO_SKILLS: SkillVector = { technical: 0, commercial: 0, domain: 0, product: 0 };
+
+/** A cached_dossiers row as served by /api/founders. */
+interface LiveDossier {
+  id: string;
+  name: string;
+  github: string | null;
+  domain: string | null;
+  headline: string | null;
+  thesis_id: string | null;
+  composite: number;
+  raw_composite: number | null;
+  band: string;
+  percentile: number | null;
+  confidence: string | null;
+  capped: boolean;
+  cap_reason: string | null;
+  proof: MetricScore;
+  gravity: MetricScore;
+  trajectory: MetricScore;
+  team: readonly { name: string; skills: SkillVector }[] | null;
+}
+
+const pipelineFor = (band: string): PipelineStage =>
+  band === 'Invest' || band === 'Watch' || band === 'Pass' ? (band as PipelineStage) : 'Discovered';
+
+/** Map a live Supabase dossier onto the raw-seed founder shape the pipeline uses,
+ *  so the rest of DataService (weight re-compute, filters) works unchanged. */
+function mapDossier(r: LiveDossier): Founder & { discoveredOffsetMins: number } {
+  const initials =
+    r.name
+      .split(/\s+/)
+      .map((w) => w[0])
+      .filter(Boolean)
+      .join('')
+      .slice(0, 2)
+      .toUpperCase() || '??';
+  const handles: Handles = {
+    ...(r.github ? { github: r.github } : {}),
+    ...(r.domain ? { website: r.domain } : {}),
+  };
+  const evidenceCount = [r.proof, r.gravity, r.trajectory].reduce(
+    (n, m) => n + (m?.receipts?.length ?? 0),
+    0,
+  );
+  const score: FounderScore = {
+    proof: r.proof,
+    gravity: r.gravity,
+    trajectory: r.trajectory,
+    composite: r.composite,
+    rawComposite: r.raw_composite ?? r.composite,
+    percentile: r.percentile ?? 50,
+    band: (r.band as Band) ?? 'Pass',
+    confidence: (r.confidence as ConfidenceLevel) ?? 'medium',
+    capped: r.capped ?? false,
+    capReason: r.cap_reason ?? undefined,
+    skills: r.team?.[0]?.skills ?? ZERO_SKILLS,
+  };
+  return {
+    id: r.id,
+    name: r.name,
+    initials,
+    headline: r.headline ?? '',
+    handles,
+    ventureId: r.id,
+    discoveredAt: '',
+    discoveredOffsetMins: 5,
+    thesisId: r.thesis_id ?? 'all',
+    triage: Math.round(r.composite),
+    pipeline: pipelineFor(r.band),
+    score,
+    redFlags: [],
+    trajectory: [],
+    evidenceCount,
+  };
+}
+
 @Injectable({ providedIn: 'root' })
 export class DataService {
   /** Session base time; discovery times are computed relative to it. */
   private readonly base = Date.now();
+
+  /** Live dossiers from /api/founders (Supabase). Empty until loaded, or when the
+   *  API is absent (plain `ng serve`) / offline, in which case the seed is used. */
+  private readonly liveRows = signal<readonly (Founder & { discoveredOffsetMins: number })[]>([]);
+
+  /** The founder source: live Supabase dossiers when present, else the seed. */
+  private readonly source = computed(() =>
+    this.liveRows().length ? this.liveRows() : SEED_FOUNDERS,
+  );
+
+  constructor() {
+    void this.loadLive();
+  }
+
+  private async loadLive(): Promise<void> {
+    try {
+      const res = await fetch('/api/founders');
+      if (!res.ok) return;
+      const json = (await res.json()) as { dossiers?: LiveDossier[] };
+      const rows = (json.dossiers ?? []).filter((d) => d?.proof).map(mapDossier);
+      if (rows.length) this.liveRows.set(rows);
+    } catch {
+      /* no API or offline -> keep the committed seed */
+    }
+  }
 
   readonly theses = signal<readonly Thesis[]>(THESES);
 
@@ -96,7 +200,7 @@ export class DataService {
     const w = this.weights();
     const overrides = this.gravityOverrides();
     const stageOverrides = this.pipelineOverrides();
-    return SEED_FOUNDERS.map((f) => {
+    return this.source().map((f) => {
       const discoveredAt = new Date(this.base - f.discoveredOffsetMins * 60_000).toISOString();
       const pipeline = stageOverrides[f.id] ?? f.pipeline;
       if (!f.score) return { ...f, discoveredAt, pipeline } as Founder;
