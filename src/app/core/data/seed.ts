@@ -58,14 +58,96 @@ export const SEED_VENTURES: readonly (Venture & { decidedOffsetMins?: number })[
     "foundedYear": 2025,
     "website": "gedonus.com",
     "founderIds": [
-      "luis-reindlmeier"
+      "luis-reindlmeier",
+      "stefan-cames"
     ],
     "decision": {
       "band": "Watch",
-      "composite": 62,
+      "composite": 50,
       "confidence": "medium",
-      "rationale": "Promising on verified evidence, but Gravity is unverified; revisit as more signal lands.",
-      "routeToHuman": true
+      "rationale": "Team reads at 50 on medium confidence, the founders cover ground each other does not.",
+      "routeToHuman": false
+    },
+    "team": {
+      "score": 50,
+      "base": 44,
+      "soloComposite": 39,
+      "confidence": "medium",
+      "coverage": {
+        "technical": 0.9,
+        "commercial": 0.8,
+        "domain": 0.85,
+        "product": 0.6
+      },
+      "gaps": [],
+      "redundancies": [
+        "Overlap on Domain, more than one founder covers it",
+        "Overlap on Product, more than one founder covers it"
+      ],
+      "sharedHistory": [
+        "Registered partners of gedonus GbR since 2025, named together in the Impressum",
+        "Both based in Frankfurt, inside the finance-team market they sell into",
+        "A third partner, Tim Niklas Sassmannshausen, is not yet evaluated"
+      ],
+      "metricCoverage": {
+        "Proof": 62,
+        "Gravity": 20,
+        "Trajectory": 65
+      },
+      "metricConfidence": {
+        "Proof": "high",
+        "Gravity": "medium",
+        "Trajectory": "high"
+      },
+      "compatibility": 1.13,
+      "perFounder": [
+        {
+          "founderId": "luis-reindlmeier",
+          "name": "Luis Reindlmeier",
+          "initials": "LR",
+          "skills": {
+            "technical": 0.9,
+            "commercial": 0.35,
+            "domain": 0.85,
+            "product": 0.6
+          },
+          "metrics": {
+            "Proof": 62,
+            "Gravity": 13,
+            "Trajectory": 65
+          },
+          "confidences": {
+            "Proof": "high",
+            "Gravity": "low",
+            "Trajectory": "high"
+          },
+          "composite": 63,
+          "band": "Watch"
+        },
+        {
+          "founderId": "stefan-cames",
+          "name": "Stefan Cames",
+          "initials": "SC",
+          "skills": {
+            "technical": 0.55,
+            "commercial": 0.8,
+            "domain": 0.7,
+            "product": 0.6
+          },
+          "metrics": {
+            "Proof": 52,
+            "Gravity": 20,
+            "Trajectory": 50
+          },
+          "confidences": {
+            "Proof": "medium",
+            "Gravity": "medium",
+            "Trajectory": "low"
+          },
+          "composite": 34,
+          "band": "Pass"
+        }
+      ]
     }
   },
   {
@@ -84,9 +166,9 @@ export const SEED_VENTURES: readonly (Venture & { decidedOffsetMins?: number })[
     ],
     "decision": {
       "band": "Invest",
-      "composite": 82,
+      "composite": 84,
       "confidence": "high",
-      "rationale": "Strong across the metrics we can verify; Sid Sijbrandij-tier on our anchor set.",
+      "rationale": "Strong across the metrics we can verify; Evan You-tier on our anchor set.",
       "routeToHuman": false
     },
     "decidedOffsetMins": 1440
@@ -107,7 +189,7 @@ export const SEED_VENTURES: readonly (Venture & { decidedOffsetMins?: number })[
     ],
     "decision": {
       "band": "Invest",
-      "composite": 76,
+      "composite": 77,
       "confidence": "high",
       "rationale": "Strong across the metrics we can verify; David Cramer-tier on our anchor set.",
       "routeToHuman": false
@@ -153,7 +235,7 @@ export const SEED_VENTURES: readonly (Venture & { decidedOffsetMins?: number })[
     ],
     "decision": {
       "band": "Invest",
-      "composite": 82,
+      "composite": 81,
       "confidence": "medium",
       "rationale": "Strong across the metrics we can verify; Sid Sijbrandij-tier on our anchor set.",
       "routeToHuman": false
@@ -176,9 +258,9 @@ export const SEED_VENTURES: readonly (Venture & { decidedOffsetMins?: number })[
     ],
     "decision": {
       "band": "Invest",
-      "composite": 83,
+      "composite": 86,
       "confidence": "high",
-      "rationale": "Strong across the metrics we can verify; Dylan Field-tier on our anchor set.",
+      "rationale": "Strong across the metrics we can verify; Tobias Lütke-tier on our anchor set.",
       "routeToHuman": false
     },
     "decidedOffsetMins": 190
@@ -199,9 +281,9 @@ export const SEED_VENTURES: readonly (Venture & { decidedOffsetMins?: number })[
     ],
     "decision": {
       "band": "Invest",
-      "composite": 78,
+      "composite": 80,
       "confidence": "high",
-      "rationale": "Strong across the metrics we can verify; Robert Nishihara-tier on our anchor set.",
+      "rationale": "Strong across the metrics we can verify; Sindre Sorhus-tier on our anchor set.",
       "routeToHuman": false
     },
     "decidedOffsetMins": 360
@@ -222,9 +304,9 @@ export const SEED_VENTURES: readonly (Venture & { decidedOffsetMins?: number })[
     ],
     "decision": {
       "band": "Invest",
-      "composite": 73,
+      "composite": 75,
       "confidence": "medium",
-      "rationale": "Strong across the metrics we can verify; Daniel Dines-tier on our anchor set.",
+      "rationale": "Strong across the metrics we can verify; Zeno Rocha-tier on our anchor set.",
       "routeToHuman": false
     },
     "decidedOffsetMins": 11520
@@ -244,10 +326,10 @@ export const SEED_VENTURES: readonly (Venture & { decidedOffsetMins?: number })[
       "travis-fischer"
     ],
     "decision": {
-      "band": "Watch",
-      "composite": 67,
+      "band": "Invest",
+      "composite": 70,
       "confidence": "medium",
-      "rationale": "Promising on verified evidence; revisit as more signal lands.",
+      "rationale": "Strong across the metrics we can verify; Theo Browne-tier on our anchor set.",
       "routeToHuman": false
     },
     "decidedOffsetMins": 6000
@@ -268,7 +350,7 @@ export const SEED_VENTURES: readonly (Venture & { decidedOffsetMins?: number })[
     ],
     "decision": {
       "band": "Invest",
-      "composite": 72,
+      "composite": 73,
       "confidence": "medium",
       "rationale": "Strong across the metrics we can verify; Mckay Wrigley-tier on our anchor set.",
       "routeToHuman": false
@@ -291,9 +373,9 @@ export const SEED_VENTURES: readonly (Venture & { decidedOffsetMins?: number })[
     ],
     "decision": {
       "band": "Invest",
-      "composite": 72,
+      "composite": 75,
       "confidence": "medium",
-      "rationale": "Strong across the metrics we can verify; Lee Robinson-tier on our anchor set.",
+      "rationale": "Strong across the metrics we can verify; Zeno Rocha-tier on our anchor set.",
       "routeToHuman": false
     },
     "decidedOffsetMins": 5760
@@ -315,7 +397,7 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
     "discoveredAt": "",
     "discoveredOffsetMins": 8,
     "thesisId": "dach-ai-fintech",
-    "triage": 58,
+    "triage": 59,
     "pipeline": "Discovered",
     "score": {
       "proof": {
@@ -437,12 +519,26 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
             "value": 9,
             "url": "https://github.com/luisreindlmeier/transformer-lob",
             "at": "2026-02-02T23:04:04Z"
+          },
+          {
+            "connector": "handelsregister",
+            "feature": "Founding record",
+            "text": "Registered co-founder and partner of gedonus GbR, Frankfurt",
+            "quote": "Named in the gedonus.com Impressum",
+            "url": "https://gedonus.com",
+            "metric": "Proof"
+          },
+          {
+            "connector": "semanticscholar",
+            "feature": "Research depth",
+            "text": "Bachelor thesis on a transformer-based limit order book, indexed under his Scholar profile",
+            "metric": "Proof"
           }
         ]
       },
       "gravity": {
         "metric": "Gravity",
-        "score": 11,
+        "score": 13,
         "weight": 0.45,
         "percentile": 1,
         "confidence": "low",
@@ -450,7 +546,7 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
         "agreement": 0.35,
         "rationale": "No public X or LinkedIn footprint connected yet. Gravity is provisional and excluded from the composite until a profile is pasted.",
         "by": "heuristic",
-        "z": -3.08,
+        "z": -2.98,
         "features": [
           {
             "key": "reach",
@@ -480,21 +576,21 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
             "receipts": []
           },
           {
-            "key": "amplification",
-            "label": "Amplification",
-            "raw": 10,
-            "display": "low",
-            "z": 0,
-            "contribution": 10,
-            "receipts": []
-          },
-          {
             "key": "backing",
-            "label": "Accelerators / press",
+            "label": "Institutional backing",
             "raw": 22,
             "display": "early",
             "z": 0,
             "contribution": 22,
+            "receipts": []
+          },
+          {
+            "key": "amplification",
+            "label": "Attention momentum",
+            "raw": 10,
+            "display": "low",
+            "z": 0,
+            "contribution": 10,
             "receipts": []
           }
         ],
@@ -518,15 +614,15 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
       },
       "trajectory": {
         "metric": "Trajectory",
-        "score": 63,
+        "score": 65,
         "weight": 0.2,
-        "percentile": 30,
+        "percentile": 32,
         "confidence": "high",
         "completeness": 0.85,
         "agreement": 0.85,
-        "rationale": "Momentum is positive: 9 recent pushes, 1.8 repos/yr, normalised for a 2.3-year career.",
+        "rationale": "Momentum is positive: 9 recent pushes, accelerating against a 1.8/yr baseline.",
         "by": "heuristic",
-        "z": -0.35,
+        "z": -0.21,
         "features": [
           {
             "key": "cadence",
@@ -549,38 +645,37 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
           {
             "key": "accel",
             "label": "Acceleration",
-            "raw": 1.8,
-            "display": "1.8 repos/yr",
+            "raw": 1.3,
+            "display": "1.3x vs baseline",
             "z": 0,
-            "contribution": 61,
+            "contribution": 66,
             "receipts": [
               {
                 "connector": "github",
                 "metric": "Trajectory",
-                "feature": "Career-age slope",
-                "text": "4 repos over 2.3 yrs since joining (2024)",
-                "value": 1.8,
+                "feature": "Acceleration",
+                "text": "4 new repos in the last two years vs a 1.8/yr lifetime baseline",
+                "value": 1.3,
                 "url": "https://github.com/luisreindlmeier",
                 "at": "2024-04-14T12:38:19Z"
               }
             ]
           },
           {
-            "key": "careerage",
-            "label": "Career-age slope",
-            "raw": 2.3,
-            "display": "2.3 yr career",
+            "key": "consistency",
+            "label": "Consistency",
+            "raw": 1,
+            "display": "too new to tell",
             "z": 0,
-            "contribution": 54,
+            "contribution": 45,
             "receipts": [
               {
                 "connector": "github",
                 "metric": "Trajectory",
-                "feature": "Career-age slope",
-                "text": "4 repos over 2.3 yrs since joining (2024)",
-                "value": 1.8,
-                "url": "https://github.com/luisreindlmeier",
-                "at": "2024-04-14T12:38:19Z"
+                "feature": "Consistency",
+                "text": "Shipped public work in 1 of 1 year since the first repo",
+                "value": 1,
+                "url": "https://github.com/luisreindlmeier"
               }
             ]
           },
@@ -606,21 +701,36 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
           {
             "connector": "github",
             "metric": "Trajectory",
-            "feature": "Career-age slope",
-            "text": "4 repos over 2.3 yrs since joining (2024)",
-            "value": 1.8,
+            "feature": "Acceleration",
+            "text": "4 new repos in the last two years vs a 1.8/yr lifetime baseline",
+            "value": 1.3,
             "url": "https://github.com/luisreindlmeier",
             "at": "2024-04-14T12:38:19Z"
+          },
+          {
+            "connector": "github",
+            "metric": "Trajectory",
+            "feature": "Consistency",
+            "text": "Shipped public work in 1 of 1 year since the first repo",
+            "value": 1,
+            "url": "https://github.com/luisreindlmeier"
+          },
+          {
+            "connector": "wayback",
+            "feature": "Off-platform momentum",
+            "text": "gedonus.com captured in the Internet Archive since the 2025 launch",
+            "url": "https://web.archive.org/web/2025/https://gedonus.com",
+            "metric": "Trajectory"
           }
         ]
       },
-      "composite": 62,
-      "rawComposite": 62,
-      "percentile": 37,
+      "composite": 63,
+      "rawComposite": 63,
+      "percentile": 38,
       "band": "Watch",
       "confidence": "medium",
       "capped": false,
-      "anchorNeighbor": "an early finance-ML founder",
+      "anchorNeighbor": "Pim de Witte",
       "skills": {
         "technical": 0.9,
         "commercial": 0.35,
@@ -654,11 +764,6 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
         "text": "Product in private pilot; external adoption not yet measurable",
         "note": "Consistent with a launching-pilots stage",
         "severity": "low"
-      },
-      {
-        "text": "Co-founder not yet evaluated",
-        "note": "Team complementarity is provisional until the second founder is added",
-        "severity": "low"
       }
     ],
     "trajectory": [
@@ -691,8 +796,437 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
         "url": "https://github.com/luisreindlmeier/techem-horizon"
       }
     ],
-    "evidenceCount": 7,
+    "evidenceCount": 11,
     "note": "No public X or LinkedIn footprint connected yet. Gravity is provisional and excluded from the composite until a profile is pasted."
+  },
+  {
+    "id": "stefan-cames",
+    "name": "Stefan Cames",
+    "initials": "SC",
+    "headline": "gedonus co-founder, Deutsche Bank engineering and tech strategy, Frankfurt School Digital Business",
+    "location": "Frankfurt, Germany",
+    "handles": {
+      "github": "StevWorks",
+      "website": "gedonus.com"
+    },
+    "ventureId": "gedonus",
+    "discoveredAt": "",
+    "discoveredOffsetMins": 14,
+    "thesisId": "dach-ai-fintech",
+    "triage": 45,
+    "pipeline": "Discovered",
+    "score": {
+      "proof": {
+        "metric": "Proof",
+        "score": 52,
+        "weight": 0.35,
+        "percentile": 21,
+        "confidence": "medium",
+        "completeness": 0.6,
+        "agreement": 0.6,
+        "rationale": "Real but modest public code: 6 repos over a 7-year account, from a Bundeswettbewerb Informatik submission to a recent MCP server and an agentic-SDLC experiment, all finished rather than abandoned. The weight of his evidence is professional and non-public: Java and web development at Deutsche Bank plus its Tech Strategy team, which does not show up as stars.",
+        "by": "heuristic",
+        "z": -0.74,
+        "features": [
+          {
+            "key": "stars",
+            "label": "Contribution-weighted stars",
+            "raw": 1,
+            "display": "1 adj. stars",
+            "z": 0,
+            "contribution": 6,
+            "receipts": [
+              {
+                "connector": "github",
+                "metric": "Proof",
+                "feature": "Shipping record",
+                "text": "6 public repos, 1 stars across owned work",
+                "value": 1,
+                "url": "https://github.com/StevWorks",
+                "at": "2019-07-24T10:45:51Z"
+              }
+            ]
+          },
+          {
+            "key": "finish",
+            "label": "Shipping finish-rate",
+            "raw": 100,
+            "display": "100% finished",
+            "z": 0,
+            "contribution": 71,
+            "receipts": [
+              {
+                "connector": "github",
+                "metric": "Proof",
+                "feature": "Flagship build",
+                "text": "Tankrechner: 1 stars, Java",
+                "value": 1,
+                "url": "https://github.com/StevWorks/Tankrechner",
+                "at": "2019-10-05T08:14:06Z"
+              }
+            ]
+          },
+          {
+            "key": "downloads",
+            "label": "Package downloads",
+            "raw": 0,
+            "display": "none public",
+            "z": 0,
+            "contribution": 0,
+            "receipts": []
+          },
+          {
+            "key": "research",
+            "label": "Research depth",
+            "raw": 30,
+            "display": "notable",
+            "z": 0,
+            "contribution": 30,
+            "receipts": []
+          },
+          {
+            "key": "fmf",
+            "label": "Founder-market-fit",
+            "raw": 86,
+            "display": "86% match",
+            "z": 0,
+            "contribution": 86,
+            "receipts": [
+              {
+                "connector": "linkedin",
+                "feature": "Professional engineering record",
+                "text": "Deutsche Bank: Java and web development, plus a Tech Strategy team internship",
+                "quote": "Technology delivery combined with IT-transformation strategy",
+                "metric": "Proof"
+              }
+            ]
+          }
+        ],
+        "receipts": [
+          {
+            "connector": "github",
+            "metric": "Proof",
+            "feature": "Shipping record",
+            "text": "6 public repos, 1 stars across owned work",
+            "value": 1,
+            "url": "https://github.com/StevWorks",
+            "at": "2019-07-24T10:45:51Z"
+          },
+          {
+            "connector": "github",
+            "metric": "Proof",
+            "feature": "Flagship build",
+            "text": "Tankrechner: 1 stars, Java",
+            "value": 1,
+            "url": "https://github.com/StevWorks/Tankrechner",
+            "at": "2019-10-05T08:14:06Z"
+          },
+          {
+            "connector": "linkedin",
+            "feature": "Professional engineering record",
+            "text": "Deutsche Bank: Java and web development, plus a Tech Strategy team internship",
+            "quote": "Technology delivery combined with IT-transformation strategy",
+            "metric": "Proof"
+          },
+          {
+            "connector": "handelsregister",
+            "feature": "Founding record",
+            "text": "Registered co-founder and partner of gedonus GbR, with Luis Reindlmeier and Tim Niklas Sassmannshausen",
+            "quote": "Named in the gedonus.com Impressum",
+            "url": "https://gedonus.com",
+            "metric": "Proof"
+          },
+          {
+            "connector": "semanticscholar",
+            "feature": "Research depth",
+            "text": "Verified Google Scholar profile for student publications and theses",
+            "metric": "Proof"
+          }
+        ]
+      },
+      "gravity": {
+        "metric": "Gravity",
+        "score": 20,
+        "weight": 0.45,
+        "percentile": 1,
+        "confidence": "medium",
+        "completeness": 0.6,
+        "agreement": 0.6,
+        "rationale": "A real, verifiable footprint that is early-career rather than thin: elected to the Frankfurt School Student Council 2025 for Finance and Sponsoring, a Deutsche Bank affiliation, a Google Scholar profile and an active LinkedIn presence in both German and English. Institutional credibility ahead of audience; there is no X reach yet.",
+        "by": "heuristic",
+        "z": -2.6,
+        "features": [
+          {
+            "key": "reach",
+            "label": "True reach",
+            "raw": 3,
+            "display": "3 followers",
+            "z": 0,
+            "contribution": 5,
+            "receipts": [
+              {
+                "connector": "github",
+                "metric": "Gravity",
+                "feature": "True reach",
+                "text": "3 GitHub followers",
+                "value": 3,
+                "url": "https://github.com/StevWorks"
+              }
+            ]
+          },
+          {
+            "key": "authority",
+            "label": "Network authority",
+            "raw": 34,
+            "display": "thin",
+            "z": 0,
+            "contribution": 34,
+            "receipts": []
+          },
+          {
+            "key": "backing",
+            "label": "Institutional backing",
+            "raw": 20,
+            "display": "early",
+            "z": 0,
+            "contribution": 20,
+            "receipts": []
+          },
+          {
+            "key": "amplification",
+            "label": "Attention momentum",
+            "raw": 26,
+            "display": "low",
+            "z": 0,
+            "contribution": 26,
+            "receipts": []
+          }
+        ],
+        "receipts": [
+          {
+            "connector": "github",
+            "metric": "Gravity",
+            "feature": "True reach",
+            "text": "3 GitHub followers",
+            "value": 3,
+            "url": "https://github.com/StevWorks"
+          },
+          {
+            "connector": "linkedin",
+            "feature": "Institutional standing",
+            "text": "Elected to the Frankfurt School Student Council 2025, office for Finance and Sponsoring",
+            "quote": "Elected office, so the standing is voted for rather than claimed",
+            "metric": "Gravity"
+          },
+          {
+            "connector": "linkedin",
+            "feature": "Education",
+            "text": "BSc Frankfurt School of Finance and Management, focus Digital Business, plus 8 months in the USA",
+            "metric": "Gravity"
+          }
+        ]
+      },
+      "trajectory": {
+        "metric": "Trajectory",
+        "score": 50,
+        "weight": 0.2,
+        "percentile": 12,
+        "confidence": "low",
+        "completeness": 0.3,
+        "agreement": 0.35,
+        "rationale": "GitHub cadence understates him. His public pushes are near zero because the last two years of work, Deutsche Bank engineering, the gedonus product and an event-photography business, are private or off-platform. Momentum is excluded from the composite until a non-code source is connected.",
+        "by": "heuristic",
+        "z": -1.21,
+        "features": [
+          {
+            "key": "cadence",
+            "label": "Recent cadence",
+            "raw": 0,
+            "display": "0 pushes",
+            "z": 0,
+            "contribution": 2,
+            "receipts": [
+              {
+                "connector": "github",
+                "metric": "Trajectory",
+                "feature": "Recent cadence",
+                "text": "0 recent public pushes, last active 2026-07-14",
+                "value": 0,
+                "url": "https://github.com/StevWorks"
+              }
+            ]
+          },
+          {
+            "key": "accel",
+            "label": "Acceleration",
+            "raw": 1.4,
+            "display": "1.4x vs baseline",
+            "z": 0,
+            "contribution": 68,
+            "receipts": [
+              {
+                "connector": "github",
+                "metric": "Trajectory",
+                "feature": "Acceleration",
+                "text": "2 new repos in the last two years vs a 0.9/yr lifetime baseline",
+                "value": 1.4,
+                "url": "https://github.com/StevWorks",
+                "at": "2019-07-24T10:45:51Z"
+              }
+            ]
+          },
+          {
+            "key": "consistency",
+            "label": "Consistency",
+            "raw": 4,
+            "display": "4/8 yrs active",
+            "z": 0,
+            "contribution": 50,
+            "receipts": [
+              {
+                "connector": "github",
+                "metric": "Trajectory",
+                "feature": "Consistency",
+                "text": "Shipped public work in 4 of 8 years since the first repo",
+                "value": 4,
+                "url": "https://github.com/StevWorks"
+              }
+            ]
+          },
+          {
+            "key": "recency",
+            "label": "Ship recency",
+            "raw": 5,
+            "display": "5d ago",
+            "z": 0,
+            "contribution": 94,
+            "receipts": []
+          }
+        ],
+        "receipts": [
+          {
+            "connector": "github",
+            "metric": "Trajectory",
+            "feature": "Recent cadence",
+            "text": "0 recent public pushes, last active 2026-07-14",
+            "value": 0,
+            "url": "https://github.com/StevWorks"
+          },
+          {
+            "connector": "github",
+            "metric": "Trajectory",
+            "feature": "Acceleration",
+            "text": "2 new repos in the last two years vs a 0.9/yr lifetime baseline",
+            "value": 1.4,
+            "url": "https://github.com/StevWorks",
+            "at": "2019-07-24T10:45:51Z"
+          },
+          {
+            "connector": "github",
+            "metric": "Trajectory",
+            "feature": "Consistency",
+            "text": "Shipped public work in 4 of 8 years since the first repo",
+            "value": 4,
+            "url": "https://github.com/StevWorks"
+          },
+          {
+            "connector": "linkedin",
+            "feature": "Off-platform momentum",
+            "text": "2025: co-founded gedonus GbR, graduated, and took elected office in the same year",
+            "metric": "Trajectory"
+          }
+        ]
+      },
+      "composite": 34,
+      "rawComposite": 34,
+      "percentile": 2,
+      "band": "Pass",
+      "confidence": "low",
+      "capped": false,
+      "anchorNeighbor": "a domain-expert career-switcher",
+      "skills": {
+        "technical": 0.55,
+        "commercial": 0.8,
+        "domain": 0.7,
+        "product": 0.6
+      }
+    },
+    "fmf": {
+      "similarity": 0.86,
+      "rationale": "He builds for the room he has sat in: Java and web development plus a tech-strategy internship at Deutsche Bank, a Digital Business degree at Frankfurt School, and an elected Finance and Sponsoring office. gedonus sells slide automation to exactly those finance teams, so the customer, the workflow and the buyer are all first-hand knowledge rather than research.",
+      "receipts": [
+        {
+          "connector": "linkedin",
+          "feature": "Professional engineering record",
+          "text": "Deutsche Bank: Java and web development, plus a Tech Strategy team internship",
+          "quote": "Technology delivery combined with IT-transformation strategy",
+          "metric": "Proof"
+        }
+      ]
+    },
+    "redFlags": [
+      {
+        "text": "Public code footprint is early-career and low-star",
+        "note": "His production work at Deutsche Bank and on gedonus is private, not absent",
+        "severity": "low"
+      },
+      {
+        "text": "Near-zero public commit cadence in the last 12 months",
+        "note": "Consistent with private enterprise and product work",
+        "severity": "low"
+      },
+      {
+        "text": "Runs an event-photography business alongside gedonus",
+        "note": "Split attention to watch, not a coherence flag at pre-seed",
+        "severity": "low"
+      }
+    ],
+    "trajectory": [
+      {
+        "date": "2019-10",
+        "value": 30,
+        "label": "Tankrechner (1★)",
+        "kind": "ship",
+        "url": "https://github.com/StevWorks/Tankrechner"
+      },
+      {
+        "date": "2021-01",
+        "value": 42,
+        "label": "BWInf-Runde1",
+        "kind": "ship",
+        "url": "https://github.com/StevWorks/BWInf-Runde1"
+      },
+      {
+        "date": "2021-01",
+        "value": 54,
+        "label": "Binomialkoeffizient",
+        "kind": "ship",
+        "url": "https://github.com/StevWorks/Binomialkoeffizient"
+      },
+      {
+        "date": "2023-05",
+        "value": 66,
+        "label": "Hackathon2023",
+        "kind": "ship",
+        "url": "https://github.com/StevWorks/Hackathon2023"
+      },
+      {
+        "date": "2026-03",
+        "value": 78,
+        "label": "zwickroell-mcp-server",
+        "kind": "ship",
+        "url": "https://github.com/StevWorks/zwickroell-mcp-server"
+      },
+      {
+        "date": "2026-04",
+        "value": 90,
+        "label": "agentic-sdlc",
+        "kind": "ship",
+        "url": "https://github.com/StevWorks/agentic-sdlc"
+      }
+    ],
+    "evidenceCount": 12,
+    "note": "Most of his evidence is off GitHub: Deutsche Bank, Frankfurt School, an elected AStA office and a Google Scholar profile. Trajectory is measured from public code only, so it is excluded from the composite until a non-code source is connected."
   },
   {
     "id": "peter-steinberger",
@@ -709,7 +1243,7 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
     "discoveredAt": "",
     "discoveredOffsetMins": 34,
     "thesisId": "dach-ai-fintech",
-    "triage": 80,
+    "triage": 87,
     "pipeline": "Invest",
     "score": {
       "proof": {
@@ -825,15 +1359,15 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
       },
       "gravity": {
         "metric": "Gravity",
-        "score": 81,
+        "score": 79,
         "weight": 0.45,
-        "percentile": 69,
+        "percentile": 63,
         "confidence": "high",
         "completeness": 0.85,
         "agreement": 0.85,
         "rationale": "52,480 followers with high network authority; people and attention move toward them.",
         "by": "heuristic",
-        "z": 0.67,
+        "z": 0.56,
         "features": [
           {
             "key": "reach",
@@ -863,21 +1397,21 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
             "receipts": []
           },
           {
-            "key": "amplification",
-            "label": "Amplification",
-            "raw": 78,
-            "display": "strong",
-            "z": 0,
-            "contribution": 78,
-            "receipts": []
-          },
-          {
             "key": "backing",
-            "label": "Accelerators / press",
+            "label": "Institutional backing",
             "raw": 70,
             "display": "notable",
             "z": 0,
             "contribution": 70,
+            "receipts": []
+          },
+          {
+            "key": "amplification",
+            "label": "Attention momentum",
+            "raw": 78,
+            "display": "strong",
+            "z": 0,
+            "contribution": 78,
             "receipts": []
           }
         ],
@@ -894,15 +1428,15 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
       },
       "trajectory": {
         "metric": "Trajectory",
-        "score": 70,
+        "score": 87,
         "weight": 0.2,
-        "percentile": 45,
+        "percentile": 95,
         "confidence": "high",
         "completeness": 0.85,
         "agreement": 0.85,
-        "rationale": "Momentum is positive: 57 recent pushes, 4.0 repos/yr, normalised for a 17.4-year career.",
+        "rationale": "Momentum is steep: 57 recent pushes, accelerating against a 4.0/yr baseline.",
         "by": "heuristic",
-        "z": 0.12,
+        "z": 1.26,
         "features": [
           {
             "key": "cadence",
@@ -925,38 +1459,37 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
           {
             "key": "accel",
             "label": "Acceleration",
-            "raw": 4,
-            "display": "4.0 repos/yr",
+            "raw": 9.8,
+            "display": "9.8x vs baseline",
             "z": 0,
-            "contribution": 45,
+            "contribution": 99,
             "receipts": [
               {
                 "connector": "github",
                 "metric": "Trajectory",
-                "feature": "Career-age slope",
-                "text": "69 repos over 17.4 yrs since joining (2009)",
-                "value": 4,
+                "feature": "Acceleration",
+                "text": "66 new repos in the last two years vs a 4.0/yr lifetime baseline",
+                "value": 9.8,
                 "url": "https://github.com/steipete",
                 "at": "2009-02-27T08:34:22Z"
               }
             ]
           },
           {
-            "key": "careerage",
-            "label": "Career-age slope",
-            "raw": 17.4,
-            "display": "17.4 yr career",
+            "key": "consistency",
+            "label": "Consistency",
+            "raw": 4,
+            "display": "4/10 yrs active",
             "z": 0,
-            "contribution": 47,
+            "contribution": 40,
             "receipts": [
               {
                 "connector": "github",
                 "metric": "Trajectory",
-                "feature": "Career-age slope",
-                "text": "69 repos over 17.4 yrs since joining (2009)",
+                "feature": "Consistency",
+                "text": "Shipped public work in 4 of 10 years since the first repo",
                 "value": 4,
-                "url": "https://github.com/steipete",
-                "at": "2009-02-27T08:34:22Z"
+                "url": "https://github.com/steipete"
               }
             ]
           },
@@ -982,21 +1515,29 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
           {
             "connector": "github",
             "metric": "Trajectory",
-            "feature": "Career-age slope",
-            "text": "69 repos over 17.4 yrs since joining (2009)",
-            "value": 4,
+            "feature": "Acceleration",
+            "text": "66 new repos in the last two years vs a 4.0/yr lifetime baseline",
+            "value": 9.8,
             "url": "https://github.com/steipete",
             "at": "2009-02-27T08:34:22Z"
+          },
+          {
+            "connector": "github",
+            "metric": "Trajectory",
+            "feature": "Consistency",
+            "text": "Shipped public work in 4 of 10 years since the first repo",
+            "value": 4,
+            "url": "https://github.com/steipete"
           }
         ]
       },
-      "composite": 82,
-      "rawComposite": 82,
-      "percentile": 81,
+      "composite": 84,
+      "rawComposite": 84,
+      "percentile": 85,
       "band": "Invest",
       "confidence": "high",
       "capped": false,
-      "anchorNeighbor": "Sid Sijbrandij",
+      "anchorNeighbor": "Evan You",
       "skills": {
         "technical": 0.95,
         "commercial": 0.7,
@@ -1070,7 +1611,7 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
         "url": "https://github.com/steipete/summarize"
       }
     ],
-    "evidenceCount": 5
+    "evidenceCount": 6
   },
   {
     "id": "guillermo-rauch",
@@ -1086,7 +1627,7 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
     "discoveredAt": "",
     "discoveredOffsetMins": 72,
     "thesisId": "ai-devtools",
-    "triage": 65,
+    "triage": 67,
     "pipeline": "Invest",
     "score": {
       "proof": {
@@ -1221,15 +1762,15 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
       },
       "gravity": {
         "metric": "Gravity",
-        "score": 84,
+        "score": 85,
         "weight": 0.45,
-        "percentile": 78,
+        "percentile": 80,
         "confidence": "high",
         "completeness": 0.85,
         "agreement": 0.85,
         "rationale": "16,993 followers with high network authority; people and attention move toward them.",
         "by": "heuristic",
-        "z": 0.83,
+        "z": 0.88,
         "features": [
           {
             "key": "reach",
@@ -1259,19 +1800,19 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
             "receipts": []
           },
           {
-            "key": "amplification",
-            "label": "Amplification",
+            "key": "backing",
+            "label": "Institutional backing",
             "raw": 88,
-            "display": "strong",
+            "display": "notable",
             "z": 0,
             "contribution": 88,
             "receipts": []
           },
           {
-            "key": "backing",
-            "label": "Accelerators / press",
+            "key": "amplification",
+            "label": "Attention momentum",
             "raw": 88,
-            "display": "notable",
+            "display": "strong",
             "z": 0,
             "contribution": 88,
             "receipts": []
@@ -1290,15 +1831,15 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
       },
       "trajectory": {
         "metric": "Trajectory",
-        "score": 30,
+        "score": 35,
         "weight": 0.2,
-        "percentile": 3,
+        "percentile": 5,
         "confidence": "high",
         "completeness": 0.85,
         "agreement": 0.85,
-        "rationale": "Momentum is positive: 0 recent pushes, 2.7 repos/yr, normalised for a 18.1-year career.",
+        "rationale": "Momentum is positive: 0 recent pushes, cooling against a 2.7/yr baseline.",
         "by": "heuristic",
-        "z": -2.55,
+        "z": -2.22,
         "features": [
           {
             "key": "cadence",
@@ -1321,38 +1862,37 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
           {
             "key": "accel",
             "label": "Acceleration",
-            "raw": 2.7,
-            "display": "2.7 repos/yr",
+            "raw": 0.4,
+            "display": "0.4x vs baseline",
             "z": 0,
-            "contribution": 40,
+            "contribution": 22,
             "receipts": [
               {
                 "connector": "github",
                 "metric": "Trajectory",
-                "feature": "Career-age slope",
-                "text": "49 repos over 18.1 yrs since joining (2008)",
-                "value": 2.7,
+                "feature": "Acceleration",
+                "text": "2 new repos in the last two years vs a 2.7/yr lifetime baseline",
+                "value": 0.4,
                 "url": "https://github.com/rauchg",
                 "at": "2008-06-09T02:22:48Z"
               }
             ]
           },
           {
-            "key": "careerage",
-            "label": "Career-age slope",
-            "raw": 18.1,
-            "display": "18.1 yr career",
+            "key": "consistency",
+            "label": "Consistency",
+            "raw": 15,
+            "display": "15/18 yrs active",
             "z": 0,
-            "contribution": 37,
+            "contribution": 83,
             "receipts": [
               {
                 "connector": "github",
                 "metric": "Trajectory",
-                "feature": "Career-age slope",
-                "text": "49 repos over 18.1 yrs since joining (2008)",
-                "value": 2.7,
-                "url": "https://github.com/rauchg",
-                "at": "2008-06-09T02:22:48Z"
+                "feature": "Consistency",
+                "text": "Shipped public work in 15 of 18 years since the first repo",
+                "value": 15,
+                "url": "https://github.com/rauchg"
               }
             ]
           },
@@ -1378,17 +1918,25 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
           {
             "connector": "github",
             "metric": "Trajectory",
-            "feature": "Career-age slope",
-            "text": "49 repos over 18.1 yrs since joining (2008)",
-            "value": 2.7,
+            "feature": "Acceleration",
+            "text": "2 new repos in the last two years vs a 2.7/yr lifetime baseline",
+            "value": 0.4,
             "url": "https://github.com/rauchg",
             "at": "2008-06-09T02:22:48Z"
+          },
+          {
+            "connector": "github",
+            "metric": "Trajectory",
+            "feature": "Consistency",
+            "text": "Shipped public work in 15 of 18 years since the first repo",
+            "value": 15,
+            "url": "https://github.com/rauchg"
           }
         ]
       },
-      "composite": 76,
-      "rawComposite": 76,
-      "percentile": 65,
+      "composite": 77,
+      "rawComposite": 77,
+      "percentile": 70,
       "band": "Invest",
       "confidence": "high",
       "capped": false,
@@ -1460,7 +2008,7 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
         "url": "https://github.com/rauchg/next-ai-news"
       }
     ],
-    "evidenceCount": 6
+    "evidenceCount": 7
   },
   {
     "id": "evan-you",
@@ -1618,15 +2166,15 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
       },
       "gravity": {
         "metric": "Gravity",
-        "score": 86,
+        "score": 85,
         "weight": 0.45,
-        "percentile": 81,
+        "percentile": 80,
         "confidence": "high",
         "completeness": 0.85,
         "agreement": 0.85,
         "rationale": "108,497 followers with high network authority; people and attention move toward them.",
         "by": "heuristic",
-        "z": 0.93,
+        "z": 0.88,
         "features": [
           {
             "key": "reach",
@@ -1656,19 +2204,19 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
             "receipts": []
           },
           {
-            "key": "amplification",
-            "label": "Amplification",
+            "key": "backing",
+            "label": "Institutional backing",
             "raw": 80,
-            "display": "strong",
+            "display": "notable",
             "z": 0,
             "contribution": 80,
             "receipts": []
           },
           {
-            "key": "backing",
-            "label": "Accelerators / press",
+            "key": "amplification",
+            "label": "Attention momentum",
             "raw": 80,
-            "display": "notable",
+            "display": "strong",
             "z": 0,
             "contribution": 80,
             "receipts": []
@@ -1687,15 +2235,15 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
       },
       "trajectory": {
         "metric": "Trajectory",
-        "score": 21,
+        "score": 22,
         "weight": 0.2,
         "percentile": 1,
         "confidence": "medium",
         "completeness": 0.6,
         "agreement": 0.6,
-        "rationale": "Momentum is positive: 0 recent pushes, 2.3 repos/yr, normalised for a 15.6-year career.",
+        "rationale": "Momentum is positive: 0 recent pushes, cooling against a 2.3/yr baseline.",
         "by": "heuristic",
-        "z": -3.15,
+        "z": -3.08,
         "features": [
           {
             "key": "cadence",
@@ -1718,38 +2266,37 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
           {
             "key": "accel",
             "label": "Acceleration",
-            "raw": 2.3,
-            "display": "2.3 repos/yr",
+            "raw": 0.3,
+            "display": "0.3x vs baseline",
             "z": 0,
-            "contribution": 39,
+            "contribution": 13,
             "receipts": [
               {
                 "connector": "github",
                 "metric": "Trajectory",
-                "feature": "Career-age slope",
-                "text": "36 repos over 15.6 yrs since joining (2010)",
-                "value": 2.3,
+                "feature": "Acceleration",
+                "text": "1 new repos in the last two years vs a 2.3/yr lifetime baseline",
+                "value": 0.3,
                 "url": "https://github.com/yyx990803",
                 "at": "2010-11-28T01:05:40Z"
               }
             ]
           },
           {
-            "key": "careerage",
-            "label": "Career-age slope",
-            "raw": 15.6,
-            "display": "15.6 yr career",
+            "key": "consistency",
+            "label": "Consistency",
+            "raw": 13,
+            "display": "13/15 yrs active",
             "z": 0,
-            "contribution": 33,
+            "contribution": 87,
             "receipts": [
               {
                 "connector": "github",
                 "metric": "Trajectory",
-                "feature": "Career-age slope",
-                "text": "36 repos over 15.6 yrs since joining (2010)",
-                "value": 2.3,
-                "url": "https://github.com/yyx990803",
-                "at": "2010-11-28T01:05:40Z"
+                "feature": "Consistency",
+                "text": "Shipped public work in 13 of 15 years since the first repo",
+                "value": 13,
+                "url": "https://github.com/yyx990803"
               }
             ]
           },
@@ -1775,11 +2322,19 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
           {
             "connector": "github",
             "metric": "Trajectory",
-            "feature": "Career-age slope",
-            "text": "36 repos over 15.6 yrs since joining (2010)",
-            "value": 2.3,
+            "feature": "Acceleration",
+            "text": "1 new repos in the last two years vs a 2.3/yr lifetime baseline",
+            "value": 0.3,
             "url": "https://github.com/yyx990803",
             "at": "2010-11-28T01:05:40Z"
+          },
+          {
+            "connector": "github",
+            "metric": "Trajectory",
+            "feature": "Consistency",
+            "text": "Shipped public work in 13 of 15 years since the first repo",
+            "value": 13,
+            "url": "https://github.com/yyx990803"
           }
         ]
       },
@@ -1857,7 +2412,7 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
         "url": "https://github.com/yyx990803/vue-lit"
       }
     ],
-    "evidenceCount": 6
+    "evidenceCount": 7
   },
   {
     "id": "sindre-sorhus",
@@ -1874,7 +2429,7 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
     "discoveredAt": "",
     "discoveredOffsetMins": 155,
     "thesisId": "oss-maintainers",
-    "triage": 82,
+    "triage": 83,
     "pipeline": "Watch",
     "score": {
       "proof": {
@@ -2009,15 +2564,15 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
       },
       "gravity": {
         "metric": "Gravity",
-        "score": 78,
+        "score": 74,
         "weight": 0.45,
-        "percentile": 60,
+        "percentile": 49,
         "confidence": "high",
         "completeness": 0.85,
         "agreement": 0.85,
         "rationale": "80,292 followers with high network authority; people and attention move toward them.",
         "by": "heuristic",
-        "z": 0.5,
+        "z": 0.29,
         "features": [
           {
             "key": "reach",
@@ -2047,21 +2602,21 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
             "receipts": []
           },
           {
-            "key": "amplification",
-            "label": "Amplification",
-            "raw": 74,
-            "display": "strong",
-            "z": 0,
-            "contribution": 74,
-            "receipts": []
-          },
-          {
             "key": "backing",
-            "label": "Accelerators / press",
+            "label": "Institutional backing",
             "raw": 55,
             "display": "notable",
             "z": 0,
             "contribution": 55,
+            "receipts": []
+          },
+          {
+            "key": "amplification",
+            "label": "Attention momentum",
+            "raw": 74,
+            "display": "strong",
+            "z": 0,
+            "contribution": 74,
             "receipts": []
           }
         ],
@@ -2078,15 +2633,15 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
       },
       "trajectory": {
         "metric": "Trajectory",
-        "score": 74,
+        "score": 80,
         "weight": 0.2,
-        "percentile": 55,
+        "percentile": 80,
         "confidence": "medium",
         "completeness": 0.6,
         "agreement": 0.6,
-        "rationale": "Momentum is positive: 49 recent pushes, 6.0 repos/yr, normalised for a 16.6-year career.",
+        "rationale": "Momentum is steep: 49 recent pushes, cooling against a 6.0/yr baseline.",
         "by": "heuristic",
-        "z": 0.39,
+        "z": 0.79,
         "features": [
           {
             "key": "cadence",
@@ -2109,38 +2664,37 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
           {
             "key": "accel",
             "label": "Acceleration",
-            "raw": 6,
-            "display": "6.0 repos/yr",
+            "raw": 0.8,
+            "display": "0.8x vs baseline",
             "z": 0,
-            "contribution": 50,
+            "contribution": 39,
             "receipts": [
               {
                 "connector": "github",
                 "metric": "Trajectory",
-                "feature": "Career-age slope",
-                "text": "100 repos over 16.6 yrs since joining (2009)",
-                "value": 6,
+                "feature": "Acceleration",
+                "text": "8 new repos in the last two years vs a 6.0/yr lifetime baseline",
+                "value": 0.8,
                 "url": "https://github.com/sindresorhus",
                 "at": "2009-12-20T22:57:02Z"
               }
             ]
           },
           {
-            "key": "careerage",
-            "label": "Career-age slope",
-            "raw": 16.6,
-            "display": "16.6 yr career",
+            "key": "consistency",
+            "label": "Consistency",
+            "raw": 16,
+            "display": "16/16 yrs active",
             "z": 0,
-            "contribution": 63,
+            "contribution": 99,
             "receipts": [
               {
                 "connector": "github",
                 "metric": "Trajectory",
-                "feature": "Career-age slope",
-                "text": "100 repos over 16.6 yrs since joining (2009)",
-                "value": 6,
-                "url": "https://github.com/sindresorhus",
-                "at": "2009-12-20T22:57:02Z"
+                "feature": "Consistency",
+                "text": "Shipped public work in 16 of 16 years since the first repo",
+                "value": 16,
+                "url": "https://github.com/sindresorhus"
               }
             ]
           },
@@ -2166,17 +2720,25 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
           {
             "connector": "github",
             "metric": "Trajectory",
-            "feature": "Career-age slope",
-            "text": "100 repos over 16.6 yrs since joining (2009)",
-            "value": 6,
+            "feature": "Acceleration",
+            "text": "8 new repos in the last two years vs a 6.0/yr lifetime baseline",
+            "value": 0.8,
             "url": "https://github.com/sindresorhus",
             "at": "2009-12-20T22:57:02Z"
+          },
+          {
+            "connector": "github",
+            "metric": "Trajectory",
+            "feature": "Consistency",
+            "text": "Shipped public work in 16 of 16 years since the first repo",
+            "value": 16,
+            "url": "https://github.com/sindresorhus"
           }
         ]
       },
-      "composite": 82,
-      "rawComposite": 82,
-      "percentile": 81,
+      "composite": 81,
+      "rawComposite": 81,
+      "percentile": 80,
       "band": "Invest",
       "confidence": "medium",
       "capped": false,
@@ -2254,7 +2816,7 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
         "url": "https://github.com/sindresorhus/type-fest"
       }
     ],
-    "evidenceCount": 6
+    "evidenceCount": 7
   },
   {
     "id": "anthony-fu",
@@ -2270,7 +2832,7 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
     "discoveredAt": "",
     "discoveredOffsetMins": 7200,
     "thesisId": "ai-devtools",
-    "triage": 85,
+    "triage": 92,
     "pipeline": "Watch",
     "scoreDelta": {
       "composite": 3,
@@ -2410,15 +2972,15 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
       },
       "gravity": {
         "metric": "Gravity",
-        "score": 77,
+        "score": 74,
         "weight": 0.45,
-        "percentile": 57,
+        "percentile": 49,
         "confidence": "high",
         "completeness": 0.85,
         "agreement": 0.85,
         "rationale": "39,723 followers with high network authority; people and attention move toward them.",
         "by": "heuristic",
-        "z": 0.45,
+        "z": 0.29,
         "features": [
           {
             "key": "reach",
@@ -2448,21 +3010,21 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
             "receipts": []
           },
           {
-            "key": "amplification",
-            "label": "Amplification",
-            "raw": 76,
-            "display": "strong",
-            "z": 0,
-            "contribution": 76,
-            "receipts": []
-          },
-          {
             "key": "backing",
-            "label": "Accelerators / press",
+            "label": "Institutional backing",
             "raw": 60,
             "display": "notable",
             "z": 0,
             "contribution": 60,
+            "receipts": []
+          },
+          {
+            "key": "amplification",
+            "label": "Attention momentum",
+            "raw": 76,
+            "display": "strong",
+            "z": 0,
+            "contribution": 76,
             "receipts": []
           }
         ],
@@ -2479,15 +3041,15 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
       },
       "trajectory": {
         "metric": "Trajectory",
-        "score": 80,
+        "score": 99,
         "weight": 0.2,
-        "percentile": 80,
+        "percentile": 99,
         "confidence": "high",
         "completeness": 0.85,
         "agreement": 0.85,
-        "rationale": "Momentum is steep: 63 recent pushes, 7.8 repos/yr, normalised for a 11.4-year career.",
+        "rationale": "Momentum is steep: 63 recent pushes, accelerating against a 7.8/yr baseline.",
         "by": "heuristic",
-        "z": 0.79,
+        "z": 2.06,
         "features": [
           {
             "key": "cadence",
@@ -2510,38 +3072,37 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
           {
             "key": "accel",
             "label": "Acceleration",
-            "raw": 7.8,
-            "display": "7.8 repos/yr",
+            "raw": 2,
+            "display": "2.0x vs baseline",
             "z": 0,
-            "contribution": 54,
+            "contribution": 99,
             "receipts": [
               {
                 "connector": "github",
                 "metric": "Trajectory",
-                "feature": "Career-age slope",
-                "text": "89 repos over 11.4 yrs since joining (2015)",
-                "value": 7.8,
+                "feature": "Acceleration",
+                "text": "27 new repos in the last two years vs a 7.8/yr lifetime baseline",
+                "value": 2,
                 "url": "https://github.com/antfu",
                 "at": "2015-02-28T16:55:50Z"
               }
             ]
           },
           {
-            "key": "careerage",
-            "label": "Career-age slope",
-            "raw": 11.4,
-            "display": "11.4 yr career",
+            "key": "consistency",
+            "label": "Consistency",
+            "raw": 8,
+            "display": "8/8 yrs active",
             "z": 0,
-            "contribution": 78,
+            "contribution": 99,
             "receipts": [
               {
                 "connector": "github",
                 "metric": "Trajectory",
-                "feature": "Career-age slope",
-                "text": "89 repos over 11.4 yrs since joining (2015)",
-                "value": 7.8,
-                "url": "https://github.com/antfu",
-                "at": "2015-02-28T16:55:50Z"
+                "feature": "Consistency",
+                "text": "Shipped public work in 8 of 8 years since the first repo",
+                "value": 8,
+                "url": "https://github.com/antfu"
               }
             ]
           },
@@ -2567,21 +3128,29 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
           {
             "connector": "github",
             "metric": "Trajectory",
-            "feature": "Career-age slope",
-            "text": "89 repos over 11.4 yrs since joining (2015)",
-            "value": 7.8,
+            "feature": "Acceleration",
+            "text": "27 new repos in the last two years vs a 7.8/yr lifetime baseline",
+            "value": 2,
             "url": "https://github.com/antfu",
             "at": "2015-02-28T16:55:50Z"
+          },
+          {
+            "connector": "github",
+            "metric": "Trajectory",
+            "feature": "Consistency",
+            "text": "Shipped public work in 8 of 8 years since the first repo",
+            "value": 8,
+            "url": "https://github.com/antfu"
           }
         ]
       },
-      "composite": 83,
-      "rawComposite": 83,
-      "percentile": 83,
+      "composite": 86,
+      "rawComposite": 86,
+      "percentile": 93,
       "band": "Invest",
       "confidence": "high",
       "capped": false,
-      "anchorNeighbor": "Dylan Field",
+      "anchorNeighbor": "Tobias Lütke",
       "skills": {
         "technical": 0.92,
         "commercial": 0.4,
@@ -2649,7 +3218,7 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
         "url": "https://github.com/antfu/skills"
       }
     ],
-    "evidenceCount": 6
+    "evidenceCount": 7
   },
   {
     "id": "shadcn",
@@ -2666,7 +3235,7 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
     "discoveredAt": "",
     "discoveredOffsetMins": 240,
     "thesisId": "ai-devtools",
-    "triage": 78,
+    "triage": 83,
     "pipeline": "Watch",
     "score": {
       "proof": {
@@ -2782,15 +3351,15 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
       },
       "gravity": {
         "metric": "Gravity",
-        "score": 76,
+        "score": 74,
         "weight": 0.45,
-        "percentile": 55,
+        "percentile": 49,
         "confidence": "high",
         "completeness": 0.85,
         "agreement": 0.85,
         "rationale": "16,270 followers with high network authority; people and attention move toward them.",
         "by": "heuristic",
-        "z": 0.4,
+        "z": 0.29,
         "features": [
           {
             "key": "reach",
@@ -2820,21 +3389,21 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
             "receipts": []
           },
           {
-            "key": "amplification",
-            "label": "Amplification",
-            "raw": 82,
-            "display": "strong",
-            "z": 0,
-            "contribution": 82,
-            "receipts": []
-          },
-          {
             "key": "backing",
-            "label": "Accelerators / press",
+            "label": "Institutional backing",
             "raw": 68,
             "display": "notable",
             "z": 0,
             "contribution": 68,
+            "receipts": []
+          },
+          {
+            "key": "amplification",
+            "label": "Attention momentum",
+            "raw": 82,
+            "display": "strong",
+            "z": 0,
+            "contribution": 82,
             "receipts": []
           }
         ],
@@ -2851,15 +3420,15 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
       },
       "trajectory": {
         "metric": "Trajectory",
-        "score": 69,
+        "score": 83,
         "weight": 0.2,
-        "percentile": 41,
+        "percentile": 88,
         "confidence": "high",
         "completeness": 0.85,
         "agreement": 0.85,
-        "rationale": "Momentum is positive: 63 recent pushes, 3.9 repos/yr, normalised for a 16.9-year career.",
+        "rationale": "Momentum is steep: 63 recent pushes, accelerating against a 3.9/yr baseline.",
         "by": "heuristic",
-        "z": 0.05,
+        "z": 0.99,
         "features": [
           {
             "key": "cadence",
@@ -2882,38 +3451,37 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
           {
             "key": "accel",
             "label": "Acceleration",
-            "raw": 3.9,
-            "display": "3.9 repos/yr",
+            "raw": 1.2,
+            "display": "1.2x vs baseline",
             "z": 0,
-            "contribution": 45,
+            "contribution": 60,
             "receipts": [
               {
                 "connector": "github",
                 "metric": "Trajectory",
-                "feature": "Career-age slope",
-                "text": "66 repos over 16.9 yrs since joining (2009)",
-                "value": 3.9,
+                "feature": "Acceleration",
+                "text": "8 new repos in the last two years vs a 3.9/yr lifetime baseline",
+                "value": 1.2,
                 "url": "https://github.com/shadcn",
                 "at": "2009-09-08T17:49:59Z"
               }
             ]
           },
           {
-            "key": "careerage",
-            "label": "Career-age slope",
-            "raw": 16.9,
-            "display": "16.9 yr career",
+            "key": "consistency",
+            "label": "Consistency",
+            "raw": 10,
+            "display": "10/13 yrs active",
             "z": 0,
-            "contribution": 46,
+            "contribution": 77,
             "receipts": [
               {
                 "connector": "github",
                 "metric": "Trajectory",
-                "feature": "Career-age slope",
-                "text": "66 repos over 16.9 yrs since joining (2009)",
-                "value": 3.9,
-                "url": "https://github.com/shadcn",
-                "at": "2009-09-08T17:49:59Z"
+                "feature": "Consistency",
+                "text": "Shipped public work in 10 of 13 years since the first repo",
+                "value": 10,
+                "url": "https://github.com/shadcn"
               }
             ]
           },
@@ -2939,21 +3507,29 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
           {
             "connector": "github",
             "metric": "Trajectory",
-            "feature": "Career-age slope",
-            "text": "66 repos over 16.9 yrs since joining (2009)",
-            "value": 3.9,
+            "feature": "Acceleration",
+            "text": "8 new repos in the last two years vs a 3.9/yr lifetime baseline",
+            "value": 1.2,
             "url": "https://github.com/shadcn",
             "at": "2009-09-08T17:49:59Z"
+          },
+          {
+            "connector": "github",
+            "metric": "Trajectory",
+            "feature": "Consistency",
+            "text": "Shipped public work in 10 of 13 years since the first repo",
+            "value": 10,
+            "url": "https://github.com/shadcn"
           }
         ]
       },
-      "composite": 78,
-      "rawComposite": 78,
-      "percentile": 72,
+      "composite": 80,
+      "rawComposite": 80,
+      "percentile": 78,
       "band": "Invest",
       "confidence": "high",
       "capped": false,
-      "anchorNeighbor": "Robert Nishihara",
+      "anchorNeighbor": "Sindre Sorhus",
       "skills": {
         "technical": 0.85,
         "commercial": 0.55,
@@ -3021,7 +3597,7 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
         "url": "https://github.com/shadcn/improve"
       }
     ],
-    "evidenceCount": 5
+    "evidenceCount": 6
   },
   {
     "id": "mckay-wrigley",
@@ -3038,7 +3614,7 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
     "discoveredAt": "",
     "discoveredOffsetMins": 290,
     "thesisId": "ai-devtools",
-    "triage": 70,
+    "triage": 75,
     "pipeline": "Discovered",
     "score": {
       "proof": {
@@ -3154,7 +3730,7 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
       },
       "gravity": {
         "metric": "Gravity",
-        "score": 69,
+        "score": 67,
         "weight": 0.45,
         "percentile": 38,
         "confidence": "medium",
@@ -3162,7 +3738,7 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
         "agreement": 0.6,
         "rationale": "7,241 followers with high network authority; people and attention move toward them.",
         "by": "heuristic",
-        "z": 0.02,
+        "z": -0.08,
         "features": [
           {
             "key": "reach",
@@ -3192,21 +3768,21 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
             "receipts": []
           },
           {
-            "key": "amplification",
-            "label": "Amplification",
-            "raw": 80,
-            "display": "strong",
-            "z": 0,
-            "contribution": 80,
-            "receipts": []
-          },
-          {
             "key": "backing",
-            "label": "Accelerators / press",
+            "label": "Institutional backing",
             "raw": 55,
             "display": "notable",
             "z": 0,
             "contribution": 55,
+            "receipts": []
+          },
+          {
+            "key": "amplification",
+            "label": "Attention momentum",
+            "raw": 80,
+            "display": "strong",
+            "z": 0,
+            "contribution": 80,
             "receipts": []
           }
         ],
@@ -3223,15 +3799,15 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
       },
       "trajectory": {
         "metric": "Trajectory",
-        "score": 49,
+        "score": 63,
         "weight": 0.2,
-        "percentile": 11,
+        "percentile": 30,
         "confidence": "high",
         "completeness": 0.85,
         "agreement": 0.85,
-        "rationale": "Momentum is positive: 0 recent pushes, 6.9 repos/yr, normalised for a 9.1-year career.",
+        "rationale": "Momentum is positive: 0 recent pushes, accelerating against a 6.9/yr baseline.",
         "by": "heuristic",
-        "z": -1.28,
+        "z": -0.35,
         "features": [
           {
             "key": "cadence",
@@ -3254,38 +3830,37 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
           {
             "key": "accel",
             "label": "Acceleration",
-            "raw": 6.9,
-            "display": "6.9 repos/yr",
+            "raw": 1.5,
+            "display": "1.5x vs baseline",
             "z": 0,
-            "contribution": 52,
+            "contribution": 77,
             "receipts": [
               {
                 "connector": "github",
                 "metric": "Trajectory",
-                "feature": "Career-age slope",
-                "text": "63 repos over 9.1 yrs since joining (2017)",
-                "value": 6.9,
+                "feature": "Acceleration",
+                "text": "18 new repos in the last two years vs a 6.9/yr lifetime baseline",
+                "value": 1.5,
                 "url": "https://github.com/mckaywrigley",
                 "at": "2017-06-06T05:16:41Z"
               }
             ]
           },
           {
-            "key": "careerage",
-            "label": "Career-age slope",
-            "raw": 9.1,
-            "display": "9.1 yr career",
+            "key": "consistency",
+            "label": "Consistency",
+            "raw": 4,
+            "display": "4/4 yrs active",
             "z": 0,
-            "contribution": 70,
+            "contribution": 99,
             "receipts": [
               {
                 "connector": "github",
                 "metric": "Trajectory",
-                "feature": "Career-age slope",
-                "text": "63 repos over 9.1 yrs since joining (2017)",
-                "value": 6.9,
-                "url": "https://github.com/mckaywrigley",
-                "at": "2017-06-06T05:16:41Z"
+                "feature": "Consistency",
+                "text": "Shipped public work in 4 of 4 years since the first repo",
+                "value": 4,
+                "url": "https://github.com/mckaywrigley"
               }
             ]
           },
@@ -3311,21 +3886,29 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
           {
             "connector": "github",
             "metric": "Trajectory",
-            "feature": "Career-age slope",
-            "text": "63 repos over 9.1 yrs since joining (2017)",
-            "value": 6.9,
+            "feature": "Acceleration",
+            "text": "18 new repos in the last two years vs a 6.9/yr lifetime baseline",
+            "value": 1.5,
             "url": "https://github.com/mckaywrigley",
             "at": "2017-06-06T05:16:41Z"
+          },
+          {
+            "connector": "github",
+            "metric": "Trajectory",
+            "feature": "Consistency",
+            "text": "Shipped public work in 4 of 4 years since the first repo",
+            "value": 4,
+            "url": "https://github.com/mckaywrigley"
           }
         ]
       },
-      "composite": 73,
-      "rawComposite": 73,
-      "percentile": 51,
+      "composite": 75,
+      "rawComposite": 75,
+      "percentile": 59,
       "band": "Invest",
       "confidence": "medium",
       "capped": false,
-      "anchorNeighbor": "Daniel Dines",
+      "anchorNeighbor": "Zeno Rocha",
       "skills": {
         "technical": 0.85,
         "commercial": 0.6,
@@ -3393,7 +3976,7 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
         "url": "https://github.com/mckaywrigley/mckays-app-template"
       }
     ],
-    "evidenceCount": 5
+    "evidenceCount": 6
   },
   {
     "id": "travis-fischer",
@@ -3410,7 +3993,7 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
     "discoveredAt": "",
     "discoveredOffsetMins": 340,
     "thesisId": "ai-devtools",
-    "triage": 64,
+    "triage": 71,
     "pipeline": "Discovered",
     "score": {
       "proof": {
@@ -3526,15 +4109,15 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
       },
       "gravity": {
         "metric": "Gravity",
-        "score": 64,
+        "score": 62,
         "weight": 0.45,
-        "percentile": 36,
+        "percentile": 34,
         "confidence": "medium",
         "completeness": 0.6,
         "agreement": 0.6,
         "rationale": "4,567 followers with growing network authority; people and attention move toward them.",
         "by": "heuristic",
-        "z": -0.24,
+        "z": -0.35,
         "features": [
           {
             "key": "reach",
@@ -3564,21 +4147,21 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
             "receipts": []
           },
           {
-            "key": "amplification",
-            "label": "Amplification",
-            "raw": 70,
-            "display": "strong",
-            "z": 0,
-            "contribution": 70,
-            "receipts": []
-          },
-          {
             "key": "backing",
-            "label": "Accelerators / press",
+            "label": "Institutional backing",
             "raw": 52,
             "display": "notable",
             "z": 0,
             "contribution": 52,
+            "receipts": []
+          },
+          {
+            "key": "amplification",
+            "label": "Attention momentum",
+            "raw": 70,
+            "display": "strong",
+            "z": 0,
+            "contribution": 70,
             "receipts": []
           }
         ],
@@ -3595,15 +4178,15 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
       },
       "trajectory": {
         "metric": "Trajectory",
-        "score": 40,
+        "score": 60,
         "weight": 0.2,
-        "percentile": 8,
+        "percentile": 25,
         "confidence": "high",
         "completeness": 0.85,
         "agreement": 0.85,
-        "rationale": "Momentum is positive: 0 recent pushes, 3.9 repos/yr, normalised for a 15.5-year career.",
+        "rationale": "Momentum is positive: 0 recent pushes, accelerating against a 3.9/yr baseline.",
         "by": "heuristic",
-        "z": -1.88,
+        "z": -0.55,
         "features": [
           {
             "key": "cadence",
@@ -3626,38 +4209,37 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
           {
             "key": "accel",
             "label": "Acceleration",
-            "raw": 3.9,
-            "display": "3.9 repos/yr",
+            "raw": 1.5,
+            "display": "1.5x vs baseline",
             "z": 0,
-            "contribution": 45,
+            "contribution": 76,
             "receipts": [
               {
                 "connector": "github",
                 "metric": "Trajectory",
-                "feature": "Career-age slope",
-                "text": "60 repos over 15.5 yrs since joining (2011)",
-                "value": 3.9,
+                "feature": "Acceleration",
+                "text": "10 new repos in the last two years vs a 3.9/yr lifetime baseline",
+                "value": 1.5,
                 "url": "https://github.com/transitive-bullshit",
                 "at": "2011-01-08T03:13:42Z"
               }
             ]
           },
           {
-            "key": "careerage",
-            "label": "Career-age slope",
-            "raw": 15.5,
-            "display": "15.5 yr career",
+            "key": "consistency",
+            "label": "Consistency",
+            "raw": 11,
+            "display": "11/13 yrs active",
             "z": 0,
-            "contribution": 46,
+            "contribution": 85,
             "receipts": [
               {
                 "connector": "github",
                 "metric": "Trajectory",
-                "feature": "Career-age slope",
-                "text": "60 repos over 15.5 yrs since joining (2011)",
-                "value": 3.9,
-                "url": "https://github.com/transitive-bullshit",
-                "at": "2011-01-08T03:13:42Z"
+                "feature": "Consistency",
+                "text": "Shipped public work in 11 of 13 years since the first repo",
+                "value": 11,
+                "url": "https://github.com/transitive-bullshit"
               }
             ]
           },
@@ -3683,21 +4265,29 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
           {
             "connector": "github",
             "metric": "Trajectory",
-            "feature": "Career-age slope",
-            "text": "60 repos over 15.5 yrs since joining (2011)",
-            "value": 3.9,
+            "feature": "Acceleration",
+            "text": "10 new repos in the last two years vs a 3.9/yr lifetime baseline",
+            "value": 1.5,
             "url": "https://github.com/transitive-bullshit",
             "at": "2011-01-08T03:13:42Z"
+          },
+          {
+            "connector": "github",
+            "metric": "Trajectory",
+            "feature": "Consistency",
+            "text": "Shipped public work in 11 of 13 years since the first repo",
+            "value": 11,
+            "url": "https://github.com/transitive-bullshit"
           }
         ]
       },
-      "composite": 67,
-      "rawComposite": 67,
-      "percentile": 44,
-      "band": "Watch",
+      "composite": 70,
+      "rawComposite": 70,
+      "percentile": 46,
+      "band": "Invest",
       "confidence": "medium",
       "capped": false,
-      "anchorNeighbor": "Shawn Wang",
+      "anchorNeighbor": "Theo Browne",
       "skills": {
         "technical": 0.9,
         "commercial": 0.5,
@@ -3765,7 +4355,7 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
         "url": "https://github.com/transitive-bullshit/bing-chat"
       }
     ],
-    "evidenceCount": 5
+    "evidenceCount": 6
   },
   {
     "id": "lee-robinson",
@@ -3782,7 +4372,7 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
     "discoveredAt": "",
     "discoveredOffsetMins": 410,
     "thesisId": "ai-devtools",
-    "triage": 67,
+    "triage": 71,
     "pipeline": "Discovered",
     "score": {
       "proof": {
@@ -3898,15 +4488,15 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
       },
       "gravity": {
         "metric": "Gravity",
-        "score": 73,
+        "score": 71,
         "weight": 0.45,
-        "percentile": 46,
+        "percentile": 41,
         "confidence": "high",
         "completeness": 0.85,
         "agreement": 0.85,
         "rationale": "16,022 followers with high network authority; people and attention move toward them.",
         "by": "heuristic",
-        "z": 0.24,
+        "z": 0.13,
         "features": [
           {
             "key": "reach",
@@ -3936,21 +4526,21 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
             "receipts": []
           },
           {
-            "key": "amplification",
-            "label": "Amplification",
-            "raw": 78,
-            "display": "strong",
-            "z": 0,
-            "contribution": 78,
-            "receipts": []
-          },
-          {
             "key": "backing",
-            "label": "Accelerators / press",
+            "label": "Institutional backing",
             "raw": 60,
             "display": "notable",
             "z": 0,
             "contribution": 60,
+            "receipts": []
+          },
+          {
+            "key": "amplification",
+            "label": "Attention momentum",
+            "raw": 78,
+            "display": "strong",
+            "z": 0,
+            "contribution": 78,
             "receipts": []
           }
         ],
@@ -3967,15 +4557,15 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
       },
       "trajectory": {
         "metric": "Trajectory",
-        "score": 48,
+        "score": 59,
         "weight": 0.2,
-        "percentile": 11,
+        "percentile": 21,
         "confidence": "medium",
         "completeness": 0.6,
         "agreement": 0.6,
-        "rationale": "Momentum is positive: 4 recent pushes, 3.0 repos/yr, normalised for a 11.8-year career.",
+        "rationale": "Momentum is positive: 4 recent pushes, cooling against a 3.0/yr baseline.",
         "by": "heuristic",
-        "z": -1.35,
+        "z": -0.61,
         "features": [
           {
             "key": "cadence",
@@ -3998,38 +4588,37 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
           {
             "key": "accel",
             "label": "Acceleration",
-            "raw": 3,
-            "display": "3.0 repos/yr",
+            "raw": 0.6,
+            "display": "0.6x vs baseline",
             "z": 0,
-            "contribution": 41,
+            "contribution": 30,
             "receipts": [
               {
                 "connector": "github",
                 "metric": "Trajectory",
-                "feature": "Career-age slope",
-                "text": "35 repos over 11.8 yrs since joining (2014)",
-                "value": 3,
+                "feature": "Acceleration",
+                "text": "3 new repos in the last two years vs a 3.0/yr lifetime baseline",
+                "value": 0.6,
                 "url": "https://github.com/leerob",
                 "at": "2014-10-09T14:44:16Z"
               }
             ]
           },
           {
-            "key": "careerage",
-            "label": "Career-age slope",
-            "raw": 11.8,
-            "display": "11.8 yr career",
+            "key": "consistency",
+            "label": "Consistency",
+            "raw": 12,
+            "display": "12/13 yrs active",
             "z": 0,
-            "contribution": 39,
+            "contribution": 92,
             "receipts": [
               {
                 "connector": "github",
                 "metric": "Trajectory",
-                "feature": "Career-age slope",
-                "text": "35 repos over 11.8 yrs since joining (2014)",
-                "value": 3,
-                "url": "https://github.com/leerob",
-                "at": "2014-10-09T14:44:16Z"
+                "feature": "Consistency",
+                "text": "Shipped public work in 12 of 13 years since the first repo",
+                "value": 12,
+                "url": "https://github.com/leerob"
               }
             ]
           },
@@ -4055,17 +4644,25 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
           {
             "connector": "github",
             "metric": "Trajectory",
-            "feature": "Career-age slope",
-            "text": "35 repos over 11.8 yrs since joining (2014)",
-            "value": 3,
+            "feature": "Acceleration",
+            "text": "3 new repos in the last two years vs a 3.0/yr lifetime baseline",
+            "value": 0.6,
             "url": "https://github.com/leerob",
             "at": "2014-10-09T14:44:16Z"
+          },
+          {
+            "connector": "github",
+            "metric": "Trajectory",
+            "feature": "Consistency",
+            "text": "Shipped public work in 12 of 13 years since the first repo",
+            "value": 12,
+            "url": "https://github.com/leerob"
           }
         ]
       },
-      "composite": 72,
-      "rawComposite": 72,
-      "percentile": 50,
+      "composite": 73,
+      "rawComposite": 73,
+      "percentile": 51,
       "band": "Invest",
       "confidence": "medium",
       "capped": false,
@@ -4137,7 +4734,7 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
         "url": "https://github.com/leerob/next-self-host"
       }
     ],
-    "evidenceCount": 5
+    "evidenceCount": 6
   },
   {
     "id": "jared-palmer",
@@ -4154,7 +4751,7 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
     "discoveredAt": "",
     "discoveredOffsetMins": 520,
     "thesisId": "ai-devtools",
-    "triage": 67,
+    "triage": 73,
     "pipeline": "Discovered",
     "score": {
       "proof": {
@@ -4270,15 +4867,15 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
       },
       "gravity": {
         "metric": "Gravity",
-        "score": 71,
+        "score": 70,
         "weight": 0.45,
-        "percentile": 41,
+        "percentile": 39,
         "confidence": "high",
         "completeness": 0.85,
         "agreement": 0.85,
         "rationale": "10,355 followers with high network authority; people and attention move toward them.",
         "by": "heuristic",
-        "z": 0.13,
+        "z": 0.08,
         "features": [
           {
             "key": "reach",
@@ -4308,21 +4905,21 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
             "receipts": []
           },
           {
-            "key": "amplification",
-            "label": "Amplification",
-            "raw": 70,
-            "display": "strong",
-            "z": 0,
-            "contribution": 70,
-            "receipts": []
-          },
-          {
             "key": "backing",
-            "label": "Accelerators / press",
+            "label": "Institutional backing",
             "raw": 66,
             "display": "notable",
             "z": 0,
             "contribution": 66,
+            "receipts": []
+          },
+          {
+            "key": "amplification",
+            "label": "Attention momentum",
+            "raw": 70,
+            "display": "strong",
+            "z": 0,
+            "contribution": 70,
             "receipts": []
           }
         ],
@@ -4339,15 +4936,15 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
       },
       "trajectory": {
         "metric": "Trajectory",
-        "score": 41,
+        "score": 57,
         "weight": 0.2,
-        "percentile": 9,
+        "percentile": 18,
         "confidence": "medium",
         "completeness": 0.6,
         "agreement": 0.6,
-        "rationale": "Momentum is positive: 10 recent pushes, 3.4 repos/yr, normalised for a 13.3-year career.",
+        "rationale": "Momentum is positive: 10 recent pushes, accelerating against a 3.4/yr baseline.",
         "by": "heuristic",
-        "z": -1.81,
+        "z": -0.75,
         "features": [
           {
             "key": "cadence",
@@ -4370,38 +4967,37 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
           {
             "key": "accel",
             "label": "Acceleration",
-            "raw": 3.4,
-            "display": "3.4 repos/yr",
+            "raw": 1.4,
+            "display": "1.4x vs baseline",
             "z": 0,
-            "contribution": 43,
+            "contribution": 69,
             "receipts": [
               {
                 "connector": "github",
                 "metric": "Trajectory",
-                "feature": "Career-age slope",
-                "text": "45 repos over 13.3 yrs since joining (2013)",
-                "value": 3.4,
+                "feature": "Acceleration",
+                "text": "8 new repos in the last two years vs a 3.4/yr lifetime baseline",
+                "value": 1.4,
                 "url": "https://github.com/jaredpalmer",
                 "at": "2013-04-04T15:02:07Z"
               }
             ]
           },
           {
-            "key": "careerage",
-            "label": "Career-age slope",
-            "raw": 13.3,
-            "display": "13.3 yr career",
+            "key": "consistency",
+            "label": "Consistency",
+            "raw": 10,
+            "display": "10/11 yrs active",
             "z": 0,
-            "contribution": 42,
+            "contribution": 91,
             "receipts": [
               {
                 "connector": "github",
                 "metric": "Trajectory",
-                "feature": "Career-age slope",
-                "text": "45 repos over 13.3 yrs since joining (2013)",
-                "value": 3.4,
-                "url": "https://github.com/jaredpalmer",
-                "at": "2013-04-04T15:02:07Z"
+                "feature": "Consistency",
+                "text": "Shipped public work in 10 of 11 years since the first repo",
+                "value": 10,
+                "url": "https://github.com/jaredpalmer"
               }
             ]
           },
@@ -4427,21 +5023,29 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
           {
             "connector": "github",
             "metric": "Trajectory",
-            "feature": "Career-age slope",
-            "text": "45 repos over 13.3 yrs since joining (2013)",
-            "value": 3.4,
+            "feature": "Acceleration",
+            "text": "8 new repos in the last two years vs a 3.4/yr lifetime baseline",
+            "value": 1.4,
             "url": "https://github.com/jaredpalmer",
             "at": "2013-04-04T15:02:07Z"
+          },
+          {
+            "connector": "github",
+            "metric": "Trajectory",
+            "feature": "Consistency",
+            "text": "Shipped public work in 10 of 11 years since the first repo",
+            "value": 10,
+            "url": "https://github.com/jaredpalmer"
           }
         ]
       },
-      "composite": 72,
-      "rawComposite": 72,
-      "percentile": 50,
+      "composite": 75,
+      "rawComposite": 75,
+      "percentile": 59,
       "band": "Invest",
       "confidence": "medium",
       "capped": false,
-      "anchorNeighbor": "Lee Robinson",
+      "anchorNeighbor": "Zeno Rocha",
       "skills": {
         "technical": 0.85,
         "commercial": 0.7,
@@ -4509,6 +5113,6 @@ export const SEED_FOUNDERS: readonly (Founder & { discoveredOffsetMins: number }
         "url": "https://github.com/jaredpalmer/tsdx"
       }
     ],
-    "evidenceCount": 5
+    "evidenceCount": 6
   }
 ];

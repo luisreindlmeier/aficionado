@@ -4,6 +4,7 @@ import { writeFile } from 'node:fs/promises';
 
 const HANDLES = [
   'luisreindlmeier', // hero
+  'StevWorks',       // Stefan Cames, gedonus co-founder
   'steipete',        // Peter Steinberger, Vienna (DACH), PSPDFKit
   'rauchg',          // Guillermo Rauch, Vercel
   'yyx990803',       // Evan You, Vue/Vite

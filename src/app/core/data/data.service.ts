@@ -10,6 +10,7 @@ import type {
   PipelineStage,
   Receipt,
   SkillVector,
+  TeamAnalysis,
   Thesis,
   Venture,
   WeightPreset,
@@ -17,6 +18,7 @@ import type {
 import {
   DEFAULT_PRESET,
   WEIGHT_PRESETS,
+  bandOf,
   clamp,
   harmonizedTeamScore,
   log10p,
@@ -24,6 +26,17 @@ import {
 } from '../scoring';
 import { ANCHORS } from './anchors';
 import { SEED_FOUNDERS, SEED_VENTURES, THESES } from './seed';
+
+/** The verdict line for a venture whose score comes from its team. */
+function teamRationale(team: Pick<TeamAnalysis, 'score' | 'confidence' | 'compatibility'>): string {
+  const lift = team.compatibility > 1.05;
+  const shape = lift
+    ? 'the founders cover ground each other does not'
+    : 'the founders largely duplicate each other';
+  return team.confidence === 'low'
+    ? `Team reads at ${team.score}, but too little of it is verified to act on.`
+    : `Team reads at ${team.score} on ${team.confidence} confidence, ${shape}.`;
+}
 
 // ─────────────────────────────────────────────────────────────
 // The single client-side data layer. Reads the committed real-data
@@ -170,9 +183,42 @@ export class DataService {
       const team = harmonizedTeamScore(
         founders
           .filter((f) => f.ventureId === v.id && f.score)
-          .map((f) => ({ skills: f.score!.skills, composite: f.score!.composite })),
+          .map((f) => ({
+            founderId: f.id,
+            name: f.name,
+            initials: f.initials,
+            skills: f.score!.skills,
+            composite: f.score!.composite,
+            band: f.score!.band,
+            metrics: {
+              Proof: f.score!.proof.score,
+              Gravity: f.score!.gravity.score,
+              Trajectory: f.score!.trajectory.score,
+            },
+            confidences: {
+              Proof: f.score!.proof.confidence,
+              Gravity: f.score!.gravity.confidence,
+              Trajectory: f.score!.trajectory.confidence,
+            },
+          })),
+        this.weights(),
       );
-      return team ? { ...withDecision, team: { ...team, sharedHistory: [] } } : withDecision;
+      if (!team) return withDecision;
+      // Once a venture has an evaluated team, the team IS the venture's verdict.
+      // Anything else leaves two different numbers on the same page claiming to
+      // be the aficionado score.
+      return {
+        ...withDecision,
+        team: { ...team, sharedHistory: v.team?.sharedHistory ?? [] },
+        decision: {
+          ...withDecision.decision,
+          composite: team.score,
+          band: bandOf(team.score, team.confidence),
+          confidence: team.confidence,
+          rationale: teamRationale(team),
+          routeToHuman: team.confidence === 'low',
+        },
+      };
     });
   });
 

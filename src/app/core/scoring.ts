@@ -5,6 +5,7 @@ import type {
   ConfidenceLevel,
   RedFlag,
   SkillVector,
+  TeamAnalysis,
   WeightPreset,
 } from './model';
 
@@ -260,38 +261,110 @@ export function combineSkills(vectors: readonly SkillVector[]): SkillVector {
   };
 }
 
-/** Harmonized team score: NOT an average of the founders' individual composites.
- *  Built from how well the team's skills cover technical / commercial / domain /
- *  product together (max per axis, so one strong founder covers it for the whole
- *  team), discounted when two founders are strong on the same axis instead of
- *  covering different ground, and floored by the founders' actual composite
- *  quality so broad-but-weak coverage can never outscore a genuinely strong team.
+/** What the team pass needs per founder: identity, the three metric scores the
+ *  aficionado score is built from, and the skill vector behind them. */
+export interface TeamFounderInput {
+  readonly founderId: string;
+  readonly name: string;
+  readonly initials: string;
+  readonly skills: SkillVector;
+  readonly metrics: Readonly<Record<Metric, number>>;
+  readonly confidences: Readonly<Record<Metric, ConfidenceLevel>>;
+  readonly composite: number;
+  readonly band: Band;
+}
+
+/** Harmonized team score, on exactly the same scale as a founder composite.
+ *  Every number in the team block is produced by the SAME reducer a founder
+ *  goes through: same weights, same confidence rules, same exclusion of a
+ *  metric we cannot verify. That is what makes the team row comparable to the
+ *  founder rows above it instead of a second, incompatible arithmetic.
+ *
+ *    coverage      = the best founder on each metric, preferring a founder we
+ *                    actually trust. One founder carrying a metric carries it
+ *                    for the whole team, including its confidence: a co-founder
+ *                    with a real footprint makes the team's Gravity measurable
+ *                    even when the other founder's was excluded.
+ *    teamComposite = that coverage profile run through the founder composite,
+ *                    so it sits on the same 0..100 as every founder score.
+ *    soloComposite = the founders' AVERAGE profile through the same composite.
+ *    compatibility = teamComposite / soloComposite. 1.00x when the founders
+ *                    have the same shape, higher the more each one is strongest
+ *                    where the others are not.
+ *    score         = teamComposite x compatibility
+ *
  *  Deterministic for now; a future pass hands this to an agent for a narrative
  *  read grounded in shared history and working style. Solo founders have no team
  *  to harmonize, so this returns undefined below two founders. */
 export function harmonizedTeamScore(
-  founders: readonly { skills: SkillVector; composite: number }[],
-):
-  | { score: number; coverage: SkillVector; gaps: string[]; redundancies: string[] }
-  | undefined {
+  founders: readonly TeamFounderInput[],
+  weights: Record<Metric, number>,
+): Omit<TeamAnalysis, 'sharedHistory'> | undefined {
   if (founders.length < 2) return undefined;
   const vectors = founders.map((f) => f.skills);
   const coverage = combineSkills(vectors);
-  const coverageScore = mean(SKILL_AXES.map((a) => coverage[a])) * 100;
   const gaps = SKILL_AXES.filter((a) => coverage[a] < 0.5);
-  // Redundancy: two founders both strong on the same axis, covering the same ground.
+  // Redundancy: two founders both strong on the same axis, covering the same
+  // ground. Descriptive only, it does not move the score; overlap is already
+  // what pulls compatibility down.
   const redundancies = SKILL_AXES.filter((a) => vectors.filter((v) => v[a] >= 0.6).length >= 2);
-  const redundancyPenalty = redundancies.length * 5;
-  const qualityFloor = mean(founders.map((f) => f.composite));
-  const raw = coverageScore * 0.65 + qualityFloor * 0.35 - redundancyPenalty;
+
+  // Coverage takes the best TRUSTED founder on each metric, and inherits that
+  // founder's confidence. Only when nobody is trusted does the metric fall back
+  // to the best untrusted value, and stay excluded from the composite.
+  const covered = {} as Record<Metric, number>;
+  const confidence = {} as Record<Metric, ConfidenceLevel>;
+  for (const m of METRICS) {
+    const trusted = founders.filter((f) => f.confidences[m] !== 'low');
+    const pool = trusted.length ? trusted : founders;
+    const best = pool.reduce((a, b) => (b.metrics[m] > a.metrics[m] ? b : a));
+    covered[m] = best.metrics[m];
+    confidence[m] = best.confidences[m];
+  }
+
+  // The founders' average profile, through the same reducer, is what the team
+  // is measured against.
+  const soloProfile = {} as Record<Metric, number>;
+  for (const m of METRICS) soloProfile[m] = mean(founders.map((f) => f.metrics[m]));
+
+  const teamComposite = confidentComposite(covered, confidence, weights).value;
+  const soloComposite = confidentComposite(soloProfile, confidence, weights).value;
+  const compatibility =
+    soloComposite > 0 ? Math.round(clamp(teamComposite / soloComposite, 1, 1.5) * 100) / 100 : 1;
+
   return {
-    score: clamp(Math.round(raw), 1, 99),
+    score: clamp(Math.round(teamComposite * compatibility), 1, 99),
+    base: teamComposite,
+    soloComposite,
+    confidence: overallConfidence(confidence),
     coverage,
     gaps: gaps.map((a) => `${axisLabel(a)} coverage is thin across the team`),
     redundancies: redundancies.map(
       (a) => `Overlap on ${axisLabel(a)}, more than one founder covers it`,
     ),
+    metricCoverage: covered,
+    metricConfidence: confidence,
+    compatibility,
+    perFounder: founders.map((f) => ({
+      founderId: f.founderId,
+      name: f.name,
+      initials: f.initials,
+      skills: f.skills,
+      metrics: f.metrics,
+      confidences: f.confidences,
+      composite: f.composite,
+      band: f.band,
+    })),
   };
+}
+
+/** Who leads each metric, for the matrix footer ("Stefan carries Gravity"). */
+export function metricLeaders(
+  founders: readonly TeamFounderInput[],
+): Readonly<Record<Metric, string>> {
+  const lead = (m: Metric) =>
+    founders.reduce((a, b) => (b.metrics[m] > a.metrics[m] ? b : a)).initials;
+  return { Proof: lead('Proof'), Gravity: lead('Gravity'), Trajectory: lead('Trajectory') };
 }
 
 function axisLabel(axis: keyof SkillVector): string {
