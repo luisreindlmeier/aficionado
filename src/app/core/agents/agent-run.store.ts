@@ -1,5 +1,5 @@
 import { Injectable, computed, signal } from '@angular/core';
-import type { AgentRun, RunTrigger, TraceStep } from '../model';
+import type { AgentMetrics, AgentRun, RunTrigger, TraceStep } from '../model';
 import type { ConnectorId } from '../connectors/types';
 
 // ─────────────────────────────────────────────────────────────
@@ -54,6 +54,9 @@ export class AgentRunStore {
    *  is empty rather than implying nothing has ever run. */
   readonly historySource = signal<'live' | 'none' | 'loading'>('loading');
 
+  /** Aggregated telemetry captured from Mastra's span stream. */
+  readonly metrics = signal<AgentMetrics | undefined>(undefined);
+
   /** Session runs first (they are the freshest), then recorded history, with
    *  any run present in both taken from the session copy. */
   readonly runs = computed<readonly AgentRun[]>(() => {
@@ -72,8 +75,13 @@ export class AgentRunStore {
         this.historySource.set('none');
         return;
       }
-      const json = (await res.json()) as { runs?: AgentRunRow[]; source?: string };
+      const json = (await res.json()) as {
+        runs?: AgentRunRow[];
+        metrics?: AgentMetrics | null;
+        source?: string;
+      };
       this.persisted.set((json.runs ?? []).map(mapRow));
+      this.metrics.set(json.metrics ?? undefined);
       this.historySource.set(json.source === 'supabase' ? 'live' : 'none');
     } catch {
       this.historySource.set('none');

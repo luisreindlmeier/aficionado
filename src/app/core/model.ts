@@ -340,6 +340,35 @@ export type SourcingEvent =
  *  distinguishes the hourly job from something the user clicked. */
 export type RunTrigger = 'ui' | 'cron' | 'action';
 
+/** Aggregated agent telemetry over a time window, captured from Mastra's own
+ *  span stream. `costUsd` is null when model pricing is not configured: a
+ *  guessed unit economic would be worse than an absent one. */
+export interface AgentMetrics {
+  readonly pricingConfigured: boolean;
+  readonly windowHours: number;
+  readonly runs: number;
+  readonly failedRuns: number;
+  readonly modelCalls: number;
+  readonly toolCalls: number;
+  readonly inputTokens: number;
+  readonly outputTokens: number;
+  readonly cacheReadTokens: number;
+  readonly costUsd: number | null;
+  readonly evaluations: number;
+  readonly byAgent: readonly {
+    readonly id: string;
+    readonly inputTokens: number;
+    readonly outputTokens: number;
+    readonly costUsd: number | null;
+  }[];
+  readonly byTool: readonly {
+    readonly id: string;
+    readonly calls: number;
+    readonly avgMs: number;
+    readonly errors: number;
+  }[];
+}
+
 /** A single workflow execution, recorded so the app can show what the agents
  *  did rather than pointing the user at an external tracing dashboard. */
 export interface AgentRun {

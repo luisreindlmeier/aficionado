@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { readAgentRuns } from './_lib/agent-runs';
+import { readAgentMetrics, readAgentRuns } from './_lib/agent-runs';
 import { supabaseEnabled } from './_lib/supabase';
 
 export const config = { maxDuration: 15 };
@@ -10,12 +10,17 @@ export const config = { maxDuration: 15 };
 export default async function handler(req: VercelRequest, res: VercelResponse): Promise<void> {
   res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate=60');
   if (!supabaseEnabled()) {
-    res.status(200).json({ source: 'none', runs: [] });
+    res.status(200).json({ source: 'none', runs: [], metrics: null });
     return;
   }
   const limit = Math.min(Number(req.query?.limit) || 50, 200);
+  const windowHours = Math.min(Number(req.query?.hours) || 24, 720);
   try {
-    res.status(200).json({ source: 'supabase', runs: await readAgentRuns(limit) });
+    const [runs, metrics] = await Promise.all([
+      readAgentRuns(limit),
+      readAgentMetrics(windowHours),
+    ]);
+    res.status(200).json({ source: 'supabase', runs, metrics });
   } catch (err) {
     res.status(500).json({ error: err instanceof Error ? err.message : String(err) });
   }

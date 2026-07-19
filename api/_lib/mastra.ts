@@ -2,6 +2,7 @@ import { Mastra } from '@mastra/core';
 import { Agent } from '@mastra/core/agent';
 import { Observability, MastraPlatformExporter, SensitiveDataFilter } from '@mastra/observability';
 import type { Metric } from '../../src/app/core/metrics';
+import { SupabaseMetricsExporter } from './metrics-exporter';
 import { METRIC_TOOLS } from './tools';
 
 // Single OpenAI model for every agent. Provider-string form: Mastra resolves the
@@ -93,13 +94,17 @@ export const discoveryAgent = new Agent({
 // pipeline) into them, so agent.generate(...) and every tool call are traced and
 // shipped to the Mastra Platform dashboard when MASTRA_PLATFORM_ACCESS_TOKEN /
 // MASTRA_PROJECT_ID are set.
+//
+// The second exporter keeps a local copy of that same span stream (tokens,
+// latency, per-agent and per-tool breakdown) in Supabase, so the app can show
+// what the agents cost without sending the user to an external dashboard.
 export const mastra = new Mastra({
   agents: { proofAgent, gravityAgent, trajectoryAgent, criticAgent, discoveryAgent },
   observability: new Observability({
     configs: {
       default: {
         serviceName: 'aficionado',
-        exporters: [new MastraPlatformExporter()],
+        exporters: [new MastraPlatformExporter(), new SupabaseMetricsExporter()],
         spanOutputProcessors: [new SensitiveDataFilter()],
       },
     },

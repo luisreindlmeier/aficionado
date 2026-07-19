@@ -4,7 +4,7 @@ import { heroChevronDown, heroChevronRight, heroCpuChip } from '@ng-icons/heroic
 import { AgentRunStore } from '../../core/agents/agent-run.store';
 import { DataService } from '../../core/data/data.service';
 import { CONNECTORS } from '../../core/connectors/descriptors';
-import type { AgentRun } from '../../core/model';
+import type { AgentMetrics, AgentRun } from '../../core/model';
 import { AgentActivity } from '../../core/ui/agent-activity';
 import { SectionHeading } from '../../core/ui/section-heading';
 
@@ -79,6 +79,143 @@ const WORKFLOW_AGENTS: Record<AgentRun['workflow'], readonly { id: string; role:
             }
           </div>
         </header>
+
+        <!-- Cost and consumption, captured from Mastra's own span stream -->
+        @if (metrics(); as m) {
+          <app-section-heading title="Last {{ m.windowHours }} hours" />
+
+          <!-- Headline numbers: a stat tile, not a chart. -->
+          <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+            <div class="rounded-xl border-[0.5px] border-border bg-card p-5">
+              <p class="text-[12px] text-muted-foreground">Model cost</p>
+              @if (m.costUsd !== null) {
+                <p class="mt-1 font-title text-[28px] leading-none text-foreground">
+                  {{ usd(m.costUsd) }}
+                </p>
+                <p class="mt-1 text-[11px] text-muted-foreground">
+                  {{ usd(m.costUsd / (m.evaluations || 1)) }} per founder
+                </p>
+              } @else {
+                <p class="mt-1 font-title text-[28px] leading-none text-placeholder">n/a</p>
+                <p class="mt-1 text-[11px] text-muted-foreground">
+                  Set MODEL_PRICE_INPUT_PER_M and MODEL_PRICE_OUTPUT_PER_M to price runs.
+                </p>
+              }
+            </div>
+
+            <div class="rounded-xl border-[0.5px] border-border bg-card p-5">
+              <p class="text-[12px] text-muted-foreground">Tokens</p>
+              <p class="mt-1 font-title text-[28px] leading-none text-foreground">
+                {{ compact(m.inputTokens + m.outputTokens) }}
+              </p>
+              <p class="mt-1 text-[11px] text-muted-foreground">
+                {{ compact(m.inputTokens) }} in / {{ compact(m.outputTokens) }} out
+                @if (m.cacheReadTokens) {
+                  <span>, {{ cachePct(m) }}% cached</span>
+                }
+              </p>
+            </div>
+
+            <div class="rounded-xl border-[0.5px] border-border bg-card p-5">
+              <p class="text-[12px] text-muted-foreground">Runs</p>
+              <p class="mt-1 font-title text-[28px] leading-none text-foreground">{{ m.runs }}</p>
+              <p class="mt-1 text-[11px] text-muted-foreground">
+                {{ m.evaluations }} evaluated
+                @if (m.failedRuns) {
+                  <span>, {{ m.failedRuns }} failed</span>
+                }
+              </p>
+            </div>
+
+            <div class="rounded-xl border-[0.5px] border-border bg-card p-5">
+              <p class="text-[12px] text-muted-foreground">Calls</p>
+              <p class="mt-1 font-title text-[28px] leading-none text-foreground">
+                {{ m.modelCalls }}
+              </p>
+              <p class="mt-1 text-[11px] text-muted-foreground">
+                model, plus {{ m.toolCalls }} tool calls
+              </p>
+            </div>
+          </div>
+
+          <div class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <!-- Tokens by agent. One measure, rows labelled directly, so a
+                 single tone carries magnitude and the label carries identity. -->
+            @if (m.byAgent.length) {
+              <section class="rounded-xl border-[0.5px] border-border bg-card p-5">
+                <p class="text-[13px] font-medium text-foreground">Tokens by agent</p>
+                <p class="mt-1 text-[11px] text-muted-foreground">
+                  Which agent is consuming the budget.
+                </p>
+                <div class="mt-4 flex flex-col gap-2.5">
+                  @for (a of m.byAgent; track a.id) {
+                    <div class="flex items-center gap-3">
+                      <span class="w-32 shrink-0 truncate font-mono text-[11px] text-foreground">{{
+                        a.id
+                      }}</span>
+                      <div class="h-2 flex-1 overflow-hidden rounded-full bg-[#f0f0ef]">
+                        <div
+                          class="h-full rounded-full bg-foreground"
+                          [style.width.%]="pctOfMax(a.inputTokens + a.outputTokens, m)"
+                        ></div>
+                      </div>
+                      <span
+                        class="w-14 shrink-0 text-right text-[11px] tabular-nums text-muted-foreground"
+                        >{{ compact(a.inputTokens + a.outputTokens) }}</span
+                      >
+                      @if (a.costUsd !== null) {
+                        <span
+                          class="w-14 shrink-0 text-right text-[11px] tabular-nums text-muted-foreground"
+                          >{{ usd(a.costUsd) }}</span
+                        >
+                      }
+                    </div>
+                  }
+                </div>
+              </section>
+            }
+
+            <!-- Connector latency: which source is slow, which the agents reach for -->
+            @if (m.byTool.length) {
+              <section class="rounded-xl border-[0.5px] border-border bg-card p-5">
+                <p class="text-[13px] font-medium text-foreground">Connector tools</p>
+                <p class="mt-1 text-[11px] text-muted-foreground">
+                  What the agents actually called, and how slow it was.
+                </p>
+                <table class="mt-4 w-full text-[11px]">
+                  <thead>
+                    <tr class="text-muted-foreground">
+                      <th class="pb-2 text-left font-normal">Tool</th>
+                      <th class="pb-2 text-right font-normal">Calls</th>
+                      <th class="pb-2 text-right font-normal">Avg</th>
+                      <th class="pb-2 text-right font-normal">Errors</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (t of m.byTool; track t.id) {
+                      <tr class="border-t-[0.5px] border-border">
+                        <td class="py-1.5 font-mono text-foreground">{{ t.id }}</td>
+                        <td class="py-1.5 text-right tabular-nums text-muted-foreground">
+                          {{ t.calls }}
+                        </td>
+                        <td class="py-1.5 text-right tabular-nums text-muted-foreground">
+                          {{ t.avgMs }}ms
+                        </td>
+                        <td
+                          class="py-1.5 text-right tabular-nums"
+                          [class.text-muted-foreground]="!t.errors"
+                          [class.text-destructive]="t.errors"
+                        >
+                          {{ t.errors || '' }}
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </section>
+            }
+          </div>
+        }
 
         <!-- What the system is made of, whether or not anything has run yet -->
         <app-section-heading title="Workflows" />
@@ -225,6 +362,7 @@ export class AgentRunsPage {
   protected readonly data = inject(DataService);
 
   protected readonly runs = this.store.runs;
+  protected readonly metrics = this.store.metrics;
   protected readonly historySource = this.store.historySource;
   protected readonly expanded = signal<string | undefined>(undefined);
 
@@ -298,6 +436,28 @@ export class AgentRunsPage {
 
   protected clock(at: string): string {
     return new Date(at).toLocaleTimeString('en-US', { hour12: false });
+  }
+
+  /** Compact token counts: 3.8M reads better than 3,800,000 in a stat tile. */
+  protected compact(n: number): string {
+    if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
+    if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`;
+    return String(n);
+  }
+
+  /** Sub-cent costs are the norm per run, so do not round them away. */
+  protected usd(n: number): string {
+    return n < 0.01 && n > 0 ? `$${n.toFixed(4)}` : `$${n.toFixed(2)}`;
+  }
+
+  protected cachePct(m: AgentMetrics): number {
+    return m.inputTokens ? Math.round((m.cacheReadTokens / m.inputTokens) * 100) : 0;
+  }
+
+  /** Bars are scaled to the largest agent, not to the total. */
+  protected pctOfMax(value: number, m: AgentMetrics): number {
+    const max = Math.max(...m.byAgent.map((a) => a.inputTokens + a.outputTokens), 1);
+    return Math.round((value / max) * 100);
   }
 
   protected duration(r: AgentRun): string | undefined {
