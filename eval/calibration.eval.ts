@@ -246,17 +246,43 @@ describe('properties', () => {
     }
   });
 
-  it('a complementary two-founder team beats a redundant one', () => {
-    const complementary = harmonizedTeamScore([
-      { skills: { technical: 0.9, commercial: 0.2, domain: 0.2, product: 0.8 }, composite: 70 },
-      { skills: { technical: 0.2, commercial: 0.9, domain: 0.85, product: 0.2 }, composite: 70 },
-    ])!;
-    const redundant = harmonizedTeamScore([
-      { skills: { technical: 0.9, commercial: 0.2, domain: 0.2, product: 0.2 }, composite: 70 },
-      { skills: { technical: 0.85, commercial: 0.2, domain: 0.2, product: 0.2 }, composite: 70 },
-    ])!;
-    expect(complementary.score).toBeGreaterThan(redundant.score);
-    expect(complementary.gaps.length).toBe(0); // full coverage
+  it('a complementary team has full coverage; a redundant team shows gaps and overlap', () => {
+    const metrics = { Proof: 70, Gravity: 70, Trajectory: 70 };
+    const conf = { Proof: 'high', Gravity: 'high', Trajectory: 'high' } as const;
+    const complementary = harmonizedTeamScore(
+      [
+        {
+          skills: { technical: 0.9, commercial: 0.2, domain: 0.2, product: 0.8 },
+          metrics,
+          confidences: conf,
+        },
+        {
+          skills: { technical: 0.2, commercial: 0.9, domain: 0.85, product: 0.2 },
+          metrics,
+          confidences: conf,
+        },
+      ],
+      W,
+    )!;
+    const redundant = harmonizedTeamScore(
+      [
+        {
+          skills: { technical: 0.9, commercial: 0.2, domain: 0.2, product: 0.2 },
+          metrics,
+          confidences: conf,
+        },
+        {
+          skills: { technical: 0.85, commercial: 0.2, domain: 0.2, product: 0.2 },
+          metrics,
+          confidences: conf,
+        },
+      ],
+      W,
+    )!;
+    // In the recalibrated model, skills drive coverage/overlap (descriptive), not the score.
+    expect(complementary.gaps.length).toBe(0); // full skill coverage
+    expect(complementary.redundancies.length).toBe(0); // no overlap
+    expect(redundant.gaps.length).toBeGreaterThan(0); // thin coverage
     expect(redundant.redundancies.length).toBeGreaterThan(0); // overlap flagged
   });
 });
