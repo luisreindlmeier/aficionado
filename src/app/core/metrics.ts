@@ -4,5 +4,5 @@ export type Metric = 'Proof' | 'Gravity' | 'Trajectory';
 export const METRIC_COLORS: Readonly<Record<Metric, string>> = {
   Proof: '#0d9488', // teal
   Gravity: '#7c3aed', // violet
-  Trajectory: '#e11d48', // rose
+  Trajectory: '#2563eb', // blue
 };

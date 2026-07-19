@@ -7,19 +7,13 @@ import { METRIC_COLORS } from '../../core/metrics';
 // Mock data, hardcoded for now, typed so it swaps 1:1 for a
 // real API response later. Nothing below this const fetches.
 // ─────────────────────────────────────────────────────────────
-type Source = 'GitHub' | 'X' | 'LinkedIn' | 'Wayback';
 type Severity = 'low' | 'medium' | 'high';
-
-interface Evidence {
-  readonly text: string;
-  readonly source: Source;
-}
 
 interface Metric {
   readonly name: string;
   readonly score: number; // 0–100
-  readonly dot: string; // accent, also drives the donut ring
-  readonly evidence: readonly Evidence[];
+  readonly dot: string; // accent, drives the donut ring + title colour
+  readonly description: string; // one very short line
 }
 
 interface SocialLink {
@@ -79,32 +73,13 @@ const DOSSIER: FounderDossier = {
     confidence: 'Confidence high, no critical flags',
   },
   metrics: [
-    {
-      name: 'Proof',
-      score: 74,
-      dot: METRIC_COLORS.Proof,
-      evidence: [
-        { text: 'Shipped 3 products end-to-end', source: 'GitHub' },
-        { text: 'Repos starred by senior infra engineers', source: 'GitHub' },
-      ],
-    },
-    {
-      name: 'Gravity',
-      score: 68,
-      dot: METRIC_COLORS.Gravity,
-      evidence: [
-        { text: 'Followed by 5 notable founders', source: 'X' },
-        { text: 'Recruited co-founder: ex-Stripe staff eng', source: 'LinkedIn' },
-      ],
-    },
+    { name: 'Proof', score: 74, dot: METRIC_COLORS.Proof, description: 'Ability to ship' },
+    { name: 'Gravity', score: 68, dot: METRIC_COLORS.Gravity, description: 'Draws people in' },
     {
       name: 'Trajectory',
       score: 81,
       dot: METRIC_COLORS.Trajectory,
-      evidence: [
-        { text: 'Shipping cadence 3× in 6 months', source: 'GitHub' },
-        { text: 'Clean pivot after v1', source: 'Wayback' },
-      ],
+      description: 'Momentum over time',
     },
   ],
   redFlags: [
@@ -207,6 +182,7 @@ const DOSSIER: FounderDossier = {
         <section class="mt-4 rounded-xl border-[0.5px] border-border bg-card p-5">
           <div class="flex items-start justify-between gap-4">
             <div>
+              <p class="af-eyebrow mb-2">aficionado score</p>
               <div class="flex items-baseline gap-1.5">
                 <span
                   class="font-serif text-[44px] leading-none tracking-[-0.02em] text-foreground"
@@ -263,30 +239,12 @@ const DOSSIER: FounderDossier = {
                 </text>
               </svg>
 
-              <div class="mt-3 flex items-center justify-center gap-2">
-                <span class="size-2 rounded-full" [style.backgroundColor]="metric.dot"></span>
-                <span class="text-[14px] font-medium" [style.color]="metric.dot">{{
-                  metric.name
-                }}</span>
-              </div>
-
-              <div class="mt-4 flex flex-col gap-3 border-t-[0.5px] border-border pt-4">
-                @for (ev of metric.evidence; track ev.text) {
-                  <div>
-                    <p class="text-[12px] leading-snug text-foreground">{{ ev.text }}</p>
-                    <div class="mt-1 flex items-center gap-1.5">
-                      <span
-                        class="rounded-full border-[0.5px] border-border px-1.5 py-0.5 text-[10px] text-muted-foreground"
-                      >
-                        {{ ev.source }}
-                      </span>
-                      <a class="text-muted-foreground transition-colors hover:text-foreground">
-                        <ng-icon name="heroArrowTopRightOnSquare" size="0.75rem" />
-                      </a>
-                    </div>
-                  </div>
-                }
-              </div>
+              <h3 class="mt-4 text-center text-[17px] font-semibold" [style.color]="metric.dot">
+                {{ metric.name }}
+              </h3>
+              <p class="mt-1 text-center text-[12px] text-muted-foreground">
+                {{ metric.description }}
+              </p>
             </article>
           }
         </section>
