@@ -6,13 +6,18 @@ import type {
 
 // Proof: research authorship from arXiv (Atom API, no auth). Parses the feed
 // with light regex; enough for counts and the most recent title.
+//
+// arXiv has no author disambiguation: au:"John Smith" is a name string match, so
+// the count aggregates every John Smith who has ever posted. Distinctive names
+// are reliable, common ones inflate. Unlike OpenAlex there are no author ids to
+// tell them apart, so treat the count as an upper bound.
 export async function runArxiv(query: FounderQuery): Promise<ConnectorResult> {
   const name = query.name?.trim();
   if (!name) return { signals: [], note: 'No name provided' };
 
   const search = `au:"${name}"`;
   const res = await fetch(
-    `http://export.arxiv.org/api/query?search_query=${encodeURIComponent(search)}&max_results=10&sortBy=submittedDate&sortOrder=descending`,
+    `https://export.arxiv.org/api/query?search_query=${encodeURIComponent(search)}&max_results=10&sortBy=submittedDate&sortOrder=descending`,
     { headers: { 'User-Agent': 'aficionado-connector' } },
   );
   if (!res.ok) throw new Error(`arXiv request failed (${res.status})`);
