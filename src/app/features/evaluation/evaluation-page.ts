@@ -263,6 +263,52 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
                 }
               </section>
 
+              <!-- 3b. Complete Gravity from a pasted profile (the live re-score) -->
+              @if (canCompleteGravity(f)) {
+                <section
+                  class="mt-4 rounded-xl border-[0.5px] border-dashed border-border bg-card p-5"
+                >
+                  <p class="font-title text-[15px] text-foreground">Complete Gravity</p>
+                  <p class="mt-0.5 text-[12px] text-muted-foreground">
+                    Gravity is low confidence with no public social signal. Paste
+                    {{ firstName(f) }}'s LinkedIn or X profile text to measure reach and fold it
+                    into the composite.
+                  </p>
+                  <textarea
+                    [value]="profileText()"
+                    (input)="profileText.set($any($event.target).value)"
+                    rows="3"
+                    placeholder="Paste profile text, for example: Co-founder at gedonus, ex quant. 1,400 connections."
+                    class="mt-3 w-full rounded-md border-[0.5px] border-input bg-surface p-2 text-[12px] text-foreground outline-none placeholder:text-placeholder focus:border-ring"
+                  ></textarea>
+                  <button
+                    type="button"
+                    (click)="addGravity(f)"
+                    [disabled]="profileText().trim().length < 12"
+                    class="mt-2 inline-flex h-8 items-center gap-1.5 rounded-md bg-foreground px-3 text-[13px] font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-40"
+                  >
+                    Add profile and re-score
+                  </button>
+                </section>
+              } @else if (data.gravityCompleted(f.id)) {
+                <section
+                  class="mt-4 flex flex-wrap items-center justify-between gap-2 rounded-xl border-[0.5px] border-border bg-card p-4"
+                >
+                  <p class="inline-flex items-center gap-2 text-[12px] text-foreground">
+                    <ng-icon name="heroCheckCircle" size="0.95rem" class="text-[#16a34a]" />
+                    Gravity completed from the pasted profile. The composite re-scored to
+                    {{ f.score?.composite }}, {{ f.score?.band }}.
+                  </p>
+                  <button
+                    type="button"
+                    (click)="data.resetGravity(f.id)"
+                    class="text-[12px] text-muted-foreground underline-offset-2 hover:underline"
+                  >
+                    reset
+                  </button>
+                </section>
+              }
+
               <!-- 4. Brain at work (live streaming) -->
               <section class="mt-4 rounded-xl border-[0.5px] border-border bg-card p-5">
                 <div class="flex flex-wrap items-center justify-between gap-3">
@@ -788,6 +834,21 @@ export class EvaluationPage {
       f.note ??
       'Evidence is thin on at least one dimension; a partner should confirm before deciding.'
     );
+  }
+
+  protected readonly profileText = signal('');
+
+  protected canCompleteGravity(f: Founder): boolean {
+    return f.score?.gravity.confidence === 'low' && !this.data.gravityCompleted(f.id);
+  }
+
+  protected firstName(f: Founder): string {
+    return f.name.split(/\s+/)[0];
+  }
+
+  protected addGravity(f: Founder): void {
+    this.data.completeGravity(f.id, this.profileText());
+    this.profileText.set('');
   }
 
   protected pct(w: number): number {

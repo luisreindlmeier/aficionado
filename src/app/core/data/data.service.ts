@@ -2,14 +2,17 @@ import { Injectable, computed, signal } from '@angular/core';
 import type { Metric } from '../metrics';
 import type {
   Band,
+  ConfidenceLevel,
   Founder,
   FounderScore,
+  MetricScore,
   PipelineStage,
+  Receipt,
   Thesis,
   Venture,
   WeightPreset,
 } from '../model';
-import { DEFAULT_PRESET, WEIGHT_PRESETS, recomputeComposite } from '../scoring';
+import { DEFAULT_PRESET, WEIGHT_PRESETS, clamp, log10p, recomputeComposite } from '../scoring';
 import { ANCHORS } from './anchors';
 import { SEED_FOUNDERS, SEED_VENTURES, THESES } from './seed';
 
@@ -42,15 +45,31 @@ export class DataService {
   readonly weights = signal<Record<Metric, number>>({ ...DEFAULT_PRESET.weights });
   readonly presets = WEIGHT_PRESETS;
 
+  /** Gravity completions from a pasted profile, keyed by founder id. Pasting a
+   *  LinkedIn or X profile turns a low-confidence Gravity into a measured one
+   *  that the composite then includes (the "add LinkedIn and it re-computes"
+   *  moment on the self-demo). */
+  private readonly gravityOverrides = signal<Record<string, MetricScore>>({});
+
   /** Founders with discovery timestamps filled and scores recomputed live. */
   readonly founders = computed<readonly Founder[]>(() => {
     const w = this.weights();
+    const overrides = this.gravityOverrides();
     return SEED_FOUNDERS.map((f) => {
       const discoveredAt = new Date(this.base - f.discoveredOffsetMins * 60_000).toISOString();
       if (!f.score) return { ...f, discoveredAt } as Founder;
+      const gravity = overrides[f.id] ?? f.score.gravity;
       const r = recomputeComposite(
-        { Proof: f.score.proof.score, Gravity: f.score.gravity.score, Trajectory: f.score.trajectory.score },
-        { Proof: f.score.proof.confidence, Gravity: f.score.gravity.confidence, Trajectory: f.score.trajectory.confidence },
+        {
+          Proof: f.score.proof.score,
+          Gravity: gravity.score,
+          Trajectory: f.score.trajectory.score,
+        },
+        {
+          Proof: f.score.proof.confidence,
+          Gravity: gravity.confidence,
+          Trajectory: f.score.trajectory.confidence,
+        },
         f.redFlags,
         w,
         ANCHORS,
@@ -59,7 +78,7 @@ export class DataService {
       const score: FounderScore = {
         ...f.score,
         proof: { ...f.score.proof, weight: w.Proof },
-        gravity: { ...f.score.gravity, weight: w.Gravity },
+        gravity: { ...gravity, weight: w.Gravity },
         trajectory: { ...f.score.trajectory, weight: w.Trajectory },
         composite: r.composite,
         rawComposite: r.rawComposite,
@@ -70,9 +89,62 @@ export class DataService {
         capReason: r.capReason,
         anchorNeighbor: r.anchorNeighbor ?? f.score.anchorNeighbor,
       };
-      return { ...f, discoveredAt, score } as Founder;
+      const note = overrides[f.id] ? undefined : f.note;
+      return { ...f, discoveredAt, score, note } as Founder;
     });
   });
+
+  /** True once a founder's Gravity has been completed from a pasted profile. */
+  gravityCompleted(founderId: string): boolean {
+    return founderId in this.gravityOverrides();
+  }
+
+  /** Complete Gravity from a pasted profile. Reads a connection or follower
+   *  count if present, else estimates from the text, and produces a measured,
+   *  medium-confidence Gravity the composite includes. */
+  completeGravity(founderId: string, profileText: string): void {
+    const text = (profileText || '').trim();
+    if (text.length < 12) return;
+    const match = text.match(/([\d][\d.,]*)\s*\+?\s*(connections|followers|contacts)/i);
+    const reach = match
+      ? parseInt(match[1].replace(/[.,]/g, ''), 10)
+      : clamp(200 + text.length * 3, 200, 12000);
+    const reachScore = clamp(Math.round((log10p(reach) / log10p(200000)) * 100) + 8, 6, 96);
+    const senior = /founder|ceo|cto|lead|head of|director|partner|principal/i.test(text);
+    const score = clamp(Math.round(reachScore * 0.6 + (senior ? 70 : 45) * 0.4), 6, 96);
+    const receipts: Receipt[] = [
+      {
+        connector: 'linkedin',
+        metric: 'Gravity',
+        feature: 'True reach',
+        text: `${reach.toLocaleString('en-US')} connections from the pasted profile`,
+        value: reach,
+      },
+    ];
+    const gravity: MetricScore = {
+      metric: 'Gravity',
+      score,
+      weight: this.weights().Gravity,
+      percentile: 50,
+      confidence: 'medium' as ConfidenceLevel,
+      completeness: 0.7,
+      agreement: 0.7,
+      rationale:
+        'Reach is now measurable from the pasted profile, so Gravity is included in the composite.',
+      features: [],
+      receipts,
+      by: 'heuristic',
+    };
+    this.gravityOverrides.update((o) => ({ ...o, [founderId]: gravity }));
+  }
+
+  resetGravity(founderId: string): void {
+    this.gravityOverrides.update((o) => {
+      const next = { ...o };
+      delete next[founderId];
+      return next;
+    });
+  }
 
   /** The Radar feed: filtered by the active thesis, freshest first. */
   readonly radarFeed = computed<readonly Founder[]>(() => {
@@ -141,7 +213,9 @@ export class DataService {
   }
 
   activePreset(): WeightPreset | { id: string; label: string } {
-    return WEIGHT_PRESETS.find((p) => p.id === this.presetId()) ?? { id: 'custom', label: 'Custom' };
+    return (
+      WEIGHT_PRESETS.find((p) => p.id === this.presetId()) ?? { id: 'custom', label: 'Custom' }
+    );
   }
 
   /** Human "time ago" for discovery timestamps. */
