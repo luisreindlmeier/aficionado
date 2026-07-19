@@ -161,10 +161,11 @@ open-ended part (read messy public evidence, extract clean features). The reduce
 part that must be trustworthy and identical every time (turn features into a gated, calibrated
 number). See `DECISIONS.md` ADR-002 for the cost and reproducibility argument.
 
-The fan-out is a plain `Promise.all`. In the current endpoint that is
-`api/evaluate.ts` running the live Proof connectors in parallel and streaming each `Signal`
-as it resolves. The full three-worker orchestration and the richer `EvalEvent` trace
-described above is the designed shape; the endpoint currently ships the Proof slice of it.
+The fan-out is a plain `Promise.all`. `api/evaluate.ts` runs each metric's connectors in
+parallel, streaming every `signal` as it resolves and a `metric` score per phase, then runs
+the deterministic reducer, red-flag gate and calibration and streams the final
+`FounderScore`. The full three-worker orchestration and the richer `EvalEvent` trace
+described above is what the endpoint ships today, rendered live as the brain-at-work panel.
 
 ### The reducer is shared
 

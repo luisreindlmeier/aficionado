@@ -1,0 +1,1284 @@
+[
+  {
+    "handle": "luisreindlmeier",
+    "name": "Luis Reindlmeier",
+    "bio": "Co-Founder @Gedonus-AI ",
+    "company": null,
+    "blog": "",
+    "location": "Frankfurt, Germany",
+    "followers": 6,
+    "following": 13,
+    "public_repos": 4,
+    "created_at": "2024-04-14T12:38:19Z",
+    "html_url": "https://github.com/luisreindlmeier",
+    "twitter": null,
+    "derived": {
+      "ownedCount": 4,
+      "stars": 15,
+      "forks": 2,
+      "topRepos": [
+        {
+          "name": "transformer-lob",
+          "stars": 9,
+          "lang": "Python",
+          "desc": "Transformer-based LOB for market making (Bachelor thesis)",
+          "pushed": "2026-02-03T17:02:20Z",
+          "created": "2026-02-02T23:04:04Z",
+          "url": "https://github.com/luisreindlmeier/transformer-lob",
+          "archived": false
+        },
+        {
+          "name": "spherecast-network",
+          "stars": 4,
+          "lang": "TypeScript",
+          "desc": "Spherecast Network | TUM.ai Makeathon 2026",
+          "pushed": "2026-05-26T19:25:41Z",
+          "created": "2026-04-18T15:06:37Z",
+          "url": "https://github.com/luisreindlmeier/spherecast-network",
+          "archived": false
+        },
+        {
+          "name": "luisreindlmeier",
+          "stars": 1,
+          "lang": null,
+          "desc": null,
+          "pushed": "2026-07-18T13:24:55Z",
+          "created": "2026-03-08T00:11:31Z",
+          "url": "https://github.com/luisreindlmeier/luisreindlmeier",
+          "archived": false
+        },
+        {
+          "name": "techem-horizon",
+          "stars": 1,
+          "lang": "TypeScript",
+          "desc": "Techem Horizon | FUTURY Build Days 2026",
+          "pushed": "2026-04-24T19:38:23Z",
+          "created": "2026-04-23T18:57:39Z",
+          "url": "https://github.com/luisreindlmeier/techem-horizon",
+          "archived": false
+        }
+      ],
+      "langs": {
+        "TypeScript": 2,
+        "Python": 1
+      },
+      "byYear": {
+        "2026": 4
+      },
+      "recentEventTypes": {
+        "WatchEvent": 1,
+        "PushEvent": 9,
+        "CreateEvent": 1
+      },
+      "recentEventCount": 11,
+      "lastActive": "2026-07-14T12:29:39Z"
+    },
+    "__rl": "52"
+  },
+  {
+    "handle": "steipete",
+    "name": "Peter Steinberger",
+    "bio": "Came back from retirement to mess with AI. Clawdfather @OpenClaw\r\n\r\nPreviously: Founder of @PSPDFKit.",
+    "company": "OpenAI",
+    "blog": "http://steipete.me",
+    "location": "London / San Francisco",
+    "followers": 52480,
+    "following": 109,
+    "public_repos": 186,
+    "created_at": "2009-02-27T08:34:22Z",
+    "html_url": "https://github.com/steipete",
+    "twitter": "steipete",
+    "derived": {
+      "ownedCount": 69,
+      "stars": 53661,
+      "forks": 4809,
+      "topRepos": [
+        {
+          "name": "CodexBar",
+          "stars": 18621,
+          "lang": "Swift",
+          "desc": "Show usage stats for OpenAI Codex and Claude Code, without having to login.",
+          "pushed": "2026-07-19T00:42:00Z",
+          "created": "2025-11-16T17:00:44Z",
+          "url": "https://github.com/steipete/CodexBar",
+          "archived": false
+        },
+        {
+          "name": "summarize",
+          "stars": 6436,
+          "lang": "TypeScript",
+          "desc": "Point at any URL/YouTube/Podcast or file. Get the gist. CLI and Chrome Extension.",
+          "pushed": "2026-07-19T02:24:39Z",
+          "created": "2025-12-17T12:19:51Z",
+          "url": "https://github.com/steipete/summarize",
+          "archived": false
+        },
+        {
+          "name": "agent-scripts",
+          "stars": 6428,
+          "lang": "Shell",
+          "desc": "Scripts for agents, shared between my repositories.",
+          "pushed": "2026-07-18T23:29:33Z",
+          "created": "2025-11-08T02:55:55Z",
+          "url": "https://github.com/steipete/agent-scripts",
+          "archived": false
+        },
+        {
+          "name": "agent-rules",
+          "stars": 5692,
+          "lang": "Shell",
+          "desc": "Rules and Knowledge to work better with agents such as Claude Code or Cursor",
+          "pushed": "2026-05-03T17:06:19Z",
+          "created": "2025-06-12T11:10:14Z",
+          "url": "https://github.com/steipete/agent-rules",
+          "archived": true
+        },
+        {
+          "name": "oracle",
+          "stars": 3277,
+          "lang": "TypeScript",
+          "desc": "Ask the oracle when you're stuck. Invoke GPT-5 Pro with a custom context and files.",
+          "pushed": "2026-07-18T22:06:32Z",
+          "created": "2025-11-14T17:13:57Z",
+          "url": "https://github.com/steipete/oracle",
+          "archived": false
+        },
+        {
+          "name": "RepoBar",
+          "stars": 2128,
+          "lang": "Swift",
+          "desc": "Show status of GitHub Repos right in your menu bar and terminal: CI, Issues, Pull Requests, Latest Release.",
+          "pushed": "2026-07-06T08:17:43Z",
+          "created": "2025-11-24T06:48:38Z",
+          "url": "https://github.com/steipete/RepoBar",
+          "archived": false
+        }
+      ],
+      "langs": {
+        "TypeScript": 21,
+        "Swift": 17,
+        "Shell": 2,
+        "Ruby": 1,
+        "Go": 15,
+        "Astro": 1,
+        "HTML": 2,
+        "MDX": 2,
+        "JavaScript": 1
+      },
+      "byYear": {
+        "2017": 1,
+        "2020": 2,
+        "2025": 54,
+        "2026": 12
+      },
+      "recentEventTypes": {
+        "PullRequestEvent": 16,
+        "CreateEvent": 8,
+        "PushEvent": 41,
+        "ReleaseEvent": 1,
+        "IssueCommentEvent": 14,
+        "IssuesEvent": 16,
+        "DeleteEvent": 4
+      },
+      "recentEventCount": 100,
+      "lastActive": "2026-07-19T02:48:48Z"
+    },
+    "__rl": "49"
+  },
+  {
+    "handle": "rauchg",
+    "name": "Guillermo Rauch",
+    "bio": null,
+    "company": "https://vercel.com",
+    "blog": "http://twitter.com/rauchg",
+    "location": "SF",
+    "followers": 16993,
+    "following": 882,
+    "public_repos": 140,
+    "created_at": "2008-06-09T02:22:48Z",
+    "html_url": "https://github.com/rauchg",
+    "twitter": null,
+    "derived": {
+      "ownedCount": 49,
+      "stars": 19670,
+      "forks": 4435,
+      "topRepos": [
+        {
+          "name": "slackin",
+          "stars": 6499,
+          "lang": "JavaScript",
+          "desc": "Public Slack organizations made easy",
+          "pushed": "2023-10-17T10:33:56Z",
+          "created": "2015-01-26T21:23:41Z",
+          "url": "https://github.com/rauchg/slackin",
+          "archived": false
+        },
+        {
+          "name": "wifi-password",
+          "stars": 4556,
+          "lang": "Shell",
+          "desc": "Get the password of the wifi you're on (bash)",
+          "pushed": "2024-06-13T19:16:52Z",
+          "created": "2015-02-14T23:42:50Z",
+          "url": "https://github.com/rauchg/wifi-password",
+          "archived": false
+        },
+        {
+          "name": "blog",
+          "stars": 1419,
+          "lang": "MDX",
+          "desc": null,
+          "pushed": "2026-06-10T23:58:03Z",
+          "created": "2017-01-03T00:13:15Z",
+          "url": "https://github.com/rauchg/blog",
+          "archived": false
+        },
+        {
+          "name": "spot",
+          "stars": 955,
+          "lang": "Shell",
+          "desc": "Tiny file search utility (bash)",
+          "pushed": "2024-01-02T23:45:40Z",
+          "created": "2012-03-04T15:55:44Z",
+          "url": "https://github.com/rauchg/spot",
+          "archived": false
+        },
+        {
+          "name": "next-ai-news",
+          "stars": 851,
+          "lang": "TypeScript",
+          "desc": null,
+          "pushed": "2024-02-14T19:01:56Z",
+          "created": "2024-01-08T02:17:41Z",
+          "url": "https://github.com/rauchg/next-ai-news",
+          "archived": false
+        },
+        {
+          "name": "chat-example",
+          "stars": 801,
+          "lang": "HTML",
+          "desc": null,
+          "pushed": "2023-09-07T16:12:17Z",
+          "created": "2014-05-28T16:30:50Z",
+          "url": "https://github.com/rauchg/chat-example",
+          "archived": false
+        }
+      ],
+      "langs": {
+        "MDX": 1,
+        "Swift": 1,
+        "TypeScript": 9,
+        "JavaScript": 26,
+        "C++": 1,
+        "Shell": 3,
+        "HTML": 4,
+        "Dockerfile": 2,
+        "CSS": 2
+      },
+      "byYear": {
+        "2009": 2,
+        "2011": 1,
+        "2012": 6,
+        "2013": 1,
+        "2014": 7,
+        "2015": 5,
+        "2017": 2,
+        "2018": 3,
+        "2019": 2,
+        "2020": 5,
+        "2022": 3,
+        "2023": 1,
+        "2024": 9,
+        "2025": 1,
+        "2026": 1
+      },
+      "recentEventTypes": {},
+      "recentEventCount": 0,
+      "lastActive": "2026-06-10T23:58:03Z"
+    },
+    "__rl": "46"
+  },
+  {
+    "handle": "yyx990803",
+    "name": "Evan You",
+    "bio": "Founder @voidzero-dev, author of @vuejs and @vitejs. Connoisseur of sushi.",
+    "company": "VoidZero",
+    "blog": "http://evanyou.me",
+    "location": "Singapore",
+    "followers": 108497,
+    "following": 100,
+    "public_repos": 198,
+    "created_at": "2010-11-28T01:05:40Z",
+    "html_url": "https://github.com/yyx990803",
+    "twitter": "evanyou",
+    "derived": {
+      "ownedCount": 36,
+      "stars": 14357,
+      "forks": 1534,
+      "topRepos": [
+        {
+          "name": "build-your-own-mint",
+          "stars": 2539,
+          "lang": "HTML",
+          "desc": "Build your own personal finance analytics using Plaid, Google Sheets and CircleCI.",
+          "pushed": "2022-12-10T01:14:18Z",
+          "created": "2019-01-05T21:03:59Z",
+          "url": "https://github.com/yyx990803/build-your-own-mint",
+          "archived": false
+        },
+        {
+          "name": "vue-hooks",
+          "stars": 1588,
+          "lang": "JavaScript",
+          "desc": "Experimental React hooks implementation in Vue",
+          "pushed": "2020-04-29T19:59:15Z",
+          "created": "2018-10-27T04:58:21Z",
+          "url": "https://github.com/yyx990803/vue-hooks",
+          "archived": true
+        },
+        {
+          "name": "pod",
+          "stars": 1335,
+          "lang": "JavaScript",
+          "desc": "Git push deploy for Node.js",
+          "pushed": "2020-10-31T13:02:39Z",
+          "created": "2013-02-20T00:24:31Z",
+          "url": "https://github.com/yyx990803/pod",
+          "archived": false
+        },
+        {
+          "name": "zoomerang",
+          "stars": 1218,
+          "lang": "JavaScript",
+          "desc": "drop in zoom anything",
+          "pushed": "2021-07-19T20:08:56Z",
+          "created": "2013-11-30T19:45:32Z",
+          "url": "https://github.com/yyx990803/zoomerang",
+          "archived": false
+        },
+        {
+          "name": "vue-lit",
+          "stars": 1116,
+          "lang": "JavaScript",
+          "desc": "Proof of concept custom elements \"framework\"",
+          "pushed": "2020-10-27T03:43:07Z",
+          "created": "2020-09-16T23:20:07Z",
+          "url": "https://github.com/yyx990803/vue-lit",
+          "archived": false
+        },
+        {
+          "name": "HTML5-Clear-v2",
+          "stars": 956,
+          "lang": "JavaScript",
+          "desc": "HTML5 Clear version 2",
+          "pushed": "2023-04-26T09:32:26Z",
+          "created": "2012-10-12T22:22:15Z",
+          "url": "https://github.com/yyx990803/HTML5-Clear-v2",
+          "archived": false
+        }
+      ],
+      "langs": {
+        "JavaScript": 28,
+        "TypeScript": 3,
+        "Vue": 2,
+        "HTML": 2,
+        "PHP": 1
+      },
+      "byYear": {
+        "2012": 2,
+        "2013": 3,
+        "2014": 1,
+        "2016": 3,
+        "2017": 2,
+        "2018": 5,
+        "2019": 3,
+        "2020": 4,
+        "2021": 6,
+        "2022": 2,
+        "2023": 2,
+        "2024": 2,
+        "2026": 1
+      },
+      "recentEventTypes": {},
+      "recentEventCount": 0,
+      "lastActive": "2026-02-22T02:25:58Z"
+    },
+    "__rl": "43"
+  },
+  {
+    "handle": "sindresorhus",
+    "name": "Sindre Sorhus",
+    "bio": "Full-Time Open-Sourcerer. Focused on Swift & JavaScript. Makes macOS apps, CLI tools, npm packages.",
+    "company": null,
+    "blog": "https://sindresorhus.com/apps",
+    "location": null,
+    "followers": 80292,
+    "following": 31,
+    "public_repos": 1140,
+    "created_at": "2009-12-20T22:57:02Z",
+    "html_url": "https://github.com/sindresorhus",
+    "twitter": "sindresorhus",
+    "derived": {
+      "ownedCount": 100,
+      "stars": 780279,
+      "forks": 54854,
+      "topRepos": [
+        {
+          "name": "awesome",
+          "stars": 486476,
+          "lang": null,
+          "desc": "😎 Awesome lists about all kinds of interesting topics",
+          "pushed": "2026-06-30T18:21:16Z",
+          "created": "2014-07-11T13:42:37Z",
+          "url": "https://github.com/sindresorhus/awesome",
+          "archived": false
+        },
+        {
+          "name": "awesome-nodejs",
+          "stars": 66289,
+          "lang": null,
+          "desc": ":zap: Delightful Node.js packages and resources [BECAUSE OF TOO MUCH SPAM AND LOW-QUALITY SUBMISSIONS, SUBMISSIONS ARE PAUSED UNTIL JULY]",
+          "pushed": "2026-05-03T08:24:10Z",
+          "created": "2014-07-11T13:35:34Z",
+          "url": "https://github.com/sindresorhus/awesome-nodejs",
+          "archived": false
+        },
+        {
+          "name": "awesome-electron",
+          "stars": 27225,
+          "lang": null,
+          "desc": "Useful resources for creating apps with Electron [SUBMISSIONS ARE TEMPORARILY PAUSED BECAUSE I'M TIRED OF REVIEWING LOW-QUALITY STUFF]",
+          "pushed": "2026-05-03T11:29:47Z",
+          "created": "2015-04-23T11:48:53Z",
+          "url": "https://github.com/sindresorhus/awesome-electron",
+          "archived": false
+        },
+        {
+          "name": "quick-look-plugins",
+          "stars": 18701,
+          "lang": null,
+          "desc": "List of useful Quick Look plugins for developers",
+          "pushed": "2026-07-17T21:49:44Z",
+          "created": "2013-12-07T15:43:33Z",
+          "url": "https://github.com/sindresorhus/quick-look-plugins",
+          "archived": false
+        },
+        {
+          "name": "type-fest",
+          "stars": 17303,
+          "lang": "TypeScript",
+          "desc": "A collection of essential TypeScript types",
+          "pushed": "2026-07-13T22:52:32Z",
+          "created": "2019-03-13T10:30:19Z",
+          "url": "https://github.com/sindresorhus/type-fest",
+          "archived": false
+        },
+        {
+          "name": "ky",
+          "stars": 16997,
+          "lang": "TypeScript",
+          "desc": "🌳 Tiny & elegant JavaScript HTTP client based on the Fetch API",
+          "pushed": "2026-07-06T22:20:40Z",
+          "created": "2018-09-04T16:26:42Z",
+          "url": "https://github.com/sindresorhus/ky",
+          "archived": false
+        }
+      ],
+      "langs": {
+        "JavaScript": 70,
+        "TypeScript": 10,
+        "Astro": 1,
+        "Shell": 1,
+        "Swift": 6,
+        "C": 1,
+        "HTML": 1,
+        "Python": 1
+      },
+      "byYear": {
+        "2011": 1,
+        "2012": 4,
+        "2013": 4,
+        "2014": 15,
+        "2015": 15,
+        "2016": 17,
+        "2017": 9,
+        "2018": 8,
+        "2019": 2,
+        "2020": 3,
+        "2021": 1,
+        "2022": 2,
+        "2023": 4,
+        "2024": 7,
+        "2025": 1,
+        "2026": 7
+      },
+      "recentEventTypes": {
+        "IssueCommentEvent": 11,
+        "PullRequestEvent": 20,
+        "PushEvent": 29,
+        "DeleteEvent": 9,
+        "IssuesEvent": 11,
+        "CreateEvent": 10,
+        "ReleaseEvent": 10
+      },
+      "recentEventCount": 100,
+      "lastActive": "2026-07-18T23:08:26Z"
+    },
+    "__rl": "40"
+  },
+  {
+    "handle": "antfu",
+    "name": "Anthony Fu",
+    "bio": "A ship in harbor is safe, but that is not what ships are built for.",
+    "company": "@vercel team @nuxt",
+    "blog": "https://antfu.me",
+    "location": "undefined",
+    "followers": 39723,
+    "following": 410,
+    "public_repos": 399,
+    "created_at": "2015-02-28T16:55:50Z",
+    "html_url": "https://github.com/antfu",
+    "twitter": null,
+    "derived": {
+      "ownedCount": 89,
+      "stars": 45465,
+      "forks": 3494,
+      "topRepos": [
+        {
+          "name": "eslint-config",
+          "stars": 6232,
+          "lang": "JavaScript",
+          "desc": "Anthony's ESLint config preset",
+          "pushed": "2026-06-26T03:55:49Z",
+          "created": "2019-07-17T19:35:38Z",
+          "url": "https://github.com/antfu/eslint-config",
+          "archived": false
+        },
+        {
+          "name": "skills",
+          "stars": 5620,
+          "lang": "TypeScript",
+          "desc": "Anthony Fu's curated collection of agent skills.",
+          "pushed": "2026-06-23T00:14:36Z",
+          "created": "2026-01-28T05:59:03Z",
+          "url": "https://github.com/antfu/skills",
+          "archived": false
+        },
+        {
+          "name": "vscode-file-nesting-config",
+          "stars": 3655,
+          "lang": "JavaScript",
+          "desc": "Config of File Nesting for VS Code",
+          "pushed": "2026-06-24T04:19:30Z",
+          "created": "2022-03-08T00:47:08Z",
+          "url": "https://github.com/antfu/vscode-file-nesting-config",
+          "archived": false
+        },
+        {
+          "name": "node-modules-inspector",
+          "stars": 2905,
+          "lang": "TypeScript",
+          "desc": "Interactive UI for local node modules inspection",
+          "pushed": "2026-07-13T04:06:19Z",
+          "created": "2025-01-16T07:40:07Z",
+          "url": "https://github.com/antfu/node-modules-inspector",
+          "archived": false
+        },
+        {
+          "name": "vscode-settings",
+          "stars": 2267,
+          "lang": null,
+          "desc": "My VS Code settings and extensions ",
+          "pushed": "2025-05-28T23:40:53Z",
+          "created": "2022-03-10T10:13:20Z",
+          "url": "https://github.com/antfu/vscode-settings",
+          "archived": false
+        },
+        {
+          "name": "vitesse-nuxt",
+          "stars": 1906,
+          "lang": "TypeScript",
+          "desc": "Vitesse for Nuxt 4 🏔💚⚡️",
+          "pushed": "2026-03-18T09:33:52Z",
+          "created": "2021-11-03T16:22:30Z",
+          "url": "https://github.com/antfu/vitesse-nuxt",
+          "archived": false
+        }
+      ],
+      "langs": {
+        "JavaScript": 7,
+        "TypeScript": 75,
+        "Markdown": 1,
+        "HTML": 1,
+        "Vue": 1
+      },
+      "byYear": {
+        "2019": 2,
+        "2020": 7,
+        "2021": 10,
+        "2022": 17,
+        "2023": 9,
+        "2024": 17,
+        "2025": 17,
+        "2026": 10
+      },
+      "recentEventTypes": {
+        "PushEvent": 55,
+        "PullRequestEvent": 8,
+        "DeleteEvent": 21,
+        "PullRequestReviewEvent": 8,
+        "CreateEvent": 1,
+        "PublicEvent": 1,
+        "PullRequestReviewCommentEvent": 2,
+        "IssueCommentEvent": 2,
+        "IssuesEvent": 2
+      },
+      "recentEventCount": 100,
+      "lastActive": "2026-07-17T10:44:25Z"
+    },
+    "__rl": "37"
+  },
+  {
+    "handle": "shadcn",
+    "name": "shadcn",
+    "bio": "I own a computer.",
+    "company": "@vercel",
+    "blog": "",
+    "location": null,
+    "followers": 16270,
+    "following": 0,
+    "public_repos": 227,
+    "created_at": "2009-09-08T17:49:59Z",
+    "html_url": "https://github.com/shadcn",
+    "twitter": "shadcn",
+    "derived": {
+      "ownedCount": 66,
+      "stars": 10573,
+      "forks": 604,
+      "topRepos": [
+        {
+          "name": "improve",
+          "stars": 8458,
+          "lang": null,
+          "desc": "Use your most capable model to audit your codebase and write plans for cheaper models to execute.",
+          "pushed": "2026-06-15T06:18:39Z",
+          "created": "2026-06-10T11:06:58Z",
+          "url": "https://github.com/shadcn/improve",
+          "archived": false
+        },
+        {
+          "name": "next-contentlayer",
+          "stars": 714,
+          "lang": "TypeScript",
+          "desc": "A template with Next.js 13 app dir, Contentlayer, Tailwind CSS and dark mode.",
+          "pushed": "2024-01-11T17:57:49Z",
+          "created": "2023-04-27T14:58:10Z",
+          "url": "https://github.com/shadcn/next-contentlayer",
+          "archived": false
+        },
+        {
+          "name": "app-tailwind-v4",
+          "stars": 220,
+          "lang": "TypeScript",
+          "desc": "shadcn/ui + tailwind v4",
+          "pushed": "2025-12-12T04:11:00Z",
+          "created": "2025-01-23T18:18:32Z",
+          "url": "https://github.com/shadcn/app-tailwind-v4",
+          "archived": false
+        },
+        {
+          "name": "next-mdx",
+          "stars": 201,
+          "lang": "TypeScript",
+          "desc": "next-mdx provides a set of helper functions for fetching and rendering local MDX files. It handles relational data, supports custom components, is TypeScript ready and really fast.",
+          "pushed": "2022-02-27T08:22:15Z",
+          "created": "2021-02-26T11:49:03Z",
+          "url": "https://github.com/shadcn/next-mdx",
+          "archived": true
+        },
+        {
+          "name": "license-generator",
+          "stars": 170,
+          "lang": "JavaScript",
+          "desc": "Generates a license for your open source project.",
+          "pushed": "2024-06-10T08:12:27Z",
+          "created": "2014-03-01T18:58:41Z",
+          "url": "https://github.com/shadcn/license-generator",
+          "archived": false
+        },
+        {
+          "name": "shadcn-electron-app",
+          "stars": 159,
+          "lang": "TypeScript",
+          "desc": "electron-vite + shadcn/ui",
+          "pushed": "2024-11-12T17:03:50Z",
+          "created": "2024-11-12T17:03:40Z",
+          "url": "https://github.com/shadcn/shadcn-electron-app",
+          "archived": false
+        }
+      ],
+      "langs": {
+        "TypeScript": 31,
+        "JavaScript": 27,
+        "Shell": 1,
+        "CSS": 1,
+        "PHP": 4
+      },
+      "byYear": {
+        "2014": 1,
+        "2018": 1,
+        "2019": 5,
+        "2020": 20,
+        "2021": 10,
+        "2022": 13,
+        "2023": 4,
+        "2024": 4,
+        "2025": 4,
+        "2026": 4
+      },
+      "recentEventTypes": {
+        "DeleteEvent": 18,
+        "PullRequestEvent": 31,
+        "PushEvent": 32,
+        "CreateEvent": 16,
+        "IssueCommentEvent": 2,
+        "PullRequestReviewEvent": 1
+      },
+      "recentEventCount": 100,
+      "lastActive": "2026-07-17T15:41:01Z"
+    },
+    "__rl": "34"
+  },
+  {
+    "handle": "mckaywrigley",
+    "name": "Mckay Wrigley",
+    "bio": "Founder, Takeoff AI. I build AI tools.",
+    "company": "Takeoff AI",
+    "blog": "mckaywrigley.com",
+    "location": null,
+    "followers": 7241,
+    "following": 6,
+    "public_repos": 66,
+    "created_at": "2017-06-06T05:16:41Z",
+    "html_url": "https://github.com/mckaywrigley",
+    "twitter": "mckaywrigley",
+    "derived": {
+      "ownedCount": 63,
+      "stars": 50092,
+      "forks": 12349,
+      "topRepos": [
+        {
+          "name": "chatbot-ui",
+          "stars": 33298,
+          "lang": "TypeScript",
+          "desc": "AI chat for any model.",
+          "pushed": "2024-08-03T00:38:07Z",
+          "created": "2023-03-11T14:53:14Z",
+          "url": "https://github.com/mckaywrigley/chatbot-ui",
+          "archived": false
+        },
+        {
+          "name": "ai-code-translator",
+          "stars": 4171,
+          "lang": "TypeScript",
+          "desc": "Use AI to translate code from one language to another.",
+          "pushed": "2023-12-21T00:19:08Z",
+          "created": "2023-03-31T03:21:03Z",
+          "url": "https://github.com/mckaywrigley/ai-code-translator",
+          "archived": false
+        },
+        {
+          "name": "paul-graham-gpt",
+          "stars": 2663,
+          "lang": "TypeScript",
+          "desc": "RAG on Paul Graham's essays.",
+          "pushed": "2023-07-28T17:50:55Z",
+          "created": "2023-03-01T22:58:50Z",
+          "url": "https://github.com/mckaywrigley/paul-graham-gpt",
+          "archived": false
+        },
+        {
+          "name": "mckays-app-template",
+          "stars": 1935,
+          "lang": "TypeScript",
+          "desc": "This is the template I use to start new full-stack projects.",
+          "pushed": "2025-06-16T22:45:18Z",
+          "created": "2024-08-29T04:54:33Z",
+          "url": "https://github.com/mckaywrigley/mckays-app-template",
+          "archived": false
+        },
+        {
+          "name": "clarity-ai",
+          "stars": 1416,
+          "lang": "TypeScript",
+          "desc": "A Perplexity clone.",
+          "pushed": "2024-03-28T04:13:59Z",
+          "created": "2023-02-19T05:13:18Z",
+          "url": "https://github.com/mckaywrigley/clarity-ai",
+          "archived": false
+        },
+        {
+          "name": "chatbot-ui-lite",
+          "stars": 973,
+          "lang": "TypeScript",
+          "desc": null,
+          "pushed": "2023-04-24T23:54:23Z",
+          "created": "2023-03-11T05:46:50Z",
+          "url": "https://github.com/mckaywrigley/chatbot-ui-lite",
+          "archived": false
+        }
+      ],
+      "langs": {
+        "Python": 3,
+        "TypeScript": 53
+      },
+      "byYear": {
+        "2022": 1,
+        "2023": 15,
+        "2024": 29,
+        "2025": 18
+      },
+      "recentEventTypes": {
+        "WatchEvent": 1
+      },
+      "recentEventCount": 1,
+      "lastActive": "2026-07-18T01:22:57Z"
+    },
+    "__rl": "31"
+  },
+  {
+    "handle": "transitive-bullshit",
+    "name": "Travis Fischer",
+    "bio": "My heart is open source 💕 \r\n\r\nFormerly @amzn, @microsoft",
+    "company": null,
+    "blog": "https://transitivebullsh.it",
+    "location": null,
+    "followers": 4567,
+    "following": 253,
+    "public_repos": 348,
+    "created_at": "2011-01-08T03:13:42Z",
+    "html_url": "https://github.com/transitive-bullshit",
+    "twitter": "transitive_bs",
+    "derived": {
+      "ownedCount": 60,
+      "stars": 44639,
+      "forks": 9550,
+      "topRepos": [
+        {
+          "name": "agentic",
+          "stars": 18118,
+          "lang": "TypeScript",
+          "desc": "Your API ⇒ Paid MCP. Instantly.",
+          "pushed": "2026-02-11T04:50:03Z",
+          "created": "2022-12-03T00:05:09Z",
+          "url": "https://github.com/transitive-bullshit/agentic",
+          "archived": true
+        },
+        {
+          "name": "nextjs-notion-starter-kit",
+          "stars": 7025,
+          "lang": "TypeScript",
+          "desc": "Deploy your own Notion-powered website in minutes with Next.js and Vercel.",
+          "pushed": "2026-03-19T18:48:43Z",
+          "created": "2021-01-15T16:56:21Z",
+          "url": "https://github.com/transitive-bullshit/nextjs-notion-starter-kit",
+          "archived": false
+        },
+        {
+          "name": "create-react-library",
+          "stars": 4758,
+          "lang": "JavaScript",
+          "desc": "CLI for creating reusable react libraries.",
+          "pushed": "2023-04-04T16:18:23Z",
+          "created": "2018-03-04T20:44:14Z",
+          "url": "https://github.com/transitive-bullshit/create-react-library",
+          "archived": true
+        },
+        {
+          "name": "awesome-puppeteer",
+          "stars": 2560,
+          "lang": null,
+          "desc": "A curated list of awesome puppeteer resources.",
+          "pushed": "2024-07-19T07:36:39Z",
+          "created": "2018-05-07T10:46:15Z",
+          "url": "https://github.com/transitive-bullshit/awesome-puppeteer",
+          "archived": false
+        },
+        {
+          "name": "react-particle-effect-button",
+          "stars": 1507,
+          "lang": "JavaScript",
+          "desc": "Bursting particle effect buttons for React 🎉",
+          "pushed": "2023-10-26T21:23:35Z",
+          "created": "2018-04-29T14:33:31Z",
+          "url": "https://github.com/transitive-bullshit/react-particle-effect-button",
+          "archived": false
+        },
+        {
+          "name": "bing-chat",
+          "stars": 1207,
+          "lang": "TypeScript",
+          "desc": "Node.js client for Bing's new AI-powered search. It's like ChatGPT on steroids 🔥",
+          "pushed": "2023-10-10T04:56:02Z",
+          "created": "2023-02-09T09:05:57Z",
+          "url": "https://github.com/transitive-bullshit/bing-chat",
+          "archived": true
+        }
+      ],
+      "langs": {
+        "TypeScript": 40,
+        "JavaScript": 15,
+        "C": 1,
+        "MDX": 1
+      },
+      "byYear": {
+        "2014": 1,
+        "2017": 1,
+        "2018": 10,
+        "2019": 3,
+        "2020": 1,
+        "2021": 3,
+        "2022": 6,
+        "2023": 11,
+        "2024": 14,
+        "2025": 8,
+        "2026": 2
+      },
+      "recentEventTypes": {
+        "WatchEvent": 23
+      },
+      "recentEventCount": 23,
+      "lastActive": "2026-07-18T22:48:08Z"
+    },
+    "__rl": "28"
+  },
+  {
+    "handle": "leerob",
+    "name": "Lee Robinson",
+    "bio": "Teaching developers about AI",
+    "company": "Cursor",
+    "blog": "leerob.com",
+    "location": "Des Moines, IA",
+    "followers": 16022,
+    "following": 0,
+    "public_repos": 39,
+    "created_at": "2014-10-09T14:44:16Z",
+    "html_url": "https://github.com/leerob",
+    "twitter": "leerob",
+    "derived": {
+      "ownedCount": 35,
+      "stars": 16250,
+      "forks": 2942,
+      "topRepos": [
+        {
+          "name": "next-mdx-blog",
+          "stars": 7569,
+          "lang": "TypeScript",
+          "desc": "Next.js + MDX blog template with Tailwind CSS and TypeScript.",
+          "pushed": "2026-06-17T18:23:58Z",
+          "created": "2018-12-16T18:22:37Z",
+          "url": "https://github.com/leerob/next-mdx-blog",
+          "archived": false
+        },
+        {
+          "name": "next-self-host",
+          "stars": 1513,
+          "lang": "TypeScript",
+          "desc": "An example deploying Next / Postgres / Nginx to a Ubuntu Linux server.",
+          "pushed": "2026-01-31T20:37:32Z",
+          "created": "2024-10-05T14:33:53Z",
+          "url": "https://github.com/leerob/next-self-host",
+          "archived": false
+        },
+        {
+          "name": "vim-for-react-devs",
+          "stars": 878,
+          "lang": "TypeScript",
+          "desc": "A bite-sized course to get you quickly productive with Vim.",
+          "pushed": "2024-10-07T19:39:38Z",
+          "created": "2024-09-22T00:55:20Z",
+          "url": "https://github.com/leerob/vim-for-react-devs",
+          "archived": false
+        },
+        {
+          "name": "next-music-player",
+          "stars": 831,
+          "lang": "TypeScript",
+          "desc": "A blazing fast, information dense media player built with Next.js.",
+          "pushed": "2026-07-16T18:40:07Z",
+          "created": "2024-09-14T20:28:29Z",
+          "url": "https://github.com/leerob/next-music-player",
+          "archived": false
+        },
+        {
+          "name": "next-email-client",
+          "stars": 722,
+          "lang": "TypeScript",
+          "desc": "An email client built with the Next.js App Router and Postgres.",
+          "pushed": "2025-12-12T04:31:48Z",
+          "created": "2023-11-05T17:20:20Z",
+          "url": "https://github.com/leerob/next-email-client",
+          "archived": false
+        },
+        {
+          "name": "fastfeedback",
+          "stars": 603,
+          "lang": "JavaScript",
+          "desc": "Easily add user reviews, feedback, and comments to your website in one line of code.",
+          "pushed": "2024-09-12T15:05:54Z",
+          "created": "2020-05-31T17:15:50Z",
+          "url": "https://github.com/leerob/fastfeedback",
+          "archived": true
+        }
+      ],
+      "langs": {
+        "TypeScript": 16,
+        "Rust": 1,
+        "JavaScript": 11,
+        "Python": 2,
+        "Dart": 2,
+        "Objective-C": 1
+      },
+      "byYear": {
+        "2014": 1,
+        "2015": 2,
+        "2017": 2,
+        "2018": 2,
+        "2019": 3,
+        "2020": 11,
+        "2021": 1,
+        "2022": 2,
+        "2023": 3,
+        "2024": 5,
+        "2025": 2,
+        "2026": 1
+      },
+      "recentEventTypes": {
+        "PullRequestEvent": 2,
+        "PushEvent": 2,
+        "IssueCommentEvent": 1
+      },
+      "recentEventCount": 5,
+      "lastActive": "2026-07-16T18:40:08Z"
+    },
+    "__rl": "25"
+  },
+  {
+    "handle": "pmndrs",
+    "name": "Poimandres",
+    "bio": "Open source developer collective",
+    "company": null,
+    "blog": "pmnd.rs",
+    "location": "https://opencollective.com/pmndrs",
+    "followers": 9836,
+    "following": 0,
+    "public_repos": 96,
+    "created_at": "2018-12-11T12:49:48Z",
+    "html_url": "https://github.com/pmndrs",
+    "twitter": "pmndrs",
+    "derived": {
+      "ownedCount": 89,
+      "stars": 223185,
+      "forks": 11111,
+      "topRepos": [
+        {
+          "name": "zustand",
+          "stars": 58436,
+          "lang": "TypeScript",
+          "desc": "🐻 Bear necessities for state management in React",
+          "pushed": "2026-07-14T07:59:55Z",
+          "created": "2019-04-09T09:10:06Z",
+          "url": "https://github.com/pmndrs/zustand",
+          "archived": false
+        },
+        {
+          "name": "react-three-fiber",
+          "stars": 31467,
+          "lang": "TypeScript",
+          "desc": "🇨🇭 A React renderer for Three.js",
+          "pushed": "2026-07-08T07:13:52Z",
+          "created": "2019-02-25T14:31:51Z",
+          "url": "https://github.com/pmndrs/react-three-fiber",
+          "archived": false
+        },
+        {
+          "name": "react-spring",
+          "stars": 29124,
+          "lang": "TypeScript",
+          "desc": "✌️ A spring physics based React animation library",
+          "pushed": "2026-07-13T18:56:23Z",
+          "created": "2018-03-07T15:39:32Z",
+          "url": "https://github.com/pmndrs/react-spring",
+          "archived": false
+        },
+        {
+          "name": "jotai",
+          "stars": 21229,
+          "lang": "TypeScript",
+          "desc": "👻 Primitive and flexible state management for React",
+          "pushed": "2026-07-17T23:57:30Z",
+          "created": "2020-08-11T23:15:36Z",
+          "url": "https://github.com/pmndrs/jotai",
+          "archived": false
+        },
+        {
+          "name": "valtio",
+          "stars": 10209,
+          "lang": "TypeScript",
+          "desc": "🧙 Valtio makes proxy-state simple  for React and Vanilla",
+          "pushed": "2026-06-11T00:47:06Z",
+          "created": "2020-11-16T22:30:51Z",
+          "url": "https://github.com/pmndrs/valtio",
+          "archived": false
+        },
+        {
+          "name": "drei",
+          "stars": 9748,
+          "lang": "JavaScript",
+          "desc": "🥉 useful helpers for react-three-fiber",
+          "pushed": "2026-03-23T19:31:26Z",
+          "created": "2020-04-26T19:38:41Z",
+          "url": "https://github.com/pmndrs/drei",
+          "archived": false
+        }
+      ],
+      "langs": {
+        "TypeScript": 61,
+        "JavaScript": 16,
+        "Rust": 1,
+        "Dockerfile": 1,
+        "Makefile": 1,
+        "MDX": 1,
+        "HTML": 1
+      },
+      "byYear": {
+        "2015": 1,
+        "2018": 3,
+        "2019": 8,
+        "2020": 17,
+        "2021": 15,
+        "2022": 15,
+        "2023": 7,
+        "2024": 9,
+        "2025": 6,
+        "2026": 8
+      },
+      "recentEventTypes": {
+        "MemberEvent": 5
+      },
+      "recentEventCount": 5,
+      "lastActive": "2026-07-09T02:09:58Z"
+    },
+    "__rl": "22"
+  },
+  {
+    "handle": "jaredpalmer",
+    "name": "Jared Palmer",
+    "bio": "VP Engineering @ Xbox. \r\n\r\nPreviously: SVP @github, VP of AI @vercel, Founder @turborepo (acquired by Vercel)",
+    "company": "Xbox @Microsoft ",
+    "blog": "https://jaredpalmer.com",
+    "location": "New York, NY",
+    "followers": 10355,
+    "following": 500,
+    "public_repos": 197,
+    "created_at": "2013-04-04T15:02:07Z",
+    "html_url": "https://github.com/jaredpalmer",
+    "twitter": "jaredpalmer",
+    "derived": {
+      "ownedCount": 45,
+      "stars": 78054,
+      "forks": 5221,
+      "topRepos": [
+        {
+          "name": "formik",
+          "stars": 34329,
+          "lang": "TypeScript",
+          "desc": "Build forms in React, without the tears 😭 ",
+          "pushed": "2025-11-10T17:02:06Z",
+          "created": "2017-06-14T19:50:59Z",
+          "url": "https://github.com/jaredpalmer/formik",
+          "archived": false
+        },
+        {
+          "name": "tsdx",
+          "stars": 11469,
+          "lang": "TypeScript",
+          "desc": "Zero-config CLI for TypeScript package development",
+          "pushed": "2026-02-09T21:57:35Z",
+          "created": "2019-01-24T13:04:18Z",
+          "url": "https://github.com/jaredpalmer/tsdx",
+          "archived": false
+        },
+        {
+          "name": "razzle",
+          "stars": 11034,
+          "lang": "JavaScript",
+          "desc": "✨ Create server-rendered universal JavaScript applications with no configuration",
+          "pushed": "2024-03-11T08:45:43Z",
+          "created": "2016-02-10T18:34:27Z",
+          "url": "https://github.com/jaredpalmer/razzle",
+          "archived": false
+        },
+        {
+          "name": "backpack",
+          "stars": 4403,
+          "lang": "JavaScript",
+          "desc": "🎒 Backpack is a minimalistic build system for Node.js projects.",
+          "pushed": "2024-08-07T12:56:15Z",
+          "created": "2017-01-04T17:03:00Z",
+          "url": "https://github.com/jaredpalmer/backpack",
+          "archived": false
+        },
+        {
+          "name": "the-platform",
+          "stars": 4371,
+          "lang": "TypeScript",
+          "desc": "Web. Components. 😂",
+          "pushed": "2022-12-09T09:39:17Z",
+          "created": "2018-08-15T23:22:09Z",
+          "url": "https://github.com/jaredpalmer/the-platform",
+          "archived": false
+        },
+        {
+          "name": "after.js",
+          "stars": 4091,
+          "lang": "TypeScript",
+          "desc": "Next.js-like framework for server-rendered React apps built with React Router",
+          "pushed": "2024-02-26T16:18:59Z",
+          "created": "2017-11-12T03:17:02Z",
+          "url": "https://github.com/jaredpalmer/after.js",
+          "archived": false
+        }
+      ],
+      "langs": {
+        "TypeScript": 22,
+        "Python": 2,
+        "Go": 2,
+        "Ruby": 1,
+        "JavaScript": 13,
+        "Reason": 1,
+        "Shell": 1
+      },
+      "byYear": {
+        "2016": 3,
+        "2017": 10,
+        "2018": 5,
+        "2019": 6,
+        "2020": 4,
+        "2021": 3,
+        "2022": 2,
+        "2023": 4,
+        "2025": 3,
+        "2026": 5
+      },
+      "recentEventTypes": {
+        "PullRequestEvent": 9,
+        "PushEvent": 1,
+        "CreateEvent": 1
+      },
+      "recentEventCount": 11,
+      "lastActive": "2026-01-29T11:46:48Z"
+    },
+    "__rl": "19"
+  }
+]

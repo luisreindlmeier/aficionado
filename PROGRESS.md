@@ -25,9 +25,20 @@ Running log for the overnight build. Newest at top.
   next to an early finance-ML founder". Pending-LinkedIn is the honest hero narrative.
 - Research done (scratchpad/research_maschmeyer.md): clip EIZRV91Q1-M, gedonus facts.
 
-## Next (parallel)
-- [ ] Frontend: Radar + Evaluation (me), Pipeline/Decision/Settings/Diligence (sub)
-- [ ] Backend full 3-metric eval + endpoints + connectors (sub)
-- [ ] Deliverables: README/ARCH/DECISIONS/tech (sub), deck+video+onepager (sub)
-- [ ] Eval suite (sub)
-- [ ] Supabase migrations+seed (pre-staged), integrate, build, push, verify, HANDOFF
+## DONE (all workstreams integrated, all green)
+- [x] Frontend: Radar (live feed), Evaluation (master-detail dossier + brain-at-work),
+  Pipeline, Decision, Settings (live re-rank), Diligence. All 7 pages real, screenshot-verified.
+- [x] Backend: full 3-metric fan-out `/api/evaluate` streaming EvalEvent (smoke-tested: 47
+  frames, real Wayback data), + /api/radar, /api/founder, /api/sourcing (cron), reducer,
+  new live connectors (github G/T signals, wayback, semanticscholar, stackexchange = 8 live).
+- [x] Deliverables: README, ARCHITECTURE, DECISIONS, SETUP, docs/SCORING|CONNECTORS|DATA-MODEL,
+  pitch deck (docs/deck/index.html), 2 video scripts, one-pager. Docs reconciled to reality.
+- [x] Eval suite: 113 tests, 14/14 cases, 0 drift; Luis case reproduces the seed exactly.
+- [x] Supabase pre-staged: schema migration, seed-data.json export, seed-supabase.mjs, README.
+- [x] HANDOFF.md written (human-only steps, each <2 min).
+- Verified: pnpm build green, api tsc clean, eval green, headless screenshots of all pages.
+
+## Remaining
+- [ ] Push to main -> Vercel auto-deploy; verify live URL
+- [ ] Live self-run: keep cron refreshing; confirm deployed Radar + Luis dossier
+- [ ] Design QA pass on the deployed app

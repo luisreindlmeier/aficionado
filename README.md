@@ -234,11 +234,11 @@ Honesty is a feature here, so the same discipline applies to the repo itself.
 | 56-founder anchor calibration | Real. Percentiles and the "sits next to X" neighbour are computed against it. |
 | Committed real-data snapshot | Real. `seed.ts` numeric receipts (stars, followers, repos, dates, downloads) are fetched from live public APIs. Qualitative judgements are authored. |
 | Connector registry drives UI + backend | Real. One registry, one contract. |
-| Live connector adapters | Real for GitHub, npm, PyPI, arXiv (zero keys) and Product Hunt (free token). Others are described with honest status and not yet fetched. |
-| Streamed `/api/evaluate` | Real for the Proof phase: fans out the live Proof connectors, streams each signal as SSE, then streams an AI or heuristic verdict. |
-| Full three-metric fan-out streaming (`EvalEvent`/`TraceStep`) | Designed. The richer streaming contract is defined in `model.ts`; the endpoint currently ships the Proof slice. |
-| Loop A sourcing cron | Designed. No cron is wired in `vercel.json` yet; the Radar is seeded from the committed snapshot. |
-| Supabase + pgvector data layer | Designed. Schema and activation path are documented in `docs/DATA-MODEL.md`; `DataService` abstracts the swap. The org sits at the free-project limit, so the snapshot is the primary path. |
+| Live connector adapters | Real for GitHub, npm, PyPI, arXiv, Wayback, Semantic Scholar and Stack Exchange (zero keys) plus Product Hunt (free token). The rest are described with honest status. |
+| Streamed `/api/evaluate` | Real, full three-metric fan-out. Emits `trace` steps, fans out each metric's connectors in parallel streaming every `signal` as SSE, reduces per metric, then runs the deterministic reducer, red-flag gate and calibration and streams the final `FounderScore`. |
+| Full three-metric fan-out streaming (`EvalEvent`/`TraceStep`) | Real. Wired in `api/evaluate.ts` and rendered live as the brain-at-work trace on the Evaluation page. |
+| Loop A sourcing cron | Wired. `/api/sourcing` runs on the Vercel cron in `vercel.json` (every 3 hours) and triages founders against the active thesis; it writes to Supabase when that is activated, else returns the pass summary. |
+| Supabase + pgvector data layer | Pre-staged. Schema (`supabase/migrations/0001_init.sql`), a real-data export (`supabase/seed-data.json`) and an idempotent loader (`scripts/seed-supabase.mjs`) are in the repo. Activatable in about 2 minutes (`supabase/README.md`); the org sits at the free-project limit so the snapshot is the primary path. |
 | AI Gateway with heuristic fallback | Real. Works with or without a key. |
 
 See `ARCHITECTURE.md` for the system in depth, `DECISIONS.md` for why it is built this way,

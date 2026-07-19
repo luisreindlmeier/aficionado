@@ -1,0 +1,109 @@
+{
+  "sindresorhus": {
+    "pkgs": 12,
+    "downloads": 19102004780,
+    "top": [
+      [
+        "ansi-styles",
+        2772902808
+      ],
+      [
+        "ansi-regex",
+        2166475904
+      ],
+      [
+        "string-width",
+        2009200764
+      ]
+    ]
+  },
+  "antfu": {
+    "pkgs": 12,
+    "downloads": 165315648,
+    "top": [
+      [
+        "@shikijs/vscode-textmate",
+        60251432
+      ],
+      [
+        "@antfu/install-pkg",
+        47516975
+      ],
+      [
+        "vue-demi",
+        29795742
+      ]
+    ]
+  },
+  "yyx990803": {
+    "pkgs": 12,
+    "downloads": 81822577,
+    "top": [
+      [
+        "de-indent",
+        24618051
+      ],
+      [
+        "@vue/compiler-vue2",
+        15612926
+      ],
+      [
+        "vue-template-compiler",
+        10367359
+      ]
+    ]
+  },
+  "rauchg": {
+    "pkgs": 12,
+    "downloads": 3101910,
+    "top": [
+      [
+        "has-binary",
+        1361971
+      ],
+      [
+        "test-listen",
+        911277
+      ],
+      [
+        "expect.js",
+        530442
+      ]
+    ]
+  },
+  "shadcn": {
+    "pkgs": 6,
+    "downloads": 0,
+    "top": []
+  },
+  "jaredpalmer": {
+    "pkgs": 12,
+    "downloads": 0,
+    "top": []
+  },
+  "transitive-bullshit": {
+    "pkgs": 0,
+    "downloads": 0,
+    "top": []
+  },
+  "leerob": {
+    "pkgs": 0,
+    "downloads": 0,
+    "top": []
+  },
+  "steipete": {
+    "pkgs": 12,
+    "downloads": 0,
+    "top": []
+  },
+  "mckaywrigley": {
+    "pkgs": 0,
+    "downloads": 0,
+    "top": []
+  },
+  "luisreindlmeier": {
+    "pkgs": 0,
+    "downloads": 0,
+    "top": []
+  }
+}
