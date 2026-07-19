@@ -41,9 +41,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
         createClient: (url: string, key: string) => { from: (t: string) => { upsert: (rows: unknown[]) => Promise<unknown> } };
       };
       const supabase = mod.createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
-      // TODO(Loop A): real candidates schema (dedupe on handle, thesis_id, first_seen/refreshed_at).
+      // Map explicitly to the table's columns. Spreading the candidate would send
+      // thesisId / onThesis, which are not columns, and PostgREST rejects the whole
+      // batch on an unknown key.
+      const refreshedAt = new Date().toISOString();
       await supabase.from('sourcing_candidates').upsert(
-        candidates.map((c) => ({ ...c, thesis_id: active?.id, refreshed_at: new Date().toISOString() })),
+        candidates.map((c) => ({
+          id: c.id,
+          name: c.name,
+          thesis_id: c.thesisId ?? active?.id,
+          triage: c.triage,
+          refreshed_at: refreshedAt,
+        })),
       );
       persisted = true;
     } catch {
