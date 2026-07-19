@@ -521,18 +521,21 @@ for (const v of ventures) {
   // Coverage takes the best TRUSTED founder per metric and inherits their
   // confidence: a co-founder with a real footprint makes the team's Gravity
   // measurable even where the other founder's was excluded.
-  const metricCov = {}, metricConf = {};
+  // Average is the plain mean, the row you can verify by eye. Coverage takes the
+  // best TRUSTED founder per metric and inherits their confidence.
+  const metricAvg = {}, metricCov = {}, metricConf = {}, liftedBy = {};
   for (const k of METRIC_KEYS) {
+    metricAvg[k] = mean(members.map((m) => m.metrics[k]));
     const trusted = members.filter((m) => m.confidences[k] !== 'low');
     const pool = trusted.length ? trusted : members;
     const best = pool.reduce((a,b) => (b.metrics[k] > a.metrics[k] ? b : a));
     metricCov[k] = best.metrics[k];
     metricConf[k] = best.confidences[k];
+    liftedBy[k] = best.initials;
   }
-  const soloProfile = Object.fromEntries(METRIC_KEYS.map((k) => [k, mean(members.map((m) => m.metrics[k]))]));
-  const base = teamComposite(metricCov, metricConf);
-  const soloComposite = teamComposite(soloProfile, metricConf);
-  const compatibility = soloComposite > 0 ? Math.round(clamp(base / soloComposite, 1, 1.5) * 100) / 100 : 1;
+  const base = teamComposite(metricAvg, metricConf);
+  const coverageComposite = teamComposite(metricCov, metricConf);
+  const compatibility = base > 0 ? Math.round(clamp(coverageComposite / base, 1, 1.5) * 100) / 100 : 1;
   const order = { low:0, medium:1, high:2 };
   const trustedConfs = METRIC_KEYS.filter((k) => metricConf[k] !== 'low').map((k) => metricConf[k]);
   const baseConf = trustedConfs.reduce((a,c) => (order[c] < order[a] ? c : a), 'high');
@@ -540,12 +543,14 @@ for (const v of ventures) {
 
   v.team = {
     score: clamp(Math.round(base * compatibility), 1, 99),
-    base, soloComposite, confidence: teamConf, coverage,
+    base, coverageComposite, confidence: teamConf, coverage,
     gaps: gaps.map((a) => `${axisLabel(a)} coverage is thin across the team`),
     redundancies: redundancies.map((a) => `Overlap on ${axisLabel(a)}, more than one founder covers it`),
     sharedHistory: shared,
+    metricAverage: Object.fromEntries(METRIC_KEYS.map((k) => [k, Math.round(metricAvg[k])])),
     metricCoverage: metricCov,
     metricConfidence: metricConf,
+    metricLiftedBy: liftedBy,
     compatibility,
     perFounder: members,
   };

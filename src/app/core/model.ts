@@ -193,12 +193,12 @@ export interface VentureDecision {
  *  team to harmonize yet. */
 export interface TeamAnalysis {
   readonly score: number; // 0..100, the harmonized team score: base x compatibility
-  /** The team's coverage profile run through the founder composite, so it is
+  /** The founders' AVERAGE profile run through the founder composite, so it is
    *  directly comparable to any individual founder's score. */
   readonly base: number;
-  /** The founders' average profile through the same composite: what a typical
-   *  founder on this team reaches alone. The denominator of compatibility. */
-  readonly soloComposite: number;
+  /** The same composite over the team's best-of coverage. What the team reaches
+   *  once founders cover each other's weak metrics. */
+  readonly coverageComposite: number;
   /** Weakest trusted confidence across the team's covered metrics. */
   readonly confidence: ConfidenceLevel;
   /** Confidence per covered metric, inherited from the founder who carries it. */
@@ -212,9 +212,13 @@ export interface TeamAnalysis {
   /** Each evaluated founder's skill vector, so the UI can show who covers what
    *  behind the harmonized coverage. */
   readonly perFounder: readonly TeamMember[];
+  /** The team's plain mean per metric, the row you can verify by eye. */
+  readonly metricAverage: Readonly<Record<Metric, number>>;
   /** Team coverage on the three metrics the aficionado score is built from:
    *  the best founder on Proof, Gravity and Trajectory. */
   readonly metricCoverage: Readonly<Record<Metric, number>>;
+  /** Who carries each metric for the team, by initials. */
+  readonly metricLiftedBy: Readonly<Record<Metric, string>>;
   /** The multiplier applied to `base`: the team composite over the solo
    *  composite. 1.00 = identical profiles, 1.19 = 19% more ground covered. */
   readonly compatibility: number;

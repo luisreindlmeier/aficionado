@@ -280,18 +280,18 @@ export interface TeamFounderInput {
  *  metric we cannot verify. That is what makes the team row comparable to the
  *  founder rows above it instead of a second, incompatible arithmetic.
  *
- *    coverage      = the best founder on each metric, preferring a founder we
- *                    actually trust. One founder carrying a metric carries it
- *                    for the whole team, including its confidence: a co-founder
- *                    with a real footprint makes the team's Gravity measurable
- *                    even when the other founder's was excluded.
- *    teamComposite = that coverage profile run through the founder composite,
- *                    so it sits on the same 0..100 as every founder score.
- *    soloComposite = the founders' AVERAGE profile through the same composite.
- *    compatibility = teamComposite / soloComposite. 1.00x when the founders
- *                    have the same shape, higher the more each one is strongest
- *                    where the others are not.
- *    score         = teamComposite x compatibility
+ *    average       = the plain mean of the founders on each metric, the row you
+ *                    can verify by eye against the rows above it.
+ *    base          = that average profile through the founder composite.
+ *    coverage      = the best founder on each metric, preferring one we trust.
+ *                    One founder carrying a metric carries it for the team,
+ *                    including its confidence: a co-founder with a real
+ *                    footprint makes the team's Gravity measurable even when the
+ *                    other founder's was excluded.
+ *    compatibility = coverage composite / base. Exactly the lift the team gets
+ *                    from founders covering each other's weak metrics, so
+ *                    complementarity is counted once and nowhere else.
+ *    score         = base x compatibility
  *
  *  Deterministic for now; a future pass hands this to an agent for a narrative
  *  read grounded in shared history and working style. Solo founders have no team
@@ -309,41 +309,43 @@ export function harmonizedTeamScore(
   // what pulls compatibility down.
   const redundancies = SKILL_AXES.filter((a) => vectors.filter((v) => v[a] >= 0.6).length >= 2);
 
-  // Coverage takes the best TRUSTED founder on each metric, and inherits that
-  // founder's confidence. Only when nobody is trusted does the metric fall back
-  // to the best untrusted value, and stay excluded from the composite.
+  const average = {} as Record<Metric, number>;
   const covered = {} as Record<Metric, number>;
   const confidence = {} as Record<Metric, ConfidenceLevel>;
+  const liftedBy = {} as Record<Metric, string>;
   for (const m of METRICS) {
+    average[m] = mean(founders.map((f) => f.metrics[m]));
     const trusted = founders.filter((f) => f.confidences[m] !== 'low');
     const pool = trusted.length ? trusted : founders;
     const best = pool.reduce((a, b) => (b.metrics[m] > a.metrics[m] ? b : a));
     covered[m] = best.metrics[m];
     confidence[m] = best.confidences[m];
+    liftedBy[m] = best.initials;
   }
 
-  // The founders' average profile, through the same reducer, is what the team
-  // is measured against.
-  const soloProfile = {} as Record<Metric, number>;
-  for (const m of METRICS) soloProfile[m] = mean(founders.map((f) => f.metrics[m]));
-
-  const teamComposite = confidentComposite(covered, confidence, weights).value;
-  const soloComposite = confidentComposite(soloProfile, confidence, weights).value;
+  const base = confidentComposite(average, confidence, weights).value;
+  const coverageComposite = confidentComposite(covered, confidence, weights).value;
   const compatibility =
-    soloComposite > 0 ? Math.round(clamp(teamComposite / soloComposite, 1, 1.5) * 100) / 100 : 1;
+    base > 0 ? Math.round(clamp(coverageComposite / base, 1, 1.5) * 100) / 100 : 1;
 
   return {
-    score: clamp(Math.round(teamComposite * compatibility), 1, 99),
-    base: teamComposite,
-    soloComposite,
+    score: clamp(Math.round(base * compatibility), 1, 99),
+    base,
+    coverageComposite,
     confidence: overallConfidence(confidence),
     coverage,
     gaps: gaps.map((a) => `${axisLabel(a)} coverage is thin across the team`),
     redundancies: redundancies.map(
       (a) => `Overlap on ${axisLabel(a)}, more than one founder covers it`,
     ),
+    metricAverage: {
+      Proof: Math.round(average.Proof),
+      Gravity: Math.round(average.Gravity),
+      Trajectory: Math.round(average.Trajectory),
+    },
     metricCoverage: covered,
     metricConfidence: confidence,
+    metricLiftedBy: liftedBy,
     compatibility,
     perFounder: founders.map((f) => ({
       founderId: f.founderId,

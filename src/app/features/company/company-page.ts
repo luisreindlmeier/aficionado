@@ -152,10 +152,10 @@ const METRIC_COLUMNS: readonly Metric[] = ['Proof', 'Gravity', 'Trajectory'];
                 <div class="min-w-0 max-w-lg">
                   <p class="text-[12px] font-medium text-muted-foreground">Harmonized team score</p>
                   <p class="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">
-                    Not an average of {{ founders().length }} individual scores. The team's coverage,
-                    the best founder on each metric, runs through the same composite a founder does,
-                    so the team row below is directly comparable to the founder rows. Compatibility
-                    then multiplies it: how much that coverage beats the founders' average profile.
+                    The team average on each metric runs through the same composite a founder
+                    does, so the team row below is directly comparable to the founder rows.
+                    Compatibility then multiplies it: on every metric the strongest founder
+                    carries the team, and the multiplier is exactly that lift.
                   </p>
                   <p class="mt-3 text-[12px] text-muted-foreground">
                     This is the venture's verdict above: with two founders evaluated, the team is
@@ -168,7 +168,7 @@ const METRIC_COLUMNS: readonly Metric[] = ['Proof', 'Gravity', 'Trajectory'];
                     <span class="font-title text-[22px] leading-none text-muted-foreground">{{
                       t.base
                     }}</span>
-                    <span class="mt-1 block text-[11px] text-muted-foreground">team</span>
+                    <span class="mt-1 block text-[11px] text-muted-foreground">average</span>
                   </div>
                   <span class="text-[15px] text-muted-foreground">&times;</span>
                   <div class="text-right">
@@ -261,30 +261,41 @@ const METRIC_COLUMNS: readonly Metric[] = ['Proof', 'Gravity', 'Trajectory'];
                         </td>
                       </tr>
                     }
-                    <!-- Best-of row: one founder carrying a metric carries it
-                         for the whole team, so this is a max, not a mean -->
+                    <!-- Team average, plus the lift compatibility adds on each
+                         metric: the ghost segment is what the covering founder
+                         contributes over the mean -->
                     <tr class="border-t-[0.5px] border-foreground bg-surface">
                       <td class="rounded-l-lg py-3 pl-3 pr-4">
-                        <span class="text-[12px] font-medium text-foreground">Team coverage</span>
+                        <span class="text-[12px] font-medium text-foreground">Team average</span>
                         <span class="mt-0.5 block text-[10px] text-muted-foreground"
-                          >best of {{ t.perFounder.length }}</span
+                          >mean of {{ t.perFounder.length }}</span
                         >
                       </td>
                       @for (m of metricColumns; track m) {
                         <td class="py-3 pl-4">
                           <span class="flex items-center gap-2">
                             <span
-                              class="h-1.5 w-16 shrink-0 overflow-hidden rounded-full bg-[#e5e5e5]"
+                              class="relative h-1.5 w-16 shrink-0 overflow-hidden rounded-full bg-[#e5e5e5]"
                             >
                               <span
-                                class="block h-full rounded-full"
+                                class="absolute inset-y-0 left-0 rounded-full opacity-30"
                                 [style.width.%]="t.metricCoverage[m]"
+                                [style.background]="metricColor(m)"
+                              ></span>
+                              <span
+                                class="absolute inset-y-0 left-0 rounded-full"
+                                [style.width.%]="t.metricAverage[m]"
                                 [style.background]="metricColor(m)"
                               ></span>
                             </span>
                             <span class="font-title text-[17px] leading-none tabular-nums text-foreground">{{
-                              t.metricCoverage[m]
+                              t.metricAverage[m]
                             }}</span>
+                            @if (lift(t, m); as l) {
+                              <span class="text-[10px] text-muted-foreground"
+                                >+{{ l }} {{ t.metricLiftedBy[m] }}</span
+                              >
+                            }
                           </span>
                         </td>
                       }
@@ -310,8 +321,8 @@ const METRIC_COLUMNS: readonly Metric[] = ['Proof', 'Gravity', 'Trajectory'];
                   multiplierLabel(t.compatibility)
                 }}</span>
                 <p class="min-w-0 flex-1 text-[12px] text-muted-foreground">
-                  Team {{ t.base }} over the founders' average profile {{ t.soloComposite }}.
-                  {{ compatibilityRead(t.compatibility) }}
+                  {{ liftRead(t) }} carries the team average {{ t.base }} to
+                  {{ t.coverageComposite }}. {{ compatibilityRead(t.compatibility) }}
                 </p>
               </div>
 
@@ -530,6 +541,19 @@ export class CompanyPage {
     const best = t.metricCoverage[m];
     const holders = t.perFounder.filter((p) => p.metrics[m] === best);
     return holders.length === 1 && holders[0].founderId === founderId;
+  }
+
+  /** Points the covering founder adds over the team mean on this metric, 0 when
+   *  the founders are level and compatibility gains nothing there. */
+  protected lift(t: TeamAnalysis, m: Metric): number {
+    return Math.max(0, t.metricCoverage[m] - t.metricAverage[m]);
+  }
+
+  /** Which metrics compatibility actually lifts, named. */
+  protected liftRead(t: TeamAnalysis): string {
+    const lifted = METRIC_COLUMNS.filter((m) => this.lift(t, m) > 0);
+    if (!lifted.length) return 'No metric is lifted, the founders are level everywhere, so nothing';
+    return lifted.join(' and ');
   }
 
   protected compatibilityRead(c: number): string {

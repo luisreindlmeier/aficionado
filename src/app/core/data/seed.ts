@@ -62,16 +62,16 @@ export const SEED_VENTURES: readonly (Venture & { decidedOffsetMins?: number })[
       "stefan-cames"
     ],
     "decision": {
-      "band": "Watch",
-      "composite": 50,
+      "band": "Pass",
+      "composite": 44,
       "confidence": "medium",
-      "rationale": "Team reads at 50 on medium confidence, the founders cover ground each other does not.",
+      "rationale": "Team reads at 44 on medium confidence, the founders cover ground each other does not.",
       "routeToHuman": false
     },
     "team": {
-      "score": 50,
-      "base": 44,
-      "soloComposite": 39,
+      "score": 44,
+      "base": 39,
+      "coverageComposite": 44,
       "confidence": "medium",
       "coverage": {
         "technical": 0.9,
@@ -89,6 +89,11 @@ export const SEED_VENTURES: readonly (Venture & { decidedOffsetMins?: number })[
         "Both based in Frankfurt, inside the finance-team market they sell into",
         "A third partner, Tim Niklas Sassmannshausen, is not yet evaluated"
       ],
+      "metricAverage": {
+        "Proof": 57,
+        "Gravity": 17,
+        "Trajectory": 58
+      },
       "metricCoverage": {
         "Proof": 62,
         "Gravity": 20,
@@ -98,6 +103,11 @@ export const SEED_VENTURES: readonly (Venture & { decidedOffsetMins?: number })[
         "Proof": "high",
         "Gravity": "medium",
         "Trajectory": "high"
+      },
+      "metricLiftedBy": {
+        "Proof": "LR",
+        "Gravity": "SC",
+        "Trajectory": "LR"
       },
       "compatibility": 1.13,
       "perFounder": [
