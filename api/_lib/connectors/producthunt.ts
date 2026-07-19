@@ -10,19 +10,27 @@ interface PhPost {
   url: string;
 }
 interface PhResponse {
-  data?: { user?: { madePosts?: { totalCount: number; edges: { node: PhPost }[] } } };
+  data?: {
+    user?: {
+      id?: string;
+      username?: string;
+      madePosts?: { totalCount: number; edges: { node: PhPost }[] };
+    };
+  };
 }
 
 // Proof: launches and upvotes on Product Hunt. Requires a developer token
-// (PRODUCT_HUNT_TOKEN); a `ph:<username>` keyword selects the maker.
+// (PRODUCT_HUNT_TOKEN). The maker comes from query.producthunt; a `ph:<username>`
+// keyword is still honoured so an agent can target a maker it inferred.
 export async function runProductHunt(query: FounderQuery): Promise<ConnectorResult> {
   const token = process.env.PRODUCT_HUNT_TOKEN;
   if (!token) return { signals: [], note: 'Product Hunt token not configured' };
 
-  const username = query.keywords?.find((k) => k.startsWith('ph:'))?.slice(3);
+  const username =
+    query.producthunt || query.keywords?.find((k) => k.startsWith('ph:'))?.slice(3);
   if (!username) return { signals: [], note: 'No Product Hunt username provided' };
 
-  const gql = `query($u:String!){ user(username:$u){ madePosts{ totalCount edges{ node{ name votesCount url } } } } }`;
+  const gql = `query($u:String!){ user(username:$u){ id username madePosts{ totalCount edges{ node{ name votesCount url } } } } }`;
   const res = await fetch('https://api.producthunt.com/v2/api/graphql', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
@@ -32,6 +40,15 @@ export async function runProductHunt(query: FounderQuery): Promise<ConnectorResu
   const data = (await res.json()) as PhResponse;
   const posts = data.data?.user?.madePosts;
   if (!posts) return { signals: [], note: `No Product Hunt user ${username}` };
+
+  // The v2 API redacts third-party users: any username other than the token
+  // owner comes back as id "0" / "[REDACTED]" with zero posts. Emitting that as
+  // "0 launches" would put fabricated Proof evidence in the dossier, so treat it
+  // as no data rather than as a zero.
+  if (data.data?.user?.id === '0' || data.data?.user?.username === '[REDACTED]') {
+    return { signals: [], note: `Product Hunt redacts profile data for ${username}` };
+  }
+  if (!posts.totalCount) return { signals: [], note: `No Product Hunt launches for ${username}` };
 
   const nodes = (posts.edges || []).map((e) => e.node);
   const votes = nodes.reduce((sum, n) => sum + (n.votesCount || 0), 0);

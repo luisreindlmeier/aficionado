@@ -19,6 +19,7 @@ export const founderInputSchema = z.object({
   github: z.string().optional().describe('GitHub username/handle'),
   npm: z.string().optional().describe('npm author/username'),
   pypi: z.string().optional().describe('PyPI author/username'),
+  producthunt: z.string().optional().describe('Product Hunt maker username'),
   x: z.string().optional().describe('X / Twitter handle'),
   linkedin: z.string().optional().describe('LinkedIn slug or pasted profile'),
   domain: z.string().optional().describe('Company or personal domain'),

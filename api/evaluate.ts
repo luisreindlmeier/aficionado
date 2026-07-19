@@ -30,7 +30,8 @@ const METRICS: Metric[] = ['Proof', 'Gravity', 'Trajectory'];
 // LOOP B: on-demand evaluation. Streams EvalEvent frames as SSE so the UI can
 // render the "brain at work" trace, each connector and signal as it lands, a
 // MetricScore per metric, then the deterministic FounderScore. Body is a
-// FounderQuery: { name, github?, npm?, pypi?, x?, linkedin?, domain?, keywords? }.
+// FounderQuery: { name, github?, npm?, pypi?, producthunt?, x?, linkedin?, domain?,
+// keywords? }.
 export default async function handler(req: VercelRequest, res: VercelResponse): Promise<void> {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'POST only' });
@@ -43,6 +44,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     github: body.github,
     npm: body.npm,
     pypi: body.pypi,
+    producthunt: body.producthunt,
     x: body.x,
     linkedin: body.linkedin,
     domain: body.domain,
