@@ -103,6 +103,10 @@ judges and extracts; it never does the final arithmetic.
 
 ## ADR-003 Keep Angular + Vercel Functions + AI Gateway, not Next.js + Mastra + Inngest
 
+> Status: partially superseded by ADR-007. The AI-Gateway orchestration half of this
+> decision was reversed: the agents and both loops now run on Mastra durable workflows.
+> The Angular + Vercel Functions half still holds (the frontend and hosting are unchanged).
+
 ### Context
 
 The brief sketched a stack of Next.js + Mastra (agent framework) + Inngest (durable workflow

@@ -11,7 +11,29 @@ import {
 } from '@ng-icons/heroicons/outline';
 import { DataService } from '../../core/data/data.service';
 import { SectionHeading } from '../../core/ui/section-heading';
+import { FounderRadar, type RadarSeries } from './founder-radar';
 import type { Founder, SkillVector, Venture } from '../../core/model';
+
+// Hardcoded test vectors, one per founder, to exercise the complementarity
+// radar until real per-founder skill vectors are wired through. Colours follow
+// the validated categorical order (blue, aqua, yellow).
+const TEST_RADAR: readonly RadarSeries[] = [
+  {
+    name: 'Luis Reindlmeier',
+    color: '#2a78d6',
+    vector: { technical: 0.9, commercial: 0.35, domain: 0.62, product: 0.55 },
+  },
+  {
+    name: 'Co-founder (commercial)',
+    color: '#1baf7a',
+    vector: { technical: 0.3, commercial: 0.86, domain: 0.5, product: 0.82 },
+  },
+  {
+    name: 'Co-founder (domain)',
+    color: '#eda100',
+    vector: { technical: 0.45, commercial: 0.55, domain: 0.9, product: 0.4 },
+  },
+];
 
 const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
   { key: 'technical', label: 'Technical' },
@@ -26,7 +48,7 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
 // not an average of the individual composites.
 @Component({
   selector: 'app-company-page',
-  imports: [NgIcon, RouterLink, SectionHeading],
+  imports: [NgIcon, RouterLink, SectionHeading, FounderRadar],
   viewProviders: [
     provideIcons({
       heroArrowLeft,
@@ -99,13 +121,12 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
             <section class="rounded-xl border-[0.5px] border-border bg-card p-5">
               <div class="flex flex-wrap items-start justify-between gap-4">
                 <div class="min-w-0 flex-1">
-                  <p class="mb-2 text-[12px] font-medium text-muted-foreground">
-                    aficionado score
-                  </p>
+                  <p class="mb-2 text-[12px] font-medium text-muted-foreground">aficionado score</p>
                   <div class="flex items-baseline gap-2">
-                    <span class="font-title text-[38px] leading-none tracking-[-0.02em] text-foreground">{{
-                      d.composite
-                    }}</span>
+                    <span
+                      class="font-title text-[38px] leading-none tracking-[-0.02em] text-foreground"
+                      >{{ d.composite }}</span
+                    >
                     <span class="text-[13px] text-muted-foreground">/ 100</span>
                   </div>
                   <p class="mt-2 max-w-lg text-[13px] leading-relaxed text-muted-foreground">
@@ -116,17 +137,25 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
                   <span
                     class="inline-flex items-center gap-1.5 rounded-full border-[0.5px] border-border px-2.5 py-1 text-[13px] font-medium text-foreground"
                   >
-                    <span class="size-2 rounded-full" [style.background]="data.bandColor(d.band)"></span>
+                    <span
+                      class="size-2 rounded-full"
+                      [style.background]="data.bandColor(d.band)"
+                    ></span>
                     {{ d.band }}
                   </span>
                   <span class="inline-flex items-center gap-1.5 text-[12px] text-muted-foreground">
-                    <span class="size-1.5 rounded-full" [style.background]="confColor(d.confidence)"></span>
+                    <span
+                      class="size-1.5 rounded-full"
+                      [style.background]="confColor(d.confidence)"
+                    ></span>
                     confidence {{ d.confidence }}
                   </span>
                 </div>
               </div>
               @if (d.routeToHuman) {
-                <div class="mt-4 flex items-start gap-2 border-t-[0.5px] border-border pt-4 text-[12px]">
+                <div
+                  class="mt-4 flex items-start gap-2 border-t-[0.5px] border-border pt-4 text-[12px]"
+                >
                   <ng-icon
                     name="heroExclamationTriangle"
                     size="0.9rem"
@@ -137,6 +166,16 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
               }
             </section>
           }
+
+          <!-- Skill complementarity radar (hardcoded test vectors) -->
+          <app-section-heading title="Skill complementarity" />
+          <section class="rounded-xl border-[0.5px] border-border bg-card p-5">
+            <p class="mb-4 max-w-lg text-[13px] leading-relaxed text-muted-foreground">
+              Each founder's skill vector across the four axes. Where the shapes point in different
+              directions, the team complements itself, where they overlap, it doubles up.
+            </p>
+            <app-founder-radar [series]="radarSeries" />
+          </section>
 
           <!-- Harmonized team score -->
           <app-section-heading title="Team" />
@@ -156,8 +195,8 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
                       @if (t.score > avg) {
                         Harmonized team score is +{{ t.score - avg }} for complementary coverage.
                       } @else if (t.score < avg) {
-                        Harmonized team score is {{ t.score - avg }}, coverage overlaps more than
-                        it complements.
+                        Harmonized team score is {{ t.score - avg }}, coverage overlaps more than it
+                        complements.
                       } @else {
                         Harmonized team score matches the average, coverage is exactly what the
                         founders already carry alone.
@@ -166,9 +205,10 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
                   }
                 </div>
                 <div class="flex items-baseline gap-2">
-                  <span class="font-title text-[46px] leading-none tracking-[-0.02em] text-foreground">{{
-                    t.score
-                  }}</span>
+                  <span
+                    class="font-title text-[46px] leading-none tracking-[-0.02em] text-foreground"
+                    >{{ t.score }}</span
+                  >
                   <span class="text-[13px] text-muted-foreground">/ 100</span>
                 </div>
               </div>
@@ -187,9 +227,10 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
                           [style.width.%]="pctOf(t.coverage[axis.key])"
                         ></div>
                       </div>
-                      <span class="w-8 shrink-0 text-right text-[11px] tabular-nums text-muted-foreground">{{
-                        pctOf(t.coverage[axis.key])
-                      }}</span>
+                      <span
+                        class="w-8 shrink-0 text-right text-[11px] tabular-nums text-muted-foreground"
+                        >{{ pctOf(t.coverage[axis.key]) }}</span
+                      >
                     </div>
                   }
                 </div>
@@ -199,7 +240,8 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
                     <ul class="mb-3 flex flex-col gap-1">
                       @for (g of t.gaps; track g) {
                         <li class="flex items-start gap-2 text-foreground">
-                          <span class="mt-1.5 size-1.5 shrink-0 rounded-full bg-[#d97706]"></span>{{ g }}
+                          <span class="mt-1.5 size-1.5 shrink-0 rounded-full bg-[#d97706]"></span
+                          >{{ g }}
                         </li>
                       }
                     </ul>
@@ -209,7 +251,8 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
                     <ul class="flex flex-col gap-1">
                       @for (r of t.redundancies; track r) {
                         <li class="flex items-start gap-2 text-foreground">
-                          <span class="mt-1.5 size-1.5 shrink-0 rounded-full bg-[#a3a3a3]"></span>{{ r }}
+                          <span class="mt-1.5 size-1.5 shrink-0 rounded-full bg-[#a3a3a3]"></span
+                          >{{ r }}
                         </li>
                       }
                     </ul>
@@ -229,8 +272,8 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
             >
               <ng-icon name="heroUserGroup" size="1.1rem" class="text-muted-foreground" />
               <p class="mt-2 text-[13px] text-muted-foreground">
-                Solo founder today, there is no team yet to harmonize. Add and evaluate a
-                co-founder to see how the team complements each other.
+                Solo founder today, there is no team yet to harmonize. Add and evaluate a co-founder
+                to see how the team complements each other.
               </p>
             </section>
           }
@@ -281,7 +324,10 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
                       <span
                         class="inline-flex items-center gap-1.5 rounded-full border-[0.5px] border-border px-2 py-0.5 text-[11px] font-medium text-foreground"
                       >
-                        <span class="size-1.5 rounded-full" [style.background]="data.bandColor(s.band)"></span>
+                        <span
+                          class="size-1.5 rounded-full"
+                          [style.background]="data.bandColor(s.band)"
+                        ></span>
                         {{ s.band }}
                       </span>
                     </div>
@@ -305,9 +351,12 @@ export class CompanyPage {
   private readonly location = inject(Location);
 
   protected readonly skillAxes = SKILL_LABELS;
+  protected readonly radarSeries = TEST_RADAR;
 
   private readonly ventureId = signal<string | undefined>(undefined);
-  protected readonly venture = computed<Venture | undefined>(() => this.data.venture(this.ventureId()));
+  protected readonly venture = computed<Venture | undefined>(() =>
+    this.data.venture(this.ventureId()),
+  );
   protected readonly founders = computed<Founder[]>(() => {
     const v = this.ventureId();
     if (!v) return [];
