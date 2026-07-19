@@ -220,7 +220,7 @@ export class CommandPalette {
       if (founders.length) out.push({ label: 'Founders', items: founders });
     }
 
-    const actions: Result[] = [
+    const actions = [
       {
         kind: 'action',
         label: 'Start the tutorial',
@@ -228,7 +228,7 @@ export class CommandPalette {
         icon: 'heroAcademicCap',
         run: () => this.startTour(),
         i: 0,
-      },
+      } as Result,
     ].filter((a) => !q || 'tutorial tour guide help onboarding'.includes(q));
     if (actions.length) out.push({ label: 'Actions', items: actions });
 
