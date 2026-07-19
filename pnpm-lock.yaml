@@ -26,6 +26,9 @@ importers:
       '@fontsource-variable/geist':
         specifier: ^5.2.9
         version: 5.2.9
+      '@fontsource/space-grotesk':
+        specifier: ^5.2.10
+        version: 5.2.10
       '@ng-icons/core':
         specifier: ^33.3.0
         version: 33.3.0(@angular-devkit/schematics@22.0.4(chokidar@5.0.0))(@angular/common@22.0.3(@angular/core@22.0.3(@angular/compiler@22.0.3)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.3(@angular/compiler@22.0.3)(rxjs@7.8.2))(@schematics/angular@22.0.4(chokidar@5.0.0))(rxjs@7.8.2)
@@ -841,6 +844,9 @@ packages:
 
   '@fontsource-variable/geist@5.2.9':
     resolution: {integrity: sha512-TP+QSBG3wxKGPE33CbMy/L0Nu3qvJ6Fy81Yc4LnQ95xH+i+cfEp8fyU8/kfV14YwszxIFPhnoMTbjL71waVpyQ==}
+
+  '@fontsource/space-grotesk@5.2.10':
+    resolution: {integrity: sha512-XNXEbT74OIITPqw2H6HXwPDp85fy43uxfBwFR5PU+9sLnjuLj12KlhVM9nZVN6q6dlKjkuN8JisW/OBxwxgUew==}
 
   '@gar/promise-retry@1.0.3':
     resolution: {integrity: sha512-GmzA9ckNokPypTg10pgpeHNQe7ph+iIKKmhKu3Ob9ANkswreCx7R3cKmY781K8QK3AqVL3xVh9A42JvIAbkkSA==}
@@ -4093,6 +4099,8 @@ snapshots:
   '@exodus/bytes@1.15.1': {}
 
   '@fontsource-variable/geist@5.2.9': {}
+
+  '@fontsource/space-grotesk@5.2.10': {}
 
   '@gar/promise-retry@1.0.3': {}
 

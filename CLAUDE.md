@@ -1,7 +1,7 @@
 # CLAUDE.md — aficionado (Web app)
 
 Aficionado is an AI-native operating system for venture capital: very-early-stage founder
-sourcing → founder evaluation → investment recommendation → due diligence, fully automated.
+sourcing (Radar) → evaluation → decision → diligence, fully automated.
 
 This repo is the **app shell** (sidebar, header, footer, project selector, ⌘K command
 palette). Product features are not built yet.
@@ -15,3 +15,14 @@ palette). Product features are not built yet.
 - Every page is currently a `PlaceholderPage`; add real feature components under
   `src/app/features/` and wire them in `src/app/app.routes.ts` when building them out.
 - No unnecessary comments. Keep the shell minimal.
+
+## Brand
+
+- The logo is the graduated dot-matrix "A". Single source of truth in the app is
+  `<app-logo>` (`src/app/core/brand/logo.ts`): the mark uses `currentColor`, with an
+  optional wordmark. Never reintroduce placeholder icons/avatars for the brand.
+- Wordmark font is **Space Grotesk 500** (`--font-brand` / `.brand-wordmark`); the mark is
+  ink `#111` on light surfaces, white on dark.
+- Static brand assets live in `public/`: `favicon.svg` + `favicon-16/32.png`,
+  `apple-touch-icon.png`, `icon-192/512.png`, `og-image.png`, `site.webmanifest`, and the
+  source marks under `public/brand/`.

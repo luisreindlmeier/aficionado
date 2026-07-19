@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { NgIcon } from '@ng-icons/core';
+import { Logo } from '../brand/logo';
 
 @Component({
   selector: 'app-footer',
-  imports: [NgIcon],
+  imports: [NgIcon, Logo],
   template: `
     <footer
       class="flex h-14 shrink-0 items-center justify-between border-t border-border bg-surface pl-3 pr-4 text-muted-foreground md:pr-5"
@@ -11,10 +12,10 @@ import { NgIcon } from '@ng-icons/core';
       <!-- left label aligned to the sidebar nav column (pl-3 + px-3 → icon at the nav-icon line) -->
       <button
         type="button"
-        class="flex items-center gap-3 rounded-sm px-3 py-1.5 text-[13px] transition-colors hover:bg-accent hover:text-foreground"
+        aria-label="aficionado"
+        class="flex items-center rounded-sm px-3 py-1.5 transition-colors hover:bg-accent hover:text-foreground"
       >
-        <ng-icon name="heroCommandLine" class="shrink-0" />
-        <span>aficionado</span>
+        <app-logo [size]="19" />
       </button>
 
       <div class="flex items-center gap-0.5">

@@ -22,7 +22,6 @@ import {
   heroPlus,
   heroArrowRightOnRectangle,
   // footer
-  heroCommandLine,
   heroLifebuoy,
   // command palette
   heroChatBubbleLeftRight,
@@ -52,7 +51,6 @@ export const appConfig: ApplicationConfig = {
       heroFolderOpen,
       heroPlus,
       heroArrowRightOnRectangle,
-      heroCommandLine,
       heroLifebuoy,
       heroChatBubbleLeftRight,
     }),

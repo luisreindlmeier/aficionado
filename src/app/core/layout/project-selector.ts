@@ -1,10 +1,11 @@
 import { Component, HostListener, computed, ElementRef, inject, signal } from '@angular/core';
 import { NgIcon } from '@ng-icons/core';
+import { Logo } from '../brand/logo';
 
 /** Top-left project / deal switcher. Functional shell — no real data yet. */
 @Component({
   selector: 'app-project-selector',
-  imports: [NgIcon],
+  imports: [NgIcon, Logo],
   template: `
     <div class="relative">
       <button
@@ -14,11 +15,11 @@ import { NgIcon } from '@ng-icons/core';
         aria-haspopup="menu"
         class="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left transition-colors hover:bg-accent"
       >
-        <img
-          src="/avatar.svg"
-          alt=""
-          class="size-6 shrink-0 rounded-full border border-border bg-surface object-cover"
-        />
+        <span
+          class="grid size-6 shrink-0 place-items-center rounded-md bg-foreground text-background"
+        >
+          <app-logo [wordmark]="false" [size]="13" />
+        </span>
         <span class="min-w-0 flex-1 truncate text-[13px] font-medium text-foreground">{{
           current()
         }}</span>
@@ -32,11 +33,9 @@ import { NgIcon } from '@ng-icons/core';
         >
           <!-- selected deal: larger centered avatar + name -->
           <div class="flex flex-col items-center gap-2 px-4 pt-4 pb-3">
-            <img
-              src="/avatar.svg"
-              alt=""
-              class="size-12 rounded-full border border-border bg-surface object-cover"
-            />
+            <span class="grid size-12 place-items-center rounded-xl bg-foreground text-background">
+              <app-logo [wordmark]="false" [size]="26" />
+            </span>
             <span class="text-[14px] font-medium text-foreground">{{ current() }}</span>
           </div>
 

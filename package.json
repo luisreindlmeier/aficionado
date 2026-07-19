@@ -19,6 +19,7 @@
     "@angular/platform-browser": "^22.0.0",
     "@angular/router": "^22.0.0",
     "@fontsource-variable/geist": "^5.2.9",
+    "@fontsource/space-grotesk": "^5.2.10",
     "@ng-icons/core": "^33.3.0",
     "@ng-icons/heroicons": "^33.3.0",
     "rxjs": "~7.8.0",
