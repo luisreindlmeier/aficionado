@@ -140,12 +140,23 @@ faking certainty, is the point of the demo.
 
 ## Screenshots
 
-<!-- TODO: add screenshots before submission -->
+Radar, the always-on sourcing feed. Real founders discovered from live GitHub and npm data,
+each already triaged and scored. Luis Reindlmeier, freshest, sits at the top.
 
-- `docs/screenshots/radar.png` Radar, the sourced-founder feed
-- `docs/screenshots/evaluation.png` Evaluation dossier with the streamed brain-at-work trace
-- `docs/screenshots/decision.png` Decision, the venture-level verdict
-- `docs/screenshots/data-sources.png` Data Sources, the connector registry as tiles
+![Radar](docs/screenshots/radar.png)
+
+The Evaluation dossier. Person first, company as context, a calibrated verdict, then three
+metric cards each backed by clickable evidence receipts. Note the honest read on Luis: Proof
+and Trajectory verified, Gravity excluded as low confidence until a social profile is added.
+
+![Evaluation dossier](docs/screenshots/evaluation.png)
+
+Decision, the automated Invest / Watch / Pass list, and Settings, where the metric weights
+re-rank the whole pipeline live.
+
+![Decision](docs/screenshots/decision.png)
+
+![Settings](docs/screenshots/settings.png)
 
 ## Run it
 

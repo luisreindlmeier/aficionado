@@ -138,10 +138,7 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
                   {{ f.name }}
                 </h1>
                 <p class="mt-1 text-[13px] leading-relaxed text-muted-foreground">
-                  {{ f.headline }}
-                  @if (f.location) {
-                    , {{ f.location }}
-                  }
+                  {{ f.headline }}{{ f.location ? ', ' + f.location : '' }}
                 </p>
                 <div class="mt-3 flex flex-wrap gap-2">
                   @for (link of links(f); track link.label) {
