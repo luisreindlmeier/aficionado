@@ -3,7 +3,8 @@
 Aficionado is an AI-native operating system for venture capital: very-early-stage founder
 sourcing → founder evaluation → investment recommendation → due diligence, fully automated.
 
-This repo is the **web app shell** (header + sidebar). Product features are not built yet.
+This repo is the **app shell** (sidebar, header, footer, project selector, ⌘K command
+palette). Product features are not built yet.
 
 ## Conventions
 

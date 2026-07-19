@@ -27,8 +27,7 @@ module.exports = defineConfig([
         'error',
         {
           type: 'element',
-          // 'app' for app-level UI; 'gds'/'ds' for the design-system primitives & gallery.
-          prefix: ['app', 'gds', 'ds'],
+          prefix: 'app',
           style: 'kebab-case',
         },
       ],
