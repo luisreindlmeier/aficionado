@@ -23,8 +23,10 @@
     "@ng-icons/core": "^33.3.0",
     "@ng-icons/heroicons": "^33.3.0",
     "@ng-icons/simple-icons": "^33.4.0",
+    "ai": "^7.0.31",
     "rxjs": "~7.8.0",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@angular/build": "^22.0.3",
@@ -33,6 +35,7 @@
     "@eslint/js": "^10.0.1",
     "@tailwindcss/postcss": "^4.1.12",
     "@types/node": "^20.17.19",
+    "@vercel/node": "^5.8.26",
     "angular-eslint": "22.0.0",
     "eslint": "^10.3.0",
     "jsdom": "^28.0.0",

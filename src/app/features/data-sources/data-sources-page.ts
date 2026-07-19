@@ -14,7 +14,8 @@ import {
   simpleCrunchbase,
 } from '@ng-icons/simple-icons';
 import { heroBuildingLibrary, heroCheck } from '@ng-icons/heroicons/outline';
-import { Metric } from '../../core/metrics';
+import { CONNECTORS } from '../../core/connectors/descriptors';
+import { ActionKind, ConnectorDescriptor, Group } from '../../core/connectors/types';
 
 // Brand marks not carried by the icon sets, taken from each company's own assets.
 // LinkedIn and Google carry their own fills (multi-colour); Evertrace is a
@@ -25,196 +26,6 @@ const brandGoogle =
   '<svg xmlns="http://www.w3.org/2000/svg" width="0.98em" height="1em" viewBox="0 0 256 262"><path fill="#4285f4" d="M255.878 133.451c0-10.734-.871-18.567-2.756-26.69H130.55v48.448h71.947c-1.45 12.04-9.283 30.172-26.69 42.356l-.244 1.622l38.755 30.023l2.685.268c24.659-22.774 38.875-56.282 38.875-96.027"/><path fill="#34a853" d="M130.55 261.1c35.248 0 64.839-11.605 86.453-31.622l-41.196-31.913c-11.024 7.688-25.82 13.055-45.257 13.055c-34.523 0-63.824-22.773-74.269-54.25l-1.531.13l-40.298 31.187l-.527 1.465C35.393 231.798 79.49 261.1 130.55 261.1"/><path fill="#fbbc05" d="M56.281 156.37c-2.756-8.123-4.351-16.827-4.351-25.82c0-8.994 1.595-17.697 4.206-25.82l-.073-1.73L15.26 71.312l-1.335.635C5.077 89.644 0 109.517 0 130.55s5.077 40.905 13.925 58.602z"/><path fill="#eb4335" d="M130.55 50.479c24.514 0 41.05 10.589 50.479 19.438l36.844-35.974C195.245 12.91 165.798 0 130.55 0C79.49 0 35.393 29.301 13.925 71.947l42.211 32.783c10.59-31.477 39.891-54.251 74.414-54.251"/></svg>';
 const brandEvertrace =
   '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="-0.6 -0.6 25.64 25.64"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M12.4857 0.346619H24.0998V11.9566H19.2231C15.5021 11.9566 12.4857 8.94012 12.4857 5.21912V0.346619ZM11.0155 0.346619L6.13883 0.346619C2.41783 0.346619 -0.598633 3.36308 -0.598633 7.08408L-0.598633 11.9566H4.27805C7.99905 11.9566 11.0155 8.94012 11.0155 5.21912V0.346619ZM12.4857 25.0362H24.0998V13.4262H19.2231C15.5021 13.4262 12.4857 16.4427 12.4857 20.1637V25.0362ZM11.0155 25.0362H6.13883C2.41783 25.0362 -0.598633 22.0197 -0.598633 18.2987L-0.598633 13.4262H4.27805C7.99905 13.4262 11.0155 16.4427 11.0155 20.1637V25.0362Z"/></svg>';
-
-// Mock data, hardcoded and typed so it's trivial to edit. Every source, its
-// domain, the founder metric it feeds, and its connection state. `icon` is a
-// real brand glyph drawn in the brand's official colour via `color`; sources
-// with no real brand mark fall back to a neutral heroicon (no `color`).
-// Nothing here connects to anything; buttons are visual only.
-type Group = 'Connected' | 'Available' | 'Manual input' | 'Not supported';
-type Action = 'connected' | 'connect' | 'add-key' | 'paste' | 'unsupported';
-
-interface DataSource {
-  readonly name: string;
-  readonly domain: string;
-  readonly description: string;
-  readonly icon: string;
-  /** Official brand colour; omit for neutral heroicon fallbacks. */
-  readonly color?: string;
-  readonly group: Group;
-  readonly metrics: readonly Metric[];
-  readonly note: string;
-  readonly action: Action;
-}
-
-const SOURCES: readonly DataSource[] = [
-  // Connected
-  {
-    name: 'GitHub',
-    domain: 'github.com',
-    description: 'Repos, stars and contribution history',
-    icon: 'simpleGithub',
-    color: '#181717',
-    group: 'Connected',
-    metrics: ['Proof', 'Trajectory'],
-    note: 'Free, GitHub API',
-    action: 'connected',
-  },
-  {
-    name: 'npm downloads',
-    domain: 'npmjs.com',
-    description: 'Package download counts over time',
-    icon: 'simpleNpm',
-    color: '#CB3837',
-    group: 'Connected',
-    metrics: ['Proof'],
-    note: 'Free, no auth',
-    action: 'connected',
-  },
-  {
-    name: 'PyPI stats',
-    domain: 'pypi.org',
-    description: 'Python package download volume',
-    icon: 'simplePypi',
-    color: '#3775A9',
-    group: 'Connected',
-    metrics: ['Proof'],
-    note: 'Free, no auth',
-    action: 'connected',
-  },
-  {
-    name: 'Product Hunt',
-    domain: 'producthunt.com',
-    description: 'Launches, upvotes and maker activity',
-    icon: 'simpleProducthunt',
-    color: '#DA552F',
-    group: 'Connected',
-    metrics: ['Proof', 'Trajectory'],
-    note: 'Free, dev token',
-    action: 'connected',
-  },
-  {
-    name: 'Wayback Machine',
-    domain: 'web.archive.org',
-    description: 'Historical snapshots of past sites',
-    icon: 'simpleInternetarchive',
-    color: '#a92e34',
-    group: 'Connected',
-    metrics: ['Trajectory'],
-    note: 'Free, Internet Archive',
-    action: 'connected',
-  },
-  {
-    name: 'arXiv',
-    domain: 'arxiv.org',
-    description: 'Preprints and research authorship',
-    icon: 'simpleArxiv',
-    color: '#B31B1B',
-    group: 'Connected',
-    metrics: ['Proof'],
-    note: 'Free, no auth',
-    action: 'connected',
-  },
-  {
-    name: 'Semantic Scholar',
-    domain: 'semanticscholar.org',
-    description: 'Citations and academic influence',
-    icon: 'simpleSemanticscholar',
-    color: '#1857B6',
-    group: 'Connected',
-    metrics: ['Proof'],
-    note: 'Free, no auth',
-    action: 'connected',
-  },
-  {
-    name: 'Stack Exchange',
-    domain: 'stackexchange.com',
-    description: 'Answers, reputation and expertise',
-    icon: 'simpleStackexchange',
-    color: '#1E5397',
-    group: 'Connected',
-    metrics: ['Proof'],
-    note: 'Free, optional key',
-    action: 'connected',
-  },
-  // Available
-  {
-    name: 'X (Twitter)',
-    domain: 'x.com',
-    description: 'Followers, reach and network signal',
-    icon: 'simpleX',
-    color: '#000000',
-    group: 'Available',
-    metrics: ['Gravity', 'Trajectory'],
-    note: 'Third-party API, low cost',
-    action: 'add-key',
-  },
-  {
-    name: 'Handelsregister',
-    domain: 'handelsregister.de',
-    description: 'German company filings and officers',
-    icon: 'heroBuildingLibrary',
-    group: 'Available',
-    metrics: ['Proof'],
-    note: 'Third-party API, free tier',
-    action: 'connect',
-  },
-  {
-    name: 'Google Patents',
-    domain: 'patents.google.com',
-    description: 'Patent filings and inventorship',
-    icon: 'brandGoogle',
-    group: 'Available',
-    metrics: ['Proof'],
-    note: 'BigQuery, free tier',
-    action: 'connect',
-  },
-  {
-    name: 'Devpost',
-    domain: 'devpost.com',
-    description: 'Hackathon projects and wins',
-    icon: 'simpleDevpost',
-    color: '#003E54',
-    group: 'Available',
-    metrics: ['Proof'],
-    note: 'Scrape / RSS',
-    action: 'connect',
-  },
-  // Manual input
-  {
-    name: 'LinkedIn',
-    domain: 'linkedin.com',
-    description: 'Career history and professional network',
-    icon: 'brandLinkedin',
-    group: 'Manual input',
-    metrics: ['Proof', 'Gravity'],
-    note: 'Paste profile (no scraping)',
-    action: 'paste',
-  },
-  // Not supported
-  {
-    name: 'Crunchbase',
-    domain: 'crunchbase.com',
-    description: 'Funding rounds and company data',
-    icon: 'simpleCrunchbase',
-    color: '#0288D1',
-    group: 'Not supported',
-    metrics: [],
-    note: 'Enterprise license only',
-    action: 'unsupported',
-  },
-  {
-    name: 'Evertrace',
-    domain: 'evertrace.ai',
-    description: 'Early founder detection signals',
-    icon: 'brandEvertrace',
-    color: '#262626',
-    group: 'Not supported',
-    metrics: [],
-    note: 'Sales-gated',
-    action: 'unsupported',
-  },
-];
 
 const GROUP_ORDER: readonly Group[] = ['Connected', 'Available', 'Manual input', 'Not supported'];
 
@@ -254,7 +65,7 @@ const GROUP_ORDER: readonly Group[] = ['Connected', 'Available', 'Manual input',
       <div class="mx-auto w-full max-w-5xl px-6 py-8 md:px-8 md:py-10">
         <header>
           <h1
-            class="font-serif text-[26px] leading-[1.1] tracking-[-0.01em] text-foreground md:text-[28px]"
+            class="font-title text-[26px] leading-[1.1] tracking-[-0.01em] text-foreground md:text-[28px]"
           >
             Data sources
           </h1>
@@ -270,7 +81,7 @@ const GROUP_ORDER: readonly Group[] = ['Connected', 'Available', 'Manual input',
             </h2>
 
             <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              @for (source of sourcesIn(group); track source.name) {
+              @for (source of sourcesIn(group); track source.id) {
                 <div
                   class="flex flex-col gap-3 rounded-xl border-[0.5px] border-border bg-card p-4"
                 >
@@ -351,11 +162,11 @@ const GROUP_ORDER: readonly Group[] = ['Connected', 'Available', 'Manual input',
 export class DataSourcesPage {
   protected readonly groupOrder = GROUP_ORDER;
 
-  protected sourcesIn(group: Group): readonly DataSource[] {
-    return SOURCES.filter((source) => source.group === group);
+  protected sourcesIn(group: Group): readonly ConnectorDescriptor[] {
+    return CONNECTORS.filter((source) => source.group === group);
   }
 
-  protected actionLabel(action: Action): string {
+  protected actionLabel(action: ActionKind): string {
     switch (action) {
       case 'connect':
         return 'Connect';

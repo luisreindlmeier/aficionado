@@ -32,6 +32,25 @@ palette). Product features are not built yet.
   slash (` / `) instead. This applies to all content generated in this repo.
 - No unnecessary comments. Keep the shell minimal.
 
+## Data connectors and AI evaluation
+
+- Every data source is a **connector**. The single source of truth is
+  `src/app/core/connectors/descriptors.ts` (`CONNECTORS`), which drives the Data
+  sources page and the backend. `types.ts` is isomorphic (no Node/browser deps) so the
+  UI, the backend, and a future MCP surface all share it. `live: true` means a real
+  backend `run()` exists today.
+- Backend lives in `/api` (Vercel Functions, Node). `POST /api/evaluate` runs the live
+  Proof connectors, streams each `Signal` as SSE, then streams an AI verdict via the
+  Vercel AI Gateway (`AI_GATEWAY_API_KEY`), with a deterministic heuristic fallback when
+  no key is present. Connector runtimes are server-only under `api/_lib/connectors/`;
+  never import them from client code (secrets, CORS).
+- Add a source: add its descriptor, then a `run()` in `api/_lib/connectors/` and register
+  it in `api/_lib/connectors/index.ts`. It becomes both AI-callable and visible in the UI.
+- The Evaluation page triggers `EvaluationService.scoreProof()` and streams signals + the
+  score into the dossier. There is no chat UI.
+- Env is documented in `.env.example`. Typecheck the backend with
+  `npx tsc -p api/tsconfig.json --noEmit`.
+
 ## Brand
 
 - The logo is the graduated dot-matrix "A". Single source of truth in the app is

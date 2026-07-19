@@ -1,8 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { heroArrowTopRightOnSquare, heroExclamationTriangle } from '@ng-icons/heroicons/outline';
+import {
+  heroArrowTopRightOnSquare,
+  heroExclamationTriangle,
+  heroBolt,
+  heroArrowPath,
+} from '@ng-icons/heroicons/outline';
 import { METRIC_COLORS } from '../../core/metrics';
 import { SectionHeading } from '../../core/ui/section-heading';
+import { EvaluationService } from './evaluation.service';
+import { FounderQuery, MetricVerdict, Signal } from '../../core/connectors/types';
 
 // ─────────────────────────────────────────────────────────────
 // Mock data, hardcoded for now, typed so it swaps 1:1 for a
@@ -101,7 +108,9 @@ const DOSSIER: FounderDossier = {
 @Component({
   selector: 'app-evaluation-page',
   imports: [NgIcon, SectionHeading],
-  viewProviders: [provideIcons({ heroArrowTopRightOnSquare, heroExclamationTriangle })],
+  viewProviders: [
+    provideIcons({ heroArrowTopRightOnSquare, heroExclamationTriangle, heroBolt, heroArrowPath }),
+  ],
   styles: `
     :host {
       display: flex;
@@ -250,6 +259,101 @@ const DOSSIER: FounderDossier = {
           }
         </section>
 
+        <!-- 4b. Proof, live: AI scores this metric from connected sources -->
+        <app-section-heading title="Proof, live from sources" />
+        <section class="rounded-xl border-[0.5px] border-border bg-card p-5">
+          <div class="flex flex-wrap items-end gap-3">
+            <label class="flex flex-col gap-1">
+              <span class="text-[11px] text-muted-foreground">GitHub handle</span>
+              <input
+                [value]="github()"
+                (input)="github.set($any($event.target).value)"
+                placeholder="e.g. gaearon"
+                class="h-8 w-40 rounded-md border-[0.5px] border-input bg-surface px-2 text-[13px] outline-none placeholder:text-placeholder focus:border-ring"
+              />
+            </label>
+            <label class="flex flex-col gap-1">
+              <span class="text-[11px] text-muted-foreground">npm author</span>
+              <input
+                [value]="npm()"
+                (input)="npm.set($any($event.target).value)"
+                placeholder="e.g. sindresorhus"
+                class="h-8 w-40 rounded-md border-[0.5px] border-input bg-surface px-2 text-[13px] outline-none placeholder:text-placeholder focus:border-ring"
+              />
+            </label>
+            <label class="flex flex-col gap-1">
+              <span class="text-[11px] text-muted-foreground">PyPI package</span>
+              <input
+                [value]="pypi()"
+                (input)="pypi.set($any($event.target).value)"
+                placeholder="e.g. httpx"
+                class="h-8 w-40 rounded-md border-[0.5px] border-input bg-surface px-2 text-[13px] outline-none placeholder:text-placeholder focus:border-ring"
+              />
+            </label>
+            <button
+              type="button"
+              (click)="runProof()"
+              [disabled]="running()"
+              class="inline-flex h-8 items-center gap-1.5 rounded-md bg-foreground px-3 text-[13px] font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-50"
+            >
+              <ng-icon
+                [name]="running() ? 'heroArrowPath' : 'heroBolt'"
+                size="0.9rem"
+                [class.animate-spin]="running()"
+              />
+              {{ running() ? 'Scoring…' : 'Run AI scoring' }}
+            </button>
+          </div>
+
+          @if (errorMsg(); as err) {
+            <p class="mt-3 text-[12px] text-destructive">{{ err }}</p>
+          }
+
+          @if (connectorList().length) {
+            <div class="mt-4 flex flex-wrap gap-1.5">
+              @for (c of connectorList(); track c.id) {
+                <span
+                  class="inline-flex items-center gap-1.5 rounded-full border-[0.5px] border-border px-2 py-0.5 text-[11px] text-muted-foreground"
+                >
+                  <span
+                    class="size-1.5 rounded-full"
+                    [style.backgroundColor]="statusColor(c.status)"
+                  ></span>
+                  {{ c.id }}
+                </span>
+              }
+            </div>
+          }
+
+          @if (proofSignals().length) {
+            <ul class="mt-4 flex flex-col gap-2 border-t-[0.5px] border-border pt-4">
+              @for (s of proofSignals(); track $index) {
+                <li class="flex items-start gap-2 text-[13px]">
+                  <span
+                    class="mt-1.5 size-1.5 shrink-0 rounded-full"
+                    [style.backgroundColor]="proofColor"
+                  ></span>
+                  <span class="text-foreground">{{ s.text }}</span>
+                </li>
+              }
+            </ul>
+          }
+
+          @if (verdict(); as v) {
+            <div class="mt-4 flex items-center gap-3 border-t-[0.5px] border-border pt-4">
+              <span class="font-title text-[32px] leading-none" [style.color]="proofColor">{{
+                v.score
+              }}</span>
+              <div class="min-w-0">
+                <p class="text-[13px] text-foreground">{{ v.rationale }}</p>
+                <p class="mt-0.5 text-[11px] text-muted-foreground">
+                  Scored by {{ v.by === 'ai' ? 'AI (Claude)' : 'heuristic fallback' }}
+                </p>
+              </div>
+            </div>
+          }
+        </section>
+
         <!-- 5. Potential red flags -->
         <app-section-heading title="Potential red flags" />
         <section
@@ -283,8 +387,69 @@ const DOSSIER: FounderDossier = {
   `,
 })
 export class EvaluationPage {
+  private readonly evaluation = inject(EvaluationService);
+
   protected readonly dossier = DOSSIER;
   protected readonly circumference = 2 * Math.PI * 40;
+  protected readonly proofColor = METRIC_COLORS.Proof;
+
+  // Live Proof scoring state, streamed from /api/evaluate.
+  protected readonly github = signal('');
+  protected readonly npm = signal('');
+  protected readonly pypi = signal('');
+  protected readonly running = signal(false);
+  protected readonly proofSignals = signal<Signal[]>([]);
+  protected readonly verdict = signal<MetricVerdict | null>(null);
+  protected readonly errorMsg = signal<string | null>(null);
+  private readonly connectorStates = signal<Record<string, string>>({});
+  protected readonly connectorList = computed(() =>
+    Object.entries(this.connectorStates()).map(([id, status]) => ({ id, status })),
+  );
+
+  protected async runProof(): Promise<void> {
+    if (this.running()) return;
+    this.running.set(true);
+    this.proofSignals.set([]);
+    this.connectorStates.set({});
+    this.verdict.set(null);
+    this.errorMsg.set(null);
+
+    const query: FounderQuery = {
+      name: this.dossier.name,
+      github: this.github().trim() || undefined,
+      npm: this.npm().trim() || undefined,
+      pypi: this.pypi().trim() || undefined,
+    };
+
+    try {
+      for await (const event of this.evaluation.scoreProof(query)) {
+        switch (event.type) {
+          case 'signal':
+            this.proofSignals.update((list) => [...list, event.signal]);
+            break;
+          case 'connector':
+            this.connectorStates.update((map) => ({ ...map, [event.connector]: event.status }));
+            break;
+          case 'verdict':
+            this.verdict.set(event.verdict);
+            break;
+          case 'error':
+            this.errorMsg.set(event.message);
+            break;
+        }
+      }
+    } catch (err) {
+      this.errorMsg.set(err instanceof Error ? err.message : String(err));
+    } finally {
+      this.running.set(false);
+    }
+  }
+
+  protected statusColor(status: string): string {
+    if (status === 'done') return '#16a34a';
+    if (status === 'error') return '#dc2626';
+    return '#a3a3a3';
+  }
 
   protected severityColor(severity: Severity): string {
     switch (severity) {
