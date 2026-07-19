@@ -286,7 +286,7 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
                     <div class="flex flex-col items-center gap-4">
                       <!-- donut -->
                       <div class="relative shrink-0">
-                        <svg viewBox="0 0 100 100" class="size-24">
+                        <svg viewBox="0 0 100 100" class="size-36">
                           <circle
                             cx="50"
                             cy="50"
@@ -323,25 +323,7 @@ const SKILL_LABELS: readonly { key: keyof SkillVector; label: string }[] = [
                       <!-- head + rationale -->
                       <div class="min-w-0 w-full">
                         <div class="flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
-                          <span class="size-2 rounded-full" [style.background]="m.color"></span>
                           <h3 class="text-[16px] font-semibold text-foreground">{{ m.key }}</h3>
-                          <span
-                            class="rounded-full border-[0.5px] border-border px-2 py-0.5 text-[11px] text-muted-foreground"
-                            >weight {{ pct(m.score.weight) }}%</span
-                          >
-                          <span
-                            class="rounded-full border-[0.5px] border-border px-2 py-0.5 text-[11px] text-muted-foreground"
-                            >{{ ordinal(m.score.percentile) }} pct</span
-                          >
-                          <span
-                            class="inline-flex items-center gap-1 text-[11px] text-muted-foreground"
-                          >
-                            <span
-                              class="size-1.5 rounded-full"
-                              [style.background]="confColor(m.score.confidence)"
-                            ></span>
-                            {{ m.score.confidence }} confidence
-                          </span>
                         </div>
                         <p class="mt-1 text-center text-[12px] text-muted-foreground">
                           {{ m.caption }}
@@ -868,9 +850,6 @@ export class EvaluationPage {
     this.profileText.set('');
   }
 
-  protected pct(w: number): number {
-    return Math.round(w * 100);
-  }
   protected pctOf(x: number): number {
     return Math.round(x * 100);
   }
