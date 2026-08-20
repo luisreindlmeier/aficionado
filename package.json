@@ -24,7 +24,7 @@
     "@mastra/core": "^1.51.0",
     "@mastra/observability": "^1.16.1",
     "@ng-icons/core": "^33.3.0",
-    "@ng-icons/heroicons": "^33.3.0",
+    "@ng-icons/heroicons": "^35.0.1",
     "@ng-icons/simple-icons": "^33.4.0",
     "@supabase/supabase-js": "^2.110.7",
     "ai": "^7.0.31",
