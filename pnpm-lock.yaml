@@ -45,8 +45,8 @@ importers:
         specifier: ^33.3.0
         version: 33.3.0
       '@ng-icons/simple-icons':
-        specifier: ^33.4.0
-        version: 33.4.0
+        specifier: ^35.0.1
+        version: 35.0.1
       '@supabase/supabase-js':
         specifier: ^2.110.7
         version: 2.110.7
@@ -1575,8 +1575,8 @@ packages:
   '@ng-icons/heroicons@33.3.0':
     resolution: {integrity: sha512-JjlzuBBnDp5KtPkhfIsjz19wS+b4dOsky3nmtemjMH+PIB6JVYJ4S4WLv6E+W9lZnbfr5h2OlGQlewrsd+VohQ==}
 
-  '@ng-icons/simple-icons@33.4.0':
-    resolution: {integrity: sha512-vqtsjDxADRtljCwCnKz2fWv93O/RlU1kk9LwoJ2R/BrCJCVoTKQcE80lUQkZMlaT0tzdees6S7BvYzZ+5rhKng==}
+  '@ng-icons/simple-icons@35.0.1':
+    resolution: {integrity: sha512-DmvRfwGzSn+JR4UOAcBZgO+zJfyWvgHiifG8e+eOH3SdSAaA60FIP0nU+td9vlkDAks0278AH/NXpsqvS+6Vvg==}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -2779,6 +2779,10 @@ packages:
     resolution: {integrity: sha512-kJezFj9YFAMLeORyi7aCLxLbD5/qWMQnoMVlVPyHIll7lgRJCc3JVln9Vgl9nwQi0YkMnhdGTMNn7CkRRAptMg==}
     engines: {node: '>=18.0.0'}
 
+  eventsource-parser@3.1.1:
+    resolution: {integrity: sha512-EKN1vKAMcZ8MlYMpaNuxN6R9yakzH6uajHcHVTqWJzvu5pWw9DyhbP35HH8MVBQ+dZjAfDxk+A8NiR9KWaXiyQ==}
+    engines: {node: '>=18.0.0'}
+
   eventsource@3.0.7:
     resolution: {integrity: sha512-CRT1WTyuQoD771GW56XEZFQ/ZoSfWid1alKGDYMmkt2yl8UXrVR4pspqWNEcqKvVIzg6PAltWjxcSSPrboA4iA==}
     engines: {node: '>=18.0.0'}
@@ -3535,6 +3539,11 @@ packages:
 
   nanoid@3.3.15:
     resolution: {integrity: sha512-y7Wygv/7mEOvxTuEQDB8StXdMRBWf1kR/tlhAzBRUFkB2jfcLOAxO/SHmOO2zgz1pVgK29/kyupn059/bCHdjA==}
+    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
+
+  nanoid@3.3.18:
+    resolution: {integrity: sha512-DTg4MJbGMWkfi6VZFdNt2/caMbQy4Ou+Op/hJQvGEWcnVfoA1QA+xzRKAzw9jD6+GVOOeYr/mIcuDSdug6F6+w==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
@@ -4490,7 +4499,7 @@ snapshots:
   '@ai-sdk/provider-utils@2.2.8(zod@4.4.3)':
     dependencies:
       '@ai-sdk/provider': 1.1.3
-      nanoid: 3.3.15
+      nanoid: 3.3.18
       secure-json-parse: 2.7.0
       zod: 4.4.3
 
@@ -4498,14 +4507,14 @@ snapshots:
     dependencies:
       '@ai-sdk/provider': 2.0.3
       '@standard-schema/spec': 1.1.0
-      eventsource-parser: 3.1.0
+      eventsource-parser: 3.1.1
       zod: 4.4.3
 
   '@ai-sdk/provider-utils@4.0.38(zod@4.4.3)':
     dependencies:
       '@ai-sdk/provider': 3.0.14
       '@standard-schema/spec': 1.1.0
-      eventsource-parser: 3.1.0
+      eventsource-parser: 3.1.1
       zod: 4.4.3
 
   '@ai-sdk/provider-utils@5.0.11(zod@4.4.3)':
@@ -4521,7 +4530,7 @@ snapshots:
       '@ai-sdk/provider': 4.0.3
       '@standard-schema/spec': 1.1.0
       '@workflow/serde': 4.1.0
-      eventsource-parser: 3.1.0
+      eventsource-parser: 3.1.1
       zod: 4.4.3
 
   '@ai-sdk/provider@1.1.3':
@@ -5789,7 +5798,7 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@ng-icons/simple-icons@33.4.0':
+  '@ng-icons/simple-icons@35.0.1':
     dependencies:
       tslib: 2.8.1
 
@@ -7092,9 +7101,11 @@ snapshots:
 
   eventsource-parser@3.1.0: {}
 
+  eventsource-parser@3.1.1: {}
+
   eventsource@3.0.7:
     dependencies:
-      eventsource-parser: 3.1.0
+      eventsource-parser: 3.1.1
 
   execa@9.6.1:
     dependencies:
@@ -8036,6 +8047,8 @@ snapshots:
   mute-stream@3.0.0: {}
 
   nanoid@3.3.15: {}
+
+  nanoid@3.3.18: {}
 
   natural-compare@1.4.0: {}
 
